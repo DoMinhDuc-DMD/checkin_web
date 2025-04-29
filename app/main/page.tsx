@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button, Divider, notification } from "antd";
+import { Button, notification } from "antd";
 import dayjs from "dayjs";
 import "dayjs/locale/vi";
 import "@ant-design/v5-patch-for-react-19";
