@@ -7,7 +7,6 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import GroupsIcon from "@mui/icons-material/Groups";
 import PaidIcon from "@mui/icons-material/Paid";
-import ApprovalIcon from "@mui/icons-material/Approval";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import SettingsIcon from "@mui/icons-material/Settings";
 import SidebarLink from "./SidebarLink";
@@ -22,7 +21,6 @@ export default function Sidebar() {
       <div className="flex flex-col w-full gap-y-2">
         <SidebarLink link="/main" icon={<AccessTimeIcon />} label="Chấm công" />
         <SidebarLink link="/main/EmployeeList" icon={<GroupsIcon />} label="Nhân viên" />
-        <SidebarLink link="/main/Approval" icon={<ApprovalIcon />} label="Xét duyệt" />
         <SidebarLink link="/main/Dashboard" icon={<BarChartIcon />} label="Thống kê" />
         <SidebarLink link="/main/Salary" icon={<PaidIcon />} label="Bảng lương" />
         <SidebarLink link="/main/Notification" icon={<NotificationsIcon />} label="Thông báo" />
