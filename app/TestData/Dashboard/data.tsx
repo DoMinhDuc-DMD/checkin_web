@@ -1,0 +1,98 @@
+export const dataCheckIn = [
+  {
+    key: "1",
+    employee_code: "NV1",
+    employee_name: "Nguyễn Văn A",
+    employee_check: [8, 6, 7, 8, 0, 0, 6, 7, 8, 6, 7, 0, 0, 8, 6, 7, 8, 6, 0, 0, 7, 8, 6, 7, 8, 0, 0, 6, 7, 0],
+  },
+  {
+    key: "2",
+    employee_code: "NV2",
+    employee_name: "Nguyễn Văn B",
+    employee_check: [8, 6, 7, 8, 0, 0, 6, 7, 8, 6, 7, 0, 0, 8, 6, 7, 8, 6, 0, 0, 7, 8, 6, 7, 8, 0, 0, 6, 7, 0],
+  },
+  {
+    key: "3",
+    employee_code: "NV3",
+    employee_name: "Nguyễn Văn C",
+    employee_check: [8, 6, 7, 8, 0, 0, 6, 7, 8, 6, 7, 0, 0, 8, 6, 7, 8, 6, 0, 0, 7, 8, 6, 7, 8, 0, 0, 6, 7, 0],
+  },
+  {
+    key: "4",
+    employee_code: "NV4",
+    employee_name: "Nguyễn Văn D",
+    employee_check: [8, 6, 7, 8, 0, 0, 6, 7, 8, 6, 7, 0, 0, 8, 6, 7, 8, 6, 0, 0, 7, 8, 6, 7, 8, 0, 0, 6, 7, 0],
+  },
+  {
+    key: "5",
+    employee_code: "NV1",
+    employee_name: "Nguyễn Văn A",
+    employee_check: [8, 6, 7, 8, 0, 0, 6, 7, 8, 6, 7, 0, 0, 8, 6, 7, 8, 6, 0, 0, 7, 8, 6, 7, 8, 0, 0, 6, 7, 0],
+  },
+  {
+    key: "6",
+    employee_code: "NV2",
+    employee_name: "Nguyễn Văn B",
+    employee_check: [8, 6, 7, 8, 0, 0, 6, 7, 8, 6, 7, 0, 0, 8, 6, 7, 8, 6, 0, 0, 7, 8, 6, 7, 8, 0, 0, 6, 7, 0],
+  },
+  {
+    key: "7",
+    employee_code: "NV3",
+    employee_name: "Nguyễn Văn C",
+    employee_check: [8, 6, 7, 8, 0, 0, 6, 7, 8, 6, 7, 0, 0, 8, 6, 7, 8, 6, 0, 0, 7, 8, 6, 7, 8, 0, 0, 6, 7, 0],
+  },
+  {
+    key: "8",
+    employee_code: "NV4",
+    employee_name: "Nguyễn Văn D",
+    employee_check: [8, 6, 7, 8, 0, 0, 6, 7, 8, 6, 7, 0, 0, 8, 6, 7, 8, 6, 0, 0, 7, 8, 6, 7, 8, 0, 0, 6, 7, 0],
+  },
+  {
+    key: "9",
+    employee_code: "NV1",
+    employee_name: "Nguyễn Văn A",
+    employee_check: [8, 6, 7, 8, 0, 0, 6, 7, 8, 6, 7, 0, 0, 8, 6, 7, 8, 6, 0, 0, 7, 8, 6, 7, 8, 0, 0, 6, 7, 0],
+  },
+  {
+    key: "10",
+    employee_code: "NV2",
+    employee_name: "Nguyễn Văn B",
+    employee_check: [8, 6, 7, 8, 0, 0, 6, 7, 8, 6, 7, 0, 0, 8, 6, 7, 8, 6, 0, 0, 7, 8, 6, 7, 8, 0, 0, 6, 7, 0],
+  },
+  {
+    key: "11",
+    employee_code: "NV3",
+    employee_name: "Nguyễn Văn C",
+    employee_check: [8, 6, 7, 8, 0, 0, 6, 7, 8, 6, 7, 0, 0, 8, 6, 7, 8, 6, 0, 0, 7, 8, 6, 7, 8, 0, 0, 6, 7, 0],
+  },
+  {
+    key: "12",
+    employee_code: "NV4",
+    employee_name: "Nguyễn Văn D",
+    employee_check: [8, 6, 7, 8, 0, 0, 6, 7, 8, 6, 7, 0, 0, 8, 6, 7, 8, 6, 0, 0, 7, 8, 6, 7, 8, 0, 0, 6, 7, 0],
+  },
+  {
+    key: "13",
+    employee_code: "NV1",
+    employee_name: "Nguyễn Văn A",
+    employee_check: [8, 6, 7, 8, 0, 0, 6, 7, 8, 6, 7, 0, 0, 8, 6, 7, 8, 6, 0, 0, 7, 8, 6, 7, 8, 0, 0, 6, 7, 0],
+  },
+  {
+    key: "14",
+    employee_code: "NV2",
+    employee_name: "Nguyễn Văn B",
+    employee_check: [8, 6, 7, 8, 0, 0, 6, 7, 8, 6, 7, 0, 0, 8, 6, 7, 8, 6, 0, 0, 7, 8, 6, 7, 8, 0, 0, 6, 7, 0],
+  },
+  {
+    key: "15",
+    employee_code: "NV3",
+    employee_name: "Nguyễn Văn C",
+    employee_check: [8, 6, 7, 8, 0, 0, 6, 7, 8, 6, 7, 0, 0, 8, 6, 7, 8, 6, 0, 0, 7, 8, 6, 7, 8, 0, 0, 6, 7, 0],
+  },
+  {
+    key: "16",
+    employee_code: "NV4",
+    employee_name: "Nguyễn Văn D",
+    employee_check: [8, 6, 7, 8, 0, 0, 6, 7, 8, 6, 7, 0, 0, 8, 6, 7, 8, 6, 0, 0, 7, 8, 6, 7, 8, 0, 0, 6, 7, 0],
+  },
+];
