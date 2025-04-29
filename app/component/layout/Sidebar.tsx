@@ -16,7 +16,7 @@ export default function Sidebar() {
   return (
     <div className="w-[200px] h-[100vh] pt-5 flex flex-col fixed gap-y-10 items-center bg-white">
       <Link href="/main">
-        <Image src="/logo/aimesoft-icon.png" preview={false} width={150} />
+        <Image alt="Logo" src="/logo/aimesoft-icon.png" preview={false} width={150} />
       </Link>
       <Avatar size={80} icon={<PersonIcon />} />
       <div className="flex flex-col w-full gap-y-2">

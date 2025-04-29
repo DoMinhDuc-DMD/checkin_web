@@ -21,7 +21,7 @@ export default function Dashboard() {
     key: `day_${day}`,
     width: 70,
     align: "center" as const,
-    render: (_: any, record: any) => {
+    render: (_, record) => {
       const value = record.employee_check[index];
       return <span className={`font-semibold ${value > 0 ? "text-green-600" : "text-red-600"}`}>{value}</span>;
     },
@@ -58,7 +58,7 @@ export default function Dashboard() {
       width: 150,
       fixed: "left" as const,
       align: "center" as const,
-      render: (_: any, record: any) => {
+      render: (_, record) => {
         const totalHour = record.employee_check.reduce((sum: number, val: number) => sum + val, 0);
         const totalCheck = record.employee_check.filter((check: number) => check > 0).length;
         return (
