@@ -23,12 +23,12 @@ interface DashboardTableProps {
 
 export default function DashboardTable({ days, currentYear, currentMonth, dataSource, workingDays }: DashboardTableProps) {
   const dayColumns = days.map((day) => ({
-    title: dayjs(`${currentYear}-${currentMonth}-${day}`).format(SHOW_DAY_MONTH_FORMAT),
+    title: dayjs(`${currentYear}-${currentMonth + 1}-${day}`).format(SHOW_DAY_MONTH_FORMAT),
     key: `day_${day}`,
     width: 70,
     align: "center" as const,
     render: (_, record) => {
-      const dateStr = dayjs(`${currentYear}-${currentMonth}-${day}`).format(DATE_FORMAT);
+      const dateStr = dayjs(`${currentYear}-${currentMonth + 1}-${day}`).format(DATE_FORMAT);
       const checkInIndex = record.employee_check_in.findIndex((check: string) => check.startsWith(dateStr));
       const checkOutIndex = record.employee_check_out.findIndex((check: string) => check.startsWith(dateStr));
 

@@ -12,14 +12,14 @@ export default function Dashboard() {
   const [api, contextHolder] = notification.useNotification();
   const [data, setData] = useState(dataSource);
   const [searchInput, setSearchInput] = useState("");
-  const currentMonth = new Date().getMonth() + 1;
+  const currentMonth = new Date().getMonth();
   const currentYear = new Date().getFullYear();
 
   const daysInMonth = dayjs(new Date(currentYear, currentMonth)).daysInMonth();
   const days = Array.from({ length: daysInMonth }, (_, index) => index + 1);
 
   const workingDays = Array.from({ length: daysInMonth }, (_, index) => {
-    const date = dayjs(new Date(currentYear, currentMonth - 1, index + 1));
+    const date = dayjs(new Date(currentYear, currentMonth, index + 1));
     return date;
   }).filter((date) => {
     const dayOfWeek = date.day();
