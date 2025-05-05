@@ -21,8 +21,8 @@ export default function SidebarLink({
   return (
     <Link
       href={link}
-      className={`flex gap-x-5 px-8 py-3 hover:bg-blue-200 hover:rounded-xl hover:font-semibold ${
-        isActive ? "bg-blue-200 rounded-xl font-semibold" : ""
+      className={`flex gap-x-5 px-8 py-3 hover:bg-blue-200 hover:rounded-r-4xl hover:font-semibold ${
+        isActive ? "bg-blue-200 rounded-r-4xl font-semibold" : ""
       }`}
     >
       {icon}

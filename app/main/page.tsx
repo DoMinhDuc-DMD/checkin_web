@@ -1,99 +1,96 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Button, notification } from "antd";
-import dayjs from "dayjs";
 import "dayjs/locale/vi";
 import "@ant-design/v5-patch-for-react-19";
-import { DATE_FORMAT, TIME_FORMAT } from "../constant/dateFormat";
-import FlagIcon from "@mui/icons-material/Flag";
+import { Table } from "antd";
+import { dataSource } from "../TestData/data";
+import dayjs from "dayjs";
+import { DATE_FORMAT, HOUR_FORMAT, SHOW_DAY_MONTH_FORMAT } from "../constant/dateFormat";
 
 export default function Main() {
-  const [currentDate, setCurrentDate] = useState<dayjs.Dayjs | null>(null);
-  const [currentTime, setCurrentTime] = useState<dayjs.Dayjs | null>(null);
-  const [checkIn, setCheckIn] = useState<dayjs.Dayjs | null>(null);
-  const [checkOut, setCheckOut] = useState<dayjs.Dayjs | null>(null);
-  const [api, contextHolder] = notification.useNotification();
+  const today = dayjs();
+  const currentMonth = today.month();
+  const currentYear = today.year();
+  const daysInMonth = today.daysInMonth();
 
-  dayjs.locale("vi");
+  const days = Array.from({ length: daysInMonth }, (_, i) => dayjs(new Date(currentYear, currentMonth, i + 1)).format("DD/MM"));
 
-  const openNotification = (msg: string, des: string) => {
-    api.info({
-      message: msg,
-      description: des,
-      placement: "topRight",
-      duration: 2,
-      style: { borderRadius: 10 },
-    });
-  };
+  const dayColumns = days.map((day, index) => ({
+    title: `${day}`,
+    key: `day_${day}`,
+    width: 70,
+    align: "center" as const,
+    render: (_: any, record: any) => {
+      const checkIn = record.employee_check_in || [];
+      const checkOut = record.employee_check_out || [];
 
-  useEffect(() => {
-    setCurrentDate(dayjs());
-    const interval = setInterval(() => {
-      setCurrentTime(dayjs());
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
+      const checkInDay = checkIn
+        .map((entry: string) => {
+          const [dateStr, timeStr] = entry.split(", ");
+          return { date: dayjs(dateStr).format(SHOW_DAY_MONTH_FORMAT), time: timeStr, full: `${dateStr} ${timeStr}` };
+        })
+        .find((ci) => ci.date === day);
 
-  const capitalizeFirstLetter = (str: string) => {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  };
+      const checkOutDay = checkOut
+        .map((entry: string) => {
+          const [dateStr, timeStr] = entry.split(", ");
+          return { date: dayjs(dateStr).format(SHOW_DAY_MONTH_FORMAT), time: timeStr, full: `${dateStr} ${timeStr}` };
+        })
+        .find((co) => co.date === day);
 
-  const handleClick = () => {
-    if (!checkIn) {
-      setCheckIn(currentTime);
-      openNotification("Check in thành công!", `Check in: ${currentTime?.format(TIME_FORMAT)}`);
-    } else if (!checkOut) {
-      setCheckOut(currentTime);
-      openNotification("Check out thành công!", `Check out: ${currentTime?.format(TIME_FORMAT)}`);
-    }
-  };
+      const isInLate = checkInDay && dayjs(checkInDay.full).isAfter(dayjs(checkInDay.full).hour(8).minute(30));
+      const isOutEarly = checkOutDay && dayjs(checkOutDay.full).isBefore(dayjs(checkOutDay.full).hour(18).minute(0));
 
+      const checkInClass = isInLate ? "text-red-500" : "text-green-600";
+      const checkOutClass = isOutEarly ? "text-red-500" : "text-green-600";
+
+      if (checkInDay && checkOutDay) {
+        return (
+          <div className="flex flex-col items-center font-semibold">
+            <span className={`${checkInClass}`}>{checkInDay.time}</span>
+            <div className="w-full h-[1px] bg-black my-1" />
+            <span className={`${checkOutClass}`}>{checkOutDay.time}</span>
+          </div>
+        );
+      } else if (checkInDay) {
+        return <span className={`text-green-600 font-semibold ${checkInClass}`}>{checkInDay.time}</span>;
+      } else {
+        return <span className="text-gray-400">---</span>;
+      }
+    },
+  }));
+
+  const columns = [
+    {
+      title: "STT",
+      key: "id",
+      align: "center" as const,
+      width: 60,
+      fixed: "left" as const,
+      render: (_: unknown, __: unknown, index: number) => index + 1,
+    },
+    {
+      title: "Mã NV",
+      dataIndex: "employee_code",
+      key: "employee_code",
+      width: 80,
+      fixed: "left" as const,
+      align: "center" as const,
+    },
+    {
+      title: "Họ và tên",
+      dataIndex: "employee_name",
+      key: "employee_name",
+      width: 150,
+      fixed: "left" as const,
+      align: "center" as const,
+    },
+    ...dayColumns,
+  ];
   return (
     <>
-      {contextHolder}
-      <div className="grid grid-cols-2 mt-30">
-        <div className="flex flex-col items-center gap-y-5">
-          <div className="text-3xl">
-            {currentDate ? `${capitalizeFirstLetter(currentDate.format("dddd"))}, ${currentDate.format(DATE_FORMAT)}` : "Đang tải..."}
-          </div>
-          <div className="text-3xl">{currentTime ? currentTime.format(TIME_FORMAT) : "Đang tải..."}</div>
-          <Button type="primary" size="large" onClick={handleClick} disabled={!!checkOut} className="my-20">
-            {!checkIn ? "Check in" : "Check out"}
-          </Button>
-          <div className="text-xl">{!checkIn ? "Bạn chưa check in." : `Bạn đã check in lúc: ${checkIn.format(TIME_FORMAT)}`}</div>
-          <div className="text-xl">{!checkOut ? "Bạn chưa check out." : `Bạn đã check out lúc: ${checkOut.format(TIME_FORMAT)}`}</div>
-        </div>
-        <div className="flex flex-col gap-y-10 p-10">
-          {/* Not time yet */}
-          <div className="flex gap-x-20">
-            <FlagIcon />
-            <div>18:00:00</div>
-            <div>Kết thúc ngày làm việc</div>
-          </div>
-          {/* Present */}
-          <div className="flex items-center gap-2">
-            <div style={{ width: "85%", height: "1px", backgroundColor: "black" }} />
-            <div>{currentTime ? currentTime.format(TIME_FORMAT) : "Đang tải..."}</div>
-          </div>
-          {/* Passed time */}
-          <div className="flex gap-x-20">
-            <FlagIcon />
-            <div>13:30:00</div>
-            <div>Bắt đầu ca chiều</div>
-          </div>
-          <div className="flex gap-x-20">
-            <FlagIcon />
-            <div>12:00:00</div>
-            <div>Kết thúc ca sáng</div>
-          </div>
-          <div className="flex gap-x-20">
-            <FlagIcon />
-            <div>08:30:00</div>
-            <div>Bắt đầu ca sáng</div>
-          </div>
-        </div>
-      </div>
+      <div className="flex justify-center text-2xl font-semibold my-3">Tổng quan chấm công của nhân viên</div>
+      <Table dataSource={dataSource} columns={columns} size="small" scroll={{ x: "max-content", y: 580 }} pagination={false} />
     </>
   );
 }
