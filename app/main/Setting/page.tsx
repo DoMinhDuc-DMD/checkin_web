@@ -16,11 +16,6 @@ export default function Setting() {
     license_plate: "",
   });
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
   const handleInputNumberChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const onlyNumbers = value.replace(/[^0-9]/g, "");
