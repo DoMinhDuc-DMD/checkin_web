@@ -5,7 +5,7 @@ import "@ant-design/v5-patch-for-react-19";
 import { Table } from "antd";
 import { dataSource } from "../TestData/data";
 import dayjs from "dayjs";
-import { DATE_FORMAT, HOUR_FORMAT, SHOW_DAY_MONTH_FORMAT } from "../constant/dateFormat";
+import { SHOW_DAY_MONTH_FORMAT } from "../constant/dateFormat";
 
 export default function Main() {
   const today = dayjs();
@@ -15,12 +15,12 @@ export default function Main() {
 
   const days = Array.from({ length: daysInMonth }, (_, i) => dayjs(new Date(currentYear, currentMonth, i + 1)).format("DD/MM"));
 
-  const dayColumns = days.map((day, index) => ({
+  const dayColumns = days.map((day) => ({
     title: `${day}`,
     key: `day_${day}`,
     width: 70,
     align: "center" as const,
-    render: (_: any, record: any) => {
+    render: (_, record) => {
       const checkIn = record.employee_check_in || [];
       const checkOut = record.employee_check_out || [];
 

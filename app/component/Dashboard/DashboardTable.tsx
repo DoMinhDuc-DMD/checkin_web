@@ -81,7 +81,7 @@ export default function DashboardTable({ days, currentYear, currentMonth, dataSo
       width: 160,
       fixed: "left" as const,
       align: "center" as const,
-      render: (_: any, record: any) => {
+      render: (_, record) => {
         const { totalHour, totalCheck } = calculateWorkTime(record.employee_check_in, record.employee_check_out);
         return (
           <div className="grid grid-cols-[48%_4%_48%] place-items-center text-center">

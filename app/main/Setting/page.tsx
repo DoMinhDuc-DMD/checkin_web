@@ -37,11 +37,10 @@ export default function Setting() {
   return (
     <>
       <div className="flex justify-center text-2xl font-semibold my-3">Cài đặt tài khoản</div>
-      <div className="h-[90%] text-center bg-blue-200 rounded-xl">
+      <div className="h-[90%] text-center rounded-xl">
         <Avatar size={120} icon={<PersonIcon />} />
         <div className="flex flex-col-2 justify-center gap-x-10 my-5">
           <div className="w-[30%] flex flex-col gap-y-5">
-            <Input name="code" placeholder="Mã nhân viên" readOnly />
             <Input name="name" placeholder="Họ và tên" readOnly />
             <Input name="department" placeholder="Phòng ban" readOnly />
             <Input name="role" placeholder="Chức vụ" readOnly />
@@ -69,13 +68,6 @@ export default function Setting() {
               onChange={handleInputNumberChange}
             />
             <Input name="bank_account" placeholder="Số tài khoản TCB" value={formData.bank_account} onChange={handleInputNumberChange} />
-            <Input
-              name="license_plate"
-              placeholder="Biển số xe"
-              maxLength={12}
-              value={formData.license_plate}
-              onChange={handleInputChange}
-            />
           </div>
         </div>
         <div>
