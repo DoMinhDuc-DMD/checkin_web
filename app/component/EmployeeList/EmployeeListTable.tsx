@@ -2,6 +2,7 @@
 
 import { EmployeeTypeData } from "@/app/constant/DataType";
 import { Button, Table } from "antd";
+import EmployeeListModal from "./EmployeeListModal";
 
 interface EmployeeListTableProps {
   data: EmployeeTypeData[];
@@ -52,12 +53,13 @@ export default function EmployeeListTable({ data }: EmployeeListTableProps) {
       align: "center" as const,
     },
     {
-      title: "Hành động",
+      title: "Chi tiết",
       align: "center" as const,
-      render: () => (
+      render: (record) => (
         <div className="flex gap-x-2 justify-center">
-          <Button type="primary">Chi tiết</Button>
-          <Button type="primary">Chỉnh sửa</Button>
+          <Button type="primary" onClick={() => EmployeeListModal(record)}>
+            Chi tiết
+          </Button>
         </div>
       ),
     },
