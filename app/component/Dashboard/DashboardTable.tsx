@@ -69,7 +69,7 @@ export default function DashboardTable({ days, currentYear, currentMonth, dataSo
     {
       title: <Checkbox checked={isSelectedAll} indeterminate={selectedRow.length > 0 && !isSelectedAll} onChange={handleSelectAll} />,
       align: "center" as const,
-      width: 60,
+      width: 70,
       fixed: "left" as const,
       render: (row: EmployeeTypeData) => {
         const isChecked = selectedRow.some((acc) => acc.key === row.key);
@@ -77,18 +77,18 @@ export default function DashboardTable({ days, currentYear, currentMonth, dataSo
       },
     },
     {
-      title: "Mã NV",
+      title: "Mã nhân viên",
       dataIndex: "employee_code",
       key: "employee_code",
-      width: 80,
+      width: 120,
       fixed: "left" as const,
       align: "center" as const,
     },
     {
-      title: "Họ và tên",
+      title: "Họ tên nhân viên",
       dataIndex: "employee_name",
       key: "employee_name",
-      width: 150,
+      width: 180,
       fixed: "left" as const,
       align: "center" as const,
     },
@@ -155,8 +155,6 @@ export default function DashboardTable({ days, currentYear, currentMonth, dataSo
       totalCheck,
     }));
   });
-
-  console.log(csvData);
 
   return (
     <>

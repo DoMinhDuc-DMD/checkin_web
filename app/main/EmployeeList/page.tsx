@@ -19,17 +19,17 @@ export default function EmployeeList() {
       render: (_: unknown, __: unknown, index: number) => index + 1,
     },
     {
-      title: "Mã NV",
+      title: "Mã nhân viên",
       dataIndex: "employee_code",
       key: "employee_code",
-      width: 100,
+      width: 120,
       align: "center" as const,
     },
     {
-      title: "Họ và tên",
+      title: "Họ tên nhân viên",
       dataIndex: "employee_name",
       key: "employee_name",
-      width: 200,
+      width: 180,
       align: "center" as const,
     },
     {
