@@ -17,8 +17,8 @@ export default function Sidebar() {
       <Avatar size={80} icon={<PersonIcon />} />
       <div className="flex flex-col w-full gap-y-3">
         <SidebarLink link="/main" icon={<AccessTimeIcon />} label="Tổng quan" />
-        <SidebarLink link="/main/EmployeeList" icon={<GroupsIcon />} label="Nhân viên" />
         <SidebarLink link="/main/Dashboard" icon={<BarChartIcon />} label="Thống kê" />
+        <SidebarLink link="/main/EmployeeList" icon={<GroupsIcon />} label="Nhân viên" />
         <SidebarLink link="/main/Salary" icon={<PaidIcon />} label="Bảng lương" />
         {/* <SidebarLink link="/main/Notification" icon={<NotificationsIcon />} label="Thông báo" /> */}
         {/* <SidebarLink link="/main/Setting" icon={<SettingsIcon />} label="Cài đặt" /> */}

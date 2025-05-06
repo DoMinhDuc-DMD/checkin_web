@@ -49,7 +49,7 @@ export default function Salary() {
       <div className="flex justify-center text-2xl font-semibold my-3">Bảng lương nhân viên</div>
       <div className="flex flex-col">
         <Search
-          placeholder="Tìm kiếm"
+          placeholder="Tìm kiếm nhân viên"
           style={{ width: "300px", marginBottom: 12 }}
           value={searchInput}
           onChange={searchChange}
