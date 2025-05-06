@@ -1,69 +1,16 @@
 "use client";
 
 import { dataSource } from "@/app/TestData/data";
-import { Button, notification, Table } from "antd";
+import { notification } from "antd";
 import Search from "antd/es/input/Search";
 import { ChangeEvent, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
+import EmployeeListTable from "@/app/component/EmployeeList/EmployeeListTable";
 
 export default function EmployeeList() {
   const [data, setData] = useState(dataSource);
   const [searchInput, setSearchInput] = useState("");
   const [api, contextHolder] = notification.useNotification();
-  const columns = [
-    {
-      title: "STT",
-      key: "id",
-      align: "center" as const,
-      width: 70,
-      render: (_: unknown, __: unknown, index: number) => index + 1,
-    },
-    {
-      title: "Mã nhân viên",
-      dataIndex: "employee_code",
-      key: "employee_code",
-      width: 120,
-      align: "center" as const,
-    },
-    {
-      title: "Họ tên nhân viên",
-      dataIndex: "employee_name",
-      key: "employee_name",
-      width: 180,
-      align: "center" as const,
-    },
-    {
-      title: "Phòng ban",
-      dataIndex: "employee_department",
-      key: "employee_department",
-      width: 150,
-      align: "center" as const,
-    },
-    {
-      title: "Chức danh",
-      dataIndex: "employee_position",
-      key: "employee_position",
-      width: 150,
-      align: "center" as const,
-    },
-    {
-      title: "Email công ty",
-      dataIndex: "employee_email",
-      key: "employee_email",
-      width: 200,
-      align: "center" as const,
-    },
-    {
-      title: "Hành động",
-      align: "center" as const,
-      render: () => (
-        <div className="flex gap-x-2 justify-center">
-          <Button type="primary">Chi tiết</Button>
-          <Button type="primary">Chỉnh sửa</Button>
-        </div>
-      ),
-    },
-  ];
 
   const searchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
@@ -109,7 +56,7 @@ export default function EmployeeList() {
           onSearch={() => handleSearch(searchInput)}
           enterButton
         />
-        <Table columns={columns} dataSource={data} size="small" scroll={{ y: 550 }} pagination={false} />
+        <EmployeeListTable data={data} />
       </div>
     </>
   );

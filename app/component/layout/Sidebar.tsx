@@ -6,8 +6,8 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import GroupsIcon from "@mui/icons-material/Groups";
 import PaidIcon from "@mui/icons-material/Paid";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import SettingsIcon from "@mui/icons-material/Settings";
+// import NotificationsIcon from "@mui/icons-material/Notifications";
+// import SettingsIcon from "@mui/icons-material/Settings";
 import SidebarLink from "./SidebarLink";
 
 export default function Sidebar() {
@@ -20,8 +20,8 @@ export default function Sidebar() {
         <SidebarLink link="/main/EmployeeList" icon={<GroupsIcon />} label="Nhân viên" />
         <SidebarLink link="/main/Dashboard" icon={<BarChartIcon />} label="Thống kê" />
         <SidebarLink link="/main/Salary" icon={<PaidIcon />} label="Bảng lương" />
-        <SidebarLink link="/main/Notification" icon={<NotificationsIcon />} label="Thông báo" />
-        <SidebarLink link="/main/Setting" icon={<SettingsIcon />} label="Cài đặt" />
+        {/* <SidebarLink link="/main/Notification" icon={<NotificationsIcon />} label="Thông báo" /> */}
+        {/* <SidebarLink link="/main/Setting" icon={<SettingsIcon />} label="Cài đặt" /> */}
       </div>
     </div>
   );

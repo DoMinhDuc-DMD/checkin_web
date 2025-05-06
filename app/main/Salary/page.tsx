@@ -1,10 +1,11 @@
 "use client";
 
 import { dataSource } from "@/app/TestData/data";
-import { notification, Table } from "antd";
+import { notification } from "antd";
 import Search from "antd/es/input/Search";
 import { ChangeEvent, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
+import SalaryTable from "@/app/component/Salary/SalaryTable";
 
 export default function Salary() {
   const [api, contextHolder] = notification.useNotification();
@@ -42,63 +43,6 @@ export default function Salary() {
     });
   };
 
-  const columns = [
-    {
-      title: "STT",
-      key: "id",
-      align: "center" as const,
-      width: 70,
-      render: (_: unknown, __: unknown, index: number) => index + 1,
-    },
-    {
-      title: "Mã nhân viên",
-      dataIndex: "employee_code",
-      key: "employee_code",
-      width: 120,
-      align: "center" as const,
-    },
-    {
-      title: "Họ tên nhân viên",
-      dataIndex: "employee_name",
-      key: "employee_name",
-      width: 180,
-      align: "center" as const,
-    },
-    {
-      title: "Phòng ban",
-      dataIndex: "employee_department",
-      key: "employee_department",
-      width: 150,
-      align: "center" as const,
-    },
-    {
-      title: "Chức danh",
-      dataIndex: "employee_position",
-      key: "employee_position",
-      width: 150,
-      align: "center" as const,
-    },
-    {
-      title: "Kỳ lương",
-      dataIndex: "salary_period",
-      key: "salary_period",
-      width: 150,
-      align: "center" as const,
-    },
-    {
-      title: "Chế độ lương",
-      dataIndex: "salary_scale",
-      key: "salary_scale",
-      width: 150,
-      align: "center" as const,
-    },
-    {
-      title: "Trạng thái",
-      dataIndex: "salary_status",
-      key: "salary_status",
-      align: "center" as const,
-    },
-  ];
   return (
     <>
       {contextHolder}
@@ -112,7 +56,7 @@ export default function Salary() {
           onSearch={() => handleSearch(searchInput)}
           enterButton
         />
-        <Table dataSource={data} columns={columns} size="small" scroll={{ y: 550 }} pagination={false} />
+        <SalaryTable data={data} />
       </div>
     </>
   );

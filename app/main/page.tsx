@@ -88,7 +88,7 @@ export default function Main() {
   return (
     <>
       <div className="flex justify-center text-2xl font-semibold my-3">Tổng quan chấm công của nhân viên</div>
-      <Table dataSource={dataSource} columns={columns} size="small" scroll={{ x: "max-content", y: 580 }} pagination={false} />
+      <Table dataSource={dataSource} columns={columns} size="small" scroll={{ x: "max-content", y: 590 }} pagination={false} />
     </>
   );
 }
