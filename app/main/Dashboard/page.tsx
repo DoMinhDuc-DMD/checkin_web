@@ -12,19 +12,12 @@ export default function Dashboard() {
   const [api, contextHolder] = notification.useNotification();
   const [data, setData] = useState(dataSource);
   const [searchInput, setSearchInput] = useState("");
-  const currentMonth = new Date().getMonth();
-  const currentYear = new Date().getFullYear();
+  const today = dayjs();
+  const currentMonth = today.month();
+  const currentYear = today.year();
+  const daysInMonth = today.daysInMonth();
 
-  const daysInMonth = dayjs(new Date(currentYear, currentMonth)).daysInMonth();
   const days = Array.from({ length: daysInMonth }, (_, index) => index + 1);
-
-  const workingDays = Array.from({ length: daysInMonth }, (_, index) => {
-    const date = dayjs(new Date(currentYear, currentMonth, index + 1));
-    return date;
-  }).filter((date) => {
-    const dayOfWeek = date.day();
-    return dayOfWeek !== 0 && dayOfWeek !== 6;
-  });
 
   const searchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
@@ -71,7 +64,7 @@ export default function Dashboard() {
           onSearch={() => handleSearch(searchInput)}
           enterButton
         />
-        <DashboardTable days={days} currentMonth={currentMonth} currentYear={currentYear} dataSource={data} workingDays={workingDays} />
+        <DashboardTable days={days} currentMonth={currentMonth} currentYear={currentYear} dataSource={data} />
       </div>
     </>
   );

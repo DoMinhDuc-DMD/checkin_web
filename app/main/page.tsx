@@ -1,11 +1,10 @@
 "use client";
 
-import "dayjs/locale/vi";
 import "@ant-design/v5-patch-for-react-19";
 import { Table } from "antd";
 import { dataSource } from "../TestData/data";
 import dayjs from "dayjs";
-import { SHOW_DAY_MONTH_FORMAT } from "../constant/dateFormat";
+import { DATE_FORMAT, SHOW_DAY_MONTH_FORMAT } from "../constant/DateFormatting";
 
 export default function Main() {
   const today = dayjs();
@@ -13,52 +12,51 @@ export default function Main() {
   const currentYear = today.year();
   const daysInMonth = today.daysInMonth();
 
-  const days = Array.from({ length: daysInMonth }, (_, i) => dayjs(new Date(currentYear, currentMonth, i + 1)).format("DD/MM"));
+  const days = Array.from({ length: daysInMonth }, (_, index) => index + 1);
 
-  const dayColumns = days.map((day) => ({
-    title: `${day}`,
-    key: `day_${day}`,
-    width: 70,
-    align: "center" as const,
-    render: (_, record) => {
-      const checkIn = record.employee_check_in || [];
-      const checkOut = record.employee_check_out || [];
+  const dayColumns = days.map((day) => {
+    const date = dayjs(new Date(currentYear, currentMonth, day));
+    const dateStr = date.format(DATE_FORMAT);
+    const isWorkingDay = date.day() !== 0 && date.day() !== 6;
 
-      const checkInDay = checkIn
-        .map((entry: string) => {
-          const [dateStr, timeStr] = entry.split(", ");
-          return { date: dayjs(dateStr).format(SHOW_DAY_MONTH_FORMAT), time: timeStr, full: `${dateStr} ${timeStr}` };
-        })
-        .find((ci) => ci.date === day);
+    return {
+      title: date.format(SHOW_DAY_MONTH_FORMAT),
+      key: `day_${day}`,
+      width: 70,
+      align: "center" as const,
+      onCell: () => ({ style: { backgroundColor: isWorkingDay ? "" : "oklch(0.96 0 0)" } }),
+      render: (_, record) => {
+        if (!isWorkingDay) {
+          return <span className="font-semibold">OFF</span>;
+        } else {
+          const checkInIndex = record.employee_check_in.findIndex((check: string) => check.startsWith(dateStr));
+          const checkOutIndex = record.employee_check_out.findIndex((check: string) => check.startsWith(dateStr));
 
-      const checkOutDay = checkOut
-        .map((entry: string) => {
-          const [dateStr, timeStr] = entry.split(", ");
-          return { date: dayjs(dateStr).format(SHOW_DAY_MONTH_FORMAT), time: timeStr, full: `${dateStr} ${timeStr}` };
-        })
-        .find((co) => co.date === day);
+          const checkIn = record.employee_check_in[checkInIndex];
+          const checkOut = record.employee_check_out[checkOutIndex];
 
-      const isInLate = checkInDay && dayjs(checkInDay.full).isAfter(dayjs(checkInDay.full).hour(8).minute(30));
-      const isOutEarly = checkOutDay && dayjs(checkOutDay.full).isBefore(dayjs(checkOutDay.full).hour(18).minute(0));
+          const isInLate = checkIn && dayjs(checkIn).isAfter(dayjs(checkIn).hour(8).minute(30));
+          const isOutEarly = checkOut && dayjs(checkOut).isBefore(dayjs(checkOut).hour(18));
+          const checkInClass = isInLate ? "text-red-500" : "text-green-600";
+          const checkOutClass = isOutEarly ? "text-red-500" : "text-green-600";
 
-      const checkInClass = isInLate ? "text-red-500" : "text-green-600";
-      const checkOutClass = isOutEarly ? "text-red-500" : "text-green-600";
-
-      if (checkInDay && checkOutDay) {
-        return (
-          <div className="flex flex-col items-center font-semibold">
-            <span className={`${checkInClass}`}>{checkInDay.time}</span>
-            <div className="w-full h-[1px] bg-black my-1" />
-            <span className={`${checkOutClass}`}>{checkOutDay.time}</span>
-          </div>
-        );
-      } else if (checkInDay) {
-        return <span className={`text-green-600 font-semibold ${checkInClass}`}>{checkInDay.time}</span>;
-      } else {
-        return <span className="text-gray-400">---</span>;
-      }
-    },
-  }));
+          if (checkIn && checkOut) {
+            return (
+              <div className="flex flex-col items-center font-semibold">
+                <span className={`${checkInClass}`}>{checkIn.split(", ")[1]}</span>
+                <div className="w-full h-[1px] bg-black my-1" />
+                <span className={`${checkOutClass}`}>{checkOut.split(", ")[1]}</span>
+              </div>
+            );
+          } else if (checkIn) {
+            return <span className={`font-semibold ${checkInClass}`}>{checkIn.split(", ")[1]}</span>;
+          } else {
+            return <span className="font-semibold">---</span>;
+          }
+        }
+      },
+    };
+  });
 
   const columns = [
     {

@@ -1,63 +1,80 @@
 "use client";
 
-import { DATE_FORMAT, DATE_HOUR_FORMAT, SHOW_DAY_MONTH_FORMAT } from "@/app/constant/dateFormat";
+import { DATE_FORMAT, DATE_HOUR_FORMAT, SHOW_DAY_MONTH_FORMAT } from "@/app/constant/DateFormatting";
 import { calculateWorkTime } from "@/app/utils/calculateWorkTime";
-import { Button, Table, Modal } from "antd";
-import dayjs, { Dayjs } from "dayjs";
+import { Button, Checkbox, Table } from "antd";
+import dayjs from "dayjs";
+import { CSVLink } from "react-csv";
+import DashboardModal from "./DashboardModal";
+import { EmployeeTypeData } from "@/app/constant/DataType";
+import { useState } from "react";
 
 interface DashboardTableProps {
   days: number[];
   currentYear: number;
   currentMonth: number;
-  dataSource: {
-    key: string;
-    employee_code: string;
-    employee_name: string;
-    employee_department: string;
-    employee_position: string;
-    employee_check_in: string[];
-    employee_check_out: string[];
-  }[];
-  workingDays: Dayjs[];
+  dataSource: EmployeeTypeData[];
 }
 
-export default function DashboardTable({ days, currentYear, currentMonth, dataSource, workingDays }: DashboardTableProps) {
-  const dayColumns = days.map((day) => ({
-    title: dayjs(`${currentYear}-${currentMonth + 1}-${day}`).format(SHOW_DAY_MONTH_FORMAT),
-    key: `day_${day}`,
-    width: 70,
-    align: "center" as const,
-    render: (_, record) => {
-      const dateStr = dayjs(`${currentYear}-${currentMonth + 1}-${day}`).format(DATE_FORMAT);
-      const checkInIndex = record.employee_check_in.findIndex((check: string) => check.startsWith(dateStr));
-      const checkOutIndex = record.employee_check_out.findIndex((check: string) => check.startsWith(dateStr));
+export default function DashboardTable({ days, currentYear, currentMonth, dataSource }: DashboardTableProps) {
+  const [selectedRow, setSelectedRow] = useState<EmployeeTypeData[]>([]);
+  const dayColumns = days.map((day) => {
+    const date = dayjs(new Date(currentYear, currentMonth, day));
+    const dateStr = date.format(DATE_FORMAT);
+    const isWorkingDay = date.day() !== 0 && date.day() !== 6;
 
-      const checkIn = record.employee_check_in[checkInIndex];
-      const checkOut = record.employee_check_out[checkOutIndex];
+    return {
+      title: date.format(SHOW_DAY_MONTH_FORMAT),
+      key: `day_${day}`,
+      width: 70,
+      align: "center" as const,
+      onCell: () => ({ style: { backgroundColor: isWorkingDay ? "" : "oklch(0.96 0 0)" } }),
+      render: (_, record) => {
+        if (!isWorkingDay) {
+          return <span className="font-semibold">OFF</span>;
+        } else {
+          const checkInIndex = record.employee_check_in.findIndex((check: string) => check.startsWith(dateStr));
+          const checkOutIndex = record.employee_check_out.findIndex((check: string) => check.startsWith(dateStr));
 
-      if (checkIn && checkOut) {
-        const checkInTime = dayjs(checkIn, DATE_HOUR_FORMAT);
-        const checkOutTime = dayjs(checkOut, DATE_HOUR_FORMAT);
+          const checkIn = record.employee_check_in[checkInIndex];
+          const checkOut = record.employee_check_out[checkOutIndex];
 
-        if (checkInTime.isValid() && checkOutTime.isValid()) {
-          const diff = checkOutTime.diff(checkInTime, "minute") - 90;
-          const workedHours = diff > 0 ? (diff / 60).toFixed(1) : "0";
-          return <span className={`${Number(workedHours) >= 8 ? "text-green-600" : "text-red-500"}`}>{workedHours}</span>;
+          if (checkIn && checkOut) {
+            const checkInTime = dayjs(checkIn, DATE_HOUR_FORMAT);
+            const checkOutTime = dayjs(checkOut, DATE_HOUR_FORMAT);
+
+            if (checkInTime.isValid() && checkOutTime.isValid()) {
+              const diff = checkOutTime.diff(checkInTime, "minute") - 90;
+              const workedHours = diff > 0 ? (diff / 60).toFixed(1) : "0";
+              return <span className={`font-semibold ${Number(workedHours) >= 8 ? "text-green-600" : "text-red-500"}`}>{workedHours}</span>;
+            }
+          }
         }
-      }
+        return <span className="font-semibold">---</span>;
+      },
+    };
+  });
 
-      return <span>-</span>;
-    },
-  }));
+  const isSelectedAll = selectedRow.length === dataSource.length && dataSource.length > 0;
+
+  const handleSelectAll = () => {
+    setSelectedRow(isSelectedAll ? [] : dataSource);
+  };
+
+  const handleCheckBoxChange = (row: EmployeeTypeData) => {
+    setSelectedRow((prev) => (prev.some((r) => row.key === r.key) ? prev.filter((r) => r.key !== row.key) : [...prev, row]));
+  };
 
   const columns = [
     {
-      title: "STT",
-      key: "id",
+      title: <Checkbox checked={isSelectedAll} indeterminate={selectedRow.length > 0 && !isSelectedAll} onChange={handleSelectAll} />,
       align: "center" as const,
       width: 60,
       fixed: "left" as const,
-      render: (_: unknown, __: unknown, index: number) => index + 1,
+      render: (row: EmployeeTypeData) => {
+        const isChecked = selectedRow.some((acc) => acc.key === row.key);
+        return <Checkbox checked={isChecked} onChange={() => handleCheckBoxChange(row)} />;
+      },
     },
     {
       title: "Mã NV",
@@ -100,7 +117,7 @@ export default function DashboardTable({ days, currentYear, currentMonth, dataSo
       align: "center" as const,
       render: (record) => (
         <div className="flex justify-center">
-          <Button type="primary" onClick={() => info(record)}>
+          <Button type="primary" onClick={() => DashboardModal(record, currentYear, currentMonth, days)}>
             Chi tiết
           </Button>
         </div>
@@ -108,41 +125,14 @@ export default function DashboardTable({ days, currentYear, currentMonth, dataSo
     },
   ];
 
-  const info = (record) => {
-    const { totalHour, totalCheck } = calculateWorkTime(record.employee_check_in, record.employee_check_out);
-    const parseTime = (check: string) => check?.split(", ")[1]?.split(":").map(Number) || [];
-
-    const lateCheckInCount = record.employee_check_in.filter((check: string) => {
-      const [hour, minute] = parseTime(check);
-      return hour > 8 || (hour === 8 && minute > 30);
-    }).length;
-
-    const earlyCheckOutCount = record.employee_check_out.filter((check: string) => parseTime(check)[0] < 18).length;
-
-    Modal.info({
-      title: `Chi tiết chấm công tháng `,
-      width: 600,
-      content: (
-        <div className="grid grid-cols-2">
-          <div>
-            <p>Mã nhân viên: {record.employee_code}</p>
-            <p>Họ và tên: {record.employee_name}</p>
-            <p>Phòng ban: {record.employee_department}</p>
-            <p>Vị trí: {record.employee_position}</p>
-          </div>
-          <div>
-            <p>
-              Số ngày làm việc: {totalCheck}/{workingDays.length} ngày
-            </p>
-            <p>Thời gian làm việc: {totalHour} giờ</p>
-            <p>Số lần check in muộn: {lateCheckInCount} lần</p>
-            <p>Số lần check out sớm: {earlyCheckOutCount} lần</p>
-          </div>
-        </div>
-      ),
-      onOk() {},
-    });
-  };
-
-  return <Table dataSource={dataSource} columns={columns} size="small" scroll={{ x: "max-content", y: 550 }} pagination={false} />;
+  return (
+    <>
+      {selectedRow.length > 0 && (
+        <CSVLink className="ml-5" data={selectedRow} filename="employee_statistic">
+          <Button type="primary">Xuất file CSV</Button>
+        </CSVLink>
+      )}
+      <Table dataSource={dataSource} columns={columns} size="small" scroll={{ x: "max-content", y: 550 }} pagination={false} />
+    </>
+  );
 }
