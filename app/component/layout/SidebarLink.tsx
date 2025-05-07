@@ -19,14 +19,14 @@ export default function SidebarLink({
   const isActive = exact ? pathName === link : pathName.startsWith(link);
 
   return (
-    <Link
-      href={link}
-      className={`flex gap-x-5 px-8 py-3 hover:bg-blue-200 hover:rounded-r-4xl hover:font-semibold ${
-        isActive ? "bg-blue-200 rounded-r-4xl font-semibold" : ""
-      }`}
-    >
-      {icon}
-      <span>{label}</span>
+    <Link href={link}>
+      <span
+        className={`text-black flex gap-x-5 px-8 py-3 hover:bg-blue-200 hover:rounded-r-4xl hover:font-semibold 
+          ${isActive ? "bg-blue-200 rounded-r-4xl font-semibold" : ""}`}
+      >
+        {icon}
+        {label}
+      </span>
     </Link>
   );
 }

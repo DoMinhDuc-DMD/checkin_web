@@ -62,6 +62,7 @@ export default function SalaryTable({ data }: SalaryTableProps) {
       title: "Trạng thái",
       dataIndex: "salary_status",
       key: "salary_status",
+      width: 290,
       align: "center" as const,
     },
   ];

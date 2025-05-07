@@ -6,12 +6,15 @@ import { ChangeEvent, useState } from "react";
 import dayjs from "dayjs";
 import "@ant-design/v5-patch-for-react-19";
 import DashboardTable from "@/app/component/Dashboard/DashboardTable";
-import { notification } from "antd";
+import { notification, Typography } from "antd";
 
 export default function Dashboard() {
   const [api, contextHolder] = notification.useNotification();
   const [data, setData] = useState(dataSource);
   const [searchInput, setSearchInput] = useState("");
+
+  const { Title } = Typography;
+
   const today = dayjs();
   const currentMonth = today.month();
   const currentYear = today.year();
@@ -54,18 +57,18 @@ export default function Dashboard() {
   return (
     <>
       {contextHolder}
-      <div className="flex justify-center text-2xl font-semibold my-3">Thống kê chấm công</div>
-      <div>
-        <Search
-          placeholder="Tìm kiếm nhân viên"
-          style={{ width: "300px", marginBottom: 12 }}
-          value={searchInput}
-          onChange={searchChange}
-          onSearch={() => handleSearch(searchInput)}
-          enterButton
-        />
-        <DashboardTable days={days} currentMonth={currentMonth} currentYear={currentYear} dataSource={data} />
-      </div>
+      <Title level={3} className="flex justify-center font-semibold my-3">
+        Thống kê chấm công
+      </Title>
+      <Search
+        placeholder="Tìm kiếm nhân viên"
+        style={{ width: "300px", marginBottom: 12 }}
+        value={searchInput}
+        onChange={searchChange}
+        onSearch={() => handleSearch(searchInput)}
+        enterButton
+      />
+      <DashboardTable days={days} currentMonth={currentMonth} currentYear={currentYear} dataSource={data} />
     </>
   );
 }

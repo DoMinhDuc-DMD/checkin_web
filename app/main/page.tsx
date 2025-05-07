@@ -1,12 +1,14 @@
 "use client";
 
 import "@ant-design/v5-patch-for-react-19";
-import { Table } from "antd";
+import { Flex, Table, Typography } from "antd";
 import { dataSource } from "../TestData/data";
 import dayjs from "dayjs";
 import { DATE_FORMAT, SHOW_DAY_MONTH_FORMAT } from "../constant/DateFormatting";
 
 export default function Main() {
+  const { Title } = Typography;
+
   const today = dayjs();
   const currentMonth = today.month();
   const currentYear = today.year();
@@ -87,8 +89,12 @@ export default function Main() {
   ];
   return (
     <>
-      <div className="flex justify-center text-2xl font-semibold my-3">Tổng quan chấm công của nhân viên</div>
-      <Table dataSource={dataSource} columns={columns} size="small" scroll={{ x: "max-content", y: 590 }} pagination={false} />
+      <Title level={3} className="flex justify-center font-semibold my-3">
+        Tổng quan chấm công của nhân viên
+      </Title>
+      <Flex>
+        <Table dataSource={dataSource} columns={columns} size="small" scroll={{ x: "max-content", y: 600 }} pagination={false} />
+      </Flex>
     </>
   );
 }

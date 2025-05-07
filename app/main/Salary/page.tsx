@@ -1,7 +1,7 @@
 "use client";
 
 import { dataSource } from "@/app/TestData/data";
-import { notification } from "antd";
+import { notification, Typography } from "antd";
 import Search from "antd/es/input/Search";
 import { ChangeEvent, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
@@ -11,6 +11,8 @@ export default function Salary() {
   const [api, contextHolder] = notification.useNotification();
   const [data, setData] = useState(dataSource);
   const [searchInput, setSearchInput] = useState("");
+  const { Title } = Typography;
+
   const searchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
   };
@@ -46,18 +48,18 @@ export default function Salary() {
   return (
     <>
       {contextHolder}
-      <div className="flex justify-center text-2xl font-semibold my-3">Bảng lương nhân viên</div>
-      <div className="flex flex-col">
-        <Search
-          placeholder="Tìm kiếm nhân viên"
-          style={{ width: "300px", marginBottom: 12 }}
-          value={searchInput}
-          onChange={searchChange}
-          onSearch={() => handleSearch(searchInput)}
-          enterButton
-        />
-        <SalaryTable data={data} />
-      </div>
+      <Title level={3} className="flex justify-center font-semibold my-3">
+        Bảng lương nhân viên
+      </Title>
+      <Search
+        placeholder="Tìm kiếm nhân viên"
+        style={{ width: "300px", marginBottom: 12 }}
+        value={searchInput}
+        onChange={searchChange}
+        onSearch={() => handleSearch(searchInput)}
+        enterButton
+      />
+      <SalaryTable data={data} />
     </>
   );
 }

@@ -1,8 +1,8 @@
 "use client";
 
 import { DATE_FORMAT, DATE_HOUR_FORMAT, SHOW_DAY_MONTH_FORMAT } from "@/app/constant/DateFormatting";
-import { calculateWorkTime } from "@/app/utils/calculateWorkTime";
-import { Button, Checkbox, Table } from "antd";
+import { calculateWorkTime } from "@/app/utils/CalculateWorkTime";
+import { Button, Checkbox, Flex, Table, Typography } from "antd";
 import dayjs from "dayjs";
 import { CSVLink } from "react-csv";
 import DashboardModal from "./DashboardModal";
@@ -17,6 +17,7 @@ interface DashboardTableProps {
 }
 
 export default function DashboardTable({ days, currentYear, currentMonth, dataSource }: DashboardTableProps) {
+  const { Text } = Typography;
   const [selectedRow, setSelectedRow] = useState<EmployeeTypeData[]>([]);
 
   const dayColumns = days.map((day) => {
@@ -102,11 +103,11 @@ export default function DashboardTable({ days, currentYear, currentMonth, dataSo
       render: (_, record) => {
         const { totalHour, totalCheck } = calculateWorkTime(record.employee_check_in, record.employee_check_out);
         return (
-          <div className="grid grid-cols-[48%_4%_48%] place-items-center text-center">
-            <div>{totalHour.toFixed(1)} giờ</div>
-            <div className="w-[1px] h-5 bg-black" />
-            <div>{totalCheck} ngày</div>
-          </div>
+          <Flex justify="space-around">
+            <Text className="w-[60px]">{totalHour.toFixed(1)} giờ</Text>
+            <Text className="w-[1px] h-5 bg-black" />
+            <Text className="w-[60px]">{totalCheck} ngày</Text>
+          </Flex>
         );
       },
     },
@@ -117,11 +118,9 @@ export default function DashboardTable({ days, currentYear, currentMonth, dataSo
       fixed: "right" as const,
       align: "center" as const,
       render: (record) => (
-        <div className="flex justify-center">
-          <Button type="primary" onClick={() => DashboardModal(record, currentYear, currentMonth, days)}>
-            Chi tiết
-          </Button>
-        </div>
+        <Button type="primary" onClick={() => DashboardModal(record, currentYear, currentMonth, days)}>
+          Chi tiết
+        </Button>
       ),
     },
   ];
@@ -164,7 +163,7 @@ export default function DashboardTable({ days, currentYear, currentMonth, dataSo
           <Button type="primary">Xuất file CSV</Button>
         </CSVLink>
       )}
-      <Table dataSource={dataSource} columns={columns} size="small" scroll={{ x: "max-content", y: 550 }} pagination={false} />
+      <Table dataSource={dataSource} columns={columns} size="small" scroll={{ x: "max-content", y: 555 }} pagination={false} />
     </>
   );
 }
