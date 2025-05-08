@@ -1,13 +1,15 @@
 "use client";
 
 import { EmployeeTypeData } from "@/app/constant/DataType";
-import { calculateWorkTime } from "@/app/utils/CalculateWorkTime";
+import { CalculateWorkHour } from "@/app/utils/CalculateWorkHour";
 import { Col, Modal, Row, Space, Typography } from "antd";
 import dayjs from "dayjs";
 
 export default function DashboardModal(record: EmployeeTypeData, currentYear: number, currentMonth: number, days: number[]) {
   const { Text } = Typography;
-  const { totalHour, totalCheck } = calculateWorkTime(record.employee_check_in, record.employee_check_out);
+  const { totalHour, totalCheck } = CalculateWorkHour(record.employee_check_in, record.employee_check_out);
+
+  // Tính tổng ngày làm việc
   const workingDays = Array.from({ length: days.length }, (_, index) => {
     const date = dayjs(new Date(currentYear, currentMonth, index + 1));
     return date;
@@ -16,13 +18,11 @@ export default function DashboardModal(record: EmployeeTypeData, currentYear: nu
     return dayOfWeek !== 0 && dayOfWeek !== 6;
   });
 
+  // Tính ngày check in muộn, check out sớm
   const parseTime = (check: string) => check?.split(", ")[1]?.split(":").map(Number) || [];
-
-  const lateCheckInCount = record.employee_check_in.filter((check: string) => {
-    const [hour, minute] = parseTime(check);
-    return hour > 8 || (hour === 8 && minute > 30);
-  }).length;
-
+  const lateCheckInCount = record.employee_check_in.filter(
+    (check: string) => parseTime(check)[0] > 8 || (parseTime(check)[0] === 8 && parseTime(check)[1] > 30)
+  ).length;
   const earlyCheckOutCount = record.employee_check_out.filter((check: string) => parseTime(check)[0] < 18).length;
 
   Modal.info({

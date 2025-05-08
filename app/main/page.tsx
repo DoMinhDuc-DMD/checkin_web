@@ -44,11 +44,11 @@ export default function Main() {
 
           if (checkIn && checkOut) {
             return (
-              <div className="flex flex-col items-center font-semibold">
+              <Flex vertical align="center" className="font-semibold">
                 <span className={`${checkInClass}`}>{checkIn.split(", ")[1]}</span>
                 <div className="w-full h-[1px] bg-black my-1" />
                 <span className={`${checkOutClass}`}>{checkOut.split(", ")[1]}</span>
-              </div>
+              </Flex>
             );
           } else if (checkIn) {
             return <span className={`font-semibold ${checkInClass}`}>{checkIn.split(", ")[1]}</span>;
@@ -67,7 +67,7 @@ export default function Main() {
       align: "center" as const,
       width: 70,
       fixed: "left" as const,
-      render: (_: unknown, __: unknown, index: number) => index + 1,
+      render: (_, __, index: number) => index + 1,
     },
     {
       title: "Mã nhân viên",
@@ -92,9 +92,14 @@ export default function Main() {
       <Title level={3} className="flex justify-center font-semibold my-3">
         Tổng quan chấm công của nhân viên
       </Title>
-      <Flex>
-        <Table dataSource={dataSource} columns={columns} size="small" scroll={{ x: "max-content", y: 600 }} pagination={false} />
-      </Flex>
+      <Table
+        dataSource={dataSource}
+        columns={columns}
+        size="small"
+        scroll={{ x: "max-content", y: "calc(100vh - 50px - 48px - 56px - 39px)" }}
+        // full height - header - p/m - title - table header
+        pagination={false}
+      />
     </>
   );
 }

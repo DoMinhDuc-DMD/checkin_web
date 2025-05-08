@@ -1,13 +1,14 @@
 "use client";
 
-import { DATE_FORMAT, DATE_HOUR_FORMAT, SHOW_DAY_MONTH_FORMAT } from "@/app/constant/DateFormatting";
-import { calculateWorkTime } from "@/app/utils/CalculateWorkTime";
-import { Button, Checkbox, Flex, Table, Typography } from "antd";
-import dayjs from "dayjs";
+import { DATE_FORMAT, SHOW_DAY_MONTH_FORMAT } from "@/app/constant/DateFormatting";
+import { CalculateWorkHour } from "@/app/utils/CalculateWorkHour";
+import { Button, Checkbox, Flex, Table, Tooltip, Typography } from "antd";
 import { CSVLink } from "react-csv";
 import DashboardModal from "./DashboardModal";
 import { EmployeeTypeData } from "@/app/constant/DataType";
 import { useState } from "react";
+import dayjs from "dayjs";
+import { CalculateWorkMinute } from "@/app/utils/CalculateWorkMinute";
 
 interface DashboardTableProps {
   days: number[];
@@ -20,6 +21,7 @@ export default function DashboardTable({ days, currentYear, currentMonth, dataSo
   const { Text } = Typography;
   const [selectedRow, setSelectedRow] = useState<EmployeeTypeData[]>([]);
 
+  // Hiển thị các cột ngày
   const dayColumns = days.map((day) => {
     const date = dayjs(new Date(currentYear, currentMonth, day));
     const dateStr = date.format(DATE_FORMAT);
@@ -42,14 +44,13 @@ export default function DashboardTable({ days, currentYear, currentMonth, dataSo
           const checkOut = record.employee_check_out[checkOutIndex];
 
           if (checkIn && checkOut) {
-            const checkInTime = dayjs(checkIn, DATE_HOUR_FORMAT);
-            const checkOutTime = dayjs(checkOut, DATE_HOUR_FORMAT);
-
-            if (checkInTime.isValid() && checkOutTime.isValid()) {
-              const diff = checkOutTime.diff(checkInTime, "minute") - 90;
-              const workedHours = diff > 0 ? (diff / 60).toFixed(1) : "0";
-              return <span className={`font-semibold ${Number(workedHours) >= 8 ? "text-green-600" : "text-red-500"}`}>{workedHours}</span>;
-            }
+            const minutes = CalculateWorkMinute(checkIn, checkOut);
+            const workedHours = (minutes / 60).toFixed(1);
+            return (
+              <Tooltip title={`${checkIn.split(", ")[1]} - ${checkOut.split(", ")[1]}`}>
+                <span className={`font-semibold ${Number(workedHours) >= 8 ? "text-green-600" : "text-red-500"}`}>{workedHours}</span>
+              </Tooltip>
+            );
           }
         }
         return <span className="font-semibold">---</span>;
@@ -67,6 +68,7 @@ export default function DashboardTable({ days, currentYear, currentMonth, dataSo
     setSelectedRow((prev) => (prev.some((r) => row.key === r.key) ? prev.filter((r) => r.key !== row.key) : [...prev, row]));
   };
 
+  // Các cột trong bảng
   const columns = [
     {
       title: <Checkbox checked={isSelectedAll} indeterminate={selectedRow.length > 0 && !isSelectedAll} onChange={handleSelectAll} />,
@@ -101,7 +103,7 @@ export default function DashboardTable({ days, currentYear, currentMonth, dataSo
       fixed: "left" as const,
       align: "center" as const,
       render: (_, record) => {
-        const { totalHour, totalCheck } = calculateWorkTime(record.employee_check_in, record.employee_check_out);
+        const { totalHour, totalCheck } = CalculateWorkHour(record.employee_check_in, record.employee_check_out);
         return (
           <Flex justify="space-around">
             <Text className="w-[60px]">{totalHour.toFixed(1)} giờ</Text>
@@ -125,8 +127,9 @@ export default function DashboardTable({ days, currentYear, currentMonth, dataSo
     },
   ];
 
+  // Xử lý dữ liệu in CSV
   const csvData = selectedRow.flatMap((row) => {
-    const { totalHour, totalCheck } = calculateWorkTime(row.employee_check_in, row.employee_check_out);
+    const { totalHour, totalCheck } = CalculateWorkHour(row.employee_check_in, row.employee_check_out);
 
     const checkInMap = row.employee_check_in.reduce((map, ci) => {
       const [date, time] = ci.split(", ");
@@ -163,7 +166,14 @@ export default function DashboardTable({ days, currentYear, currentMonth, dataSo
           <Button type="primary">Xuất file CSV</Button>
         </CSVLink>
       )}
-      <Table dataSource={dataSource} columns={columns} size="small" scroll={{ x: "max-content", y: 555 }} pagination={false} />
+      <Table
+        dataSource={dataSource}
+        columns={columns}
+        size="small"
+        scroll={{ x: "max-content", y: "calc(100vh - 50px - 48px - 56px - 42px - 39px)" }}
+        // full height - header - p/m - title - search - table header
+        pagination={false}
+      />
     </>
   );
 }

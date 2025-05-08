@@ -15,7 +15,7 @@ export default function EmployeeListTable({ data }: EmployeeListTableProps) {
       key: "id",
       align: "center" as const,
       width: 70,
-      render: (_: unknown, __: unknown, index: number) => index + 1,
+      render: (_, __, index: number) => index + 1,
     },
     {
       title: "Mã nhân viên",
@@ -65,5 +65,14 @@ export default function EmployeeListTable({ data }: EmployeeListTableProps) {
       ),
     },
   ];
-  return <Table columns={columns} dataSource={data} size="small" scroll={{ y: 550 }} pagination={false} />;
+  return (
+    <Table
+      columns={columns}
+      dataSource={data}
+      size="small"
+      scroll={{ y: "calc(100vh - 50px - 48px - 56px - 42px - 39px)" }}
+      // full height - header - p/m - title - search - table header
+      pagination={false}
+    />
+  );
 }
