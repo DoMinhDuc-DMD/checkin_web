@@ -119,6 +119,7 @@ export default function DashboardTable({ days, currentYear, currentMonth, dataSo
       key: "detail",
       fixed: "right" as const,
       align: "center" as const,
+      width: 100,
       render: (record) => (
         <Button type="primary" onClick={() => DashboardModal(record, currentYear, currentMonth, days)}>
           Chi tiết
