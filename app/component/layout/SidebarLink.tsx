@@ -1,5 +1,6 @@
 "use client";
 
+import { Tooltip } from "antd";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactElement } from "react";
@@ -9,11 +10,13 @@ export default function SidebarLink({
   icon,
   label,
   exact = true,
+  collapsed,
 }: {
   link: string;
   icon: ReactElement;
   label: string;
   exact?: boolean;
+  collapsed: boolean;
 }) {
   const pathName = usePathname();
   const isActive = exact ? pathName === link : pathName.startsWith(link);
@@ -21,11 +24,17 @@ export default function SidebarLink({
   return (
     <Link href={link}>
       <span
-        className={`text-black flex gap-x-5 px-8 py-3 hover:bg-blue-200 hover:rounded-r-4xl hover:font-semibold 
-          ${isActive ? "bg-blue-200 rounded-r-4xl font-semibold" : ""}`}
+        className={`text-black flex gap-x-5 py-3 hover:bg-blue-200 hover:rounded-r-4xl hover:font-semibold transition-all duration-300
+          ${isActive ? "bg-blue-200 rounded-r-4xl font-semibold" : ""} ${collapsed ? "px-2" : "px-8"}`}
       >
-        {icon}
-        {label}
+        {collapsed ? (
+          <Tooltip title={label} placement="right">
+            {icon}
+          </Tooltip>
+        ) : (
+          icon
+        )}
+        {!collapsed && label}
       </span>
     </Link>
   );
