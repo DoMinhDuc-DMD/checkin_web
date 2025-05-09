@@ -49,11 +49,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             </Link>
           </Flex>
           <Flex style={{ width: 200 }} justify="space-between">
-            <Button style={{ width: 90 }} type={i18n.language === "en" ? "primary" : "default"} onClick={() => handleChangeLanguage("en")}>
-              {t("English")}
-            </Button>
             <Button style={{ width: 90 }} type={i18n.language === "vi" ? "primary" : "default"} onClick={() => handleChangeLanguage("vi")}>
               {t("Vietnamese")}
+            </Button>
+            <Button style={{ width: 90 }} type={i18n.language === "en" ? "primary" : "default"} onClick={() => handleChangeLanguage("en")}>
+              {t("English")}
             </Button>
           </Flex>
         </Header>
