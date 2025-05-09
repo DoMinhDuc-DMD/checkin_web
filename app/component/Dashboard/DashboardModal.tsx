@@ -4,8 +4,19 @@ import { EmployeeTypeData } from "@/app/constant/DataType";
 import { CalculateWorkHour } from "@/app/utils/CalculateWorkHour";
 import { Col, Modal, Row, Space, Typography } from "antd";
 import dayjs from "dayjs";
+import { useTranslation } from "react-i18next";
 
-export default function DashboardModal(record: EmployeeTypeData, currentYear: number, currentMonth: number, days: number[]) {
+interface DashboardModalProps {
+  openModal: boolean;
+  record: EmployeeTypeData;
+  currentYear: number;
+  currentMonth: number;
+  days: number[];
+  onClose: () => void;
+}
+
+export default function DashboardModal({ openModal, record, currentYear, currentMonth, days, onClose }: DashboardModalProps) {
+  const { t } = useTranslation();
   const { Text } = Typography;
   const { totalHour, totalCheck } = CalculateWorkHour(record.employee_check_in, record.employee_check_out);
 
@@ -25,31 +36,42 @@ export default function DashboardModal(record: EmployeeTypeData, currentYear: nu
   ).length;
   const earlyCheckOutCount = record.employee_check_out.filter((check: string) => parseTime(check)[0] < 18).length;
 
-  Modal.info({
-    title: `Chi tiết chấm công tháng ${currentMonth + 1}`,
-    width: 600,
-    content: (
+  return (
+    <Modal open={openModal} onCancel={onClose} onOk={onClose} title={t("Attendance detail")} width={600}>
       <Row>
-        <Col span={10}>
+        <Col span={10} offset={1}>
           <Space direction="vertical">
-            <Text>Mã nhân viên: {record.employee_code}</Text>
-            <Text>Họ và tên: {record.employee_name}</Text>
-            <Text>Phòng ban: {record.employee_department}</Text>
-            <Text>Vị trí: {record.employee_position}</Text>
+            <Text>
+              {t("Code")}: {record.employee_code}
+            </Text>
+            <Text>
+              {t("Name")}: {record.employee_name}
+            </Text>
+            <Text>
+              {t("Department")}: {record.employee_department}
+            </Text>
+            <Text>
+              {t("Position")}: {record.employee_position}
+            </Text>
           </Space>
         </Col>
         <Col span={10} offset={2}>
           <Space direction="vertical">
             <Text>
-              Số ngày làm việc: {totalCheck}/{workingDays.length} ngày
+              {t("Working days")}: {totalCheck}/{workingDays.length} {t("days")}
             </Text>
-            <Text>Thời gian làm việc: {totalHour} giờ</Text>
-            <Text>Số lần check in muộn: {lateCheckInCount} lần</Text>
-            <Text>Số lần check out sớm: {earlyCheckOutCount} lần</Text>
+            <Text>
+              {t("Working hours")}: {totalHour} {t("hours")}
+            </Text>
+            <Text>
+              {t("Check in late")}: {lateCheckInCount} {t("times")}
+            </Text>
+            <Text>
+              {t("Check out early")}: {earlyCheckOutCount} {t("times")}
+            </Text>
           </Space>
         </Col>
       </Row>
-    ),
-    onOk() {},
-  });
+    </Modal>
+  );
 }

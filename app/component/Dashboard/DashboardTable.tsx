@@ -9,6 +9,7 @@ import { EmployeeTypeData } from "@/app/constant/DataType";
 import { useState } from "react";
 import dayjs from "dayjs";
 import { CalculateWorkMinute } from "@/app/utils/CalculateWorkMinute";
+import { useTranslation } from "react-i18next";
 
 interface DashboardTableProps {
   days: number[];
@@ -18,8 +19,13 @@ interface DashboardTableProps {
 }
 
 export default function DashboardTable({ days, currentYear, currentMonth, dataSource }: DashboardTableProps) {
+  const { t } = useTranslation();
+
   const { Text } = Typography;
   const [selectedRow, setSelectedRow] = useState<EmployeeTypeData[]>([]);
+
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState<EmployeeTypeData | null>(null);
 
   // Hiển thị các cột ngày
   const dayColumns = days.map((day) => {
@@ -81,7 +87,7 @@ export default function DashboardTable({ days, currentYear, currentMonth, dataSo
       },
     },
     {
-      title: "Mã nhân viên",
+      title: t("Code"),
       dataIndex: "employee_code",
       key: "employee_code",
       width: 120,
@@ -89,7 +95,7 @@ export default function DashboardTable({ days, currentYear, currentMonth, dataSo
       align: "center" as const,
     },
     {
-      title: "Họ tên nhân viên",
+      title: t("Name"),
       dataIndex: "employee_name",
       key: "employee_name",
       width: 180,
@@ -97,7 +103,7 @@ export default function DashboardTable({ days, currentYear, currentMonth, dataSo
       align: "center" as const,
     },
     {
-      title: "Tổng công",
+      title: t("Total check"),
       key: "total_check",
       width: 160,
       fixed: "left" as const,
@@ -105,24 +111,34 @@ export default function DashboardTable({ days, currentYear, currentMonth, dataSo
       render: (_, record) => {
         const { totalHour, totalCheck } = CalculateWorkHour(record.employee_check_in, record.employee_check_out);
         return (
-          <Flex justify="space-around">
-            <Text className="w-[60px]">{totalHour.toFixed(1)} giờ</Text>
+          <Flex justify="space-between">
+            <Text className="w-[70px]">
+              {totalHour.toFixed(1)} {t("hours")}
+            </Text>
             <Text className="w-[1px] h-5 bg-black" />
-            <Text className="w-[60px]">{totalCheck} ngày</Text>
+            <Text className="w-[60px]">
+              {totalCheck} {t("days")}
+            </Text>
           </Flex>
         );
       },
     },
     ...dayColumns,
     {
-      title: "Chi tiết",
+      title: t("Detail"),
       key: "detail",
       fixed: "right" as const,
       align: "center" as const,
       width: 100,
-      render: (record) => (
-        <Button type="primary" onClick={() => DashboardModal(record, currentYear, currentMonth, days)}>
-          Chi tiết
+      render: (record: EmployeeTypeData) => (
+        <Button
+          type="primary"
+          onClick={() => {
+            setSelectedRecord(record);
+            setOpenModal(true);
+          }}
+        >
+          {t("Detail")}
         </Button>
       ),
     },
@@ -164,8 +180,18 @@ export default function DashboardTable({ days, currentYear, currentMonth, dataSo
     <>
       {selectedRow.length > 0 && (
         <CSVLink className="ml-5" data={csvData} filename="employee_statistic">
-          <Button type="primary">Xuất file CSV</Button>
+          <Button type="primary">{t("Export CSV")}</Button>
         </CSVLink>
+      )}
+      {selectedRecord && (
+        <DashboardModal
+          openModal={openModal}
+          onClose={() => setOpenModal(false)}
+          record={selectedRecord}
+          currentYear={currentYear}
+          currentMonth={currentMonth}
+          days={days}
+        />
       )}
       <Table
         dataSource={dataSource}

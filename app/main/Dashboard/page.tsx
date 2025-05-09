@@ -6,13 +6,16 @@ import { ChangeEvent, useState } from "react";
 import dayjs from "dayjs";
 import "@ant-design/v5-patch-for-react-19";
 import DashboardTable from "@/app/component/Dashboard/DashboardTable";
-import { notification, Typography } from "antd";
+import { Typography } from "antd";
+import { useCustomNotification } from "@/app/hooks/UseCustomNotification";
+import { useTranslation } from "react-i18next";
 
 export default function Dashboard() {
-  const [api, contextHolder] = notification.useNotification();
   const [data, setData] = useState(dataSource);
   const [searchInput, setSearchInput] = useState("");
 
+  const { openNotification, contextHolder } = useCustomNotification();
+  const { t } = useTranslation();
   const { Title } = Typography;
 
   const today = dayjs();
@@ -35,33 +38,20 @@ export default function Dashboard() {
     const searchTerm = value.toLowerCase();
     const filteredData = dataSource.filter((data) => data.employee_name.toLowerCase().includes(searchTerm));
     if (filteredData.length === 0) {
-      openNotification();
+      openNotification(t("Notice"), t("No suitable employee found"));
       return;
     }
     setData(filteredData);
-  };
-
-  const openNotification = () => {
-    api.info({
-      message: "Thông báo",
-      description: "Không tìm thấy nhân viên phù hợp",
-      placement: "topRight",
-      duration: 2,
-      style: {
-        width: 400,
-        borderRadius: 10,
-      },
-    });
   };
 
   return (
     <>
       {contextHolder}
       <Title level={3} className="flex justify-center font-semibold my-3">
-        Thống kê chấm công
+        {t("Attendance statistics")}
       </Title>
       <Search
-        placeholder="Tìm kiếm nhân viên"
+        placeholder={t("Search employee")}
         style={{ width: "300px", marginBottom: 12 }}
         value={searchInput}
         onChange={searchChange}

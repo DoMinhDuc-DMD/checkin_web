@@ -5,9 +5,12 @@ import { Flex, Table, Typography } from "antd";
 import { dataSource } from "../TestData/data";
 import dayjs from "dayjs";
 import { DATE_FORMAT, SHOW_DAY_MONTH_FORMAT } from "../constant/DateFormatting";
+import { useTranslation } from "react-i18next";
 
 export default function Main() {
   const { Title } = Typography;
+
+  const { t } = useTranslation();
 
   const today = dayjs();
   const currentMonth = today.month();
@@ -62,7 +65,7 @@ export default function Main() {
 
   const columns = [
     {
-      title: "STT",
+      title: `${t("ID")}`,
       key: "id",
       align: "center" as const,
       width: 70,
@@ -70,7 +73,7 @@ export default function Main() {
       render: (_, __, index: number) => index + 1,
     },
     {
-      title: "Mã nhân viên",
+      title: `${t("Code")}`,
       dataIndex: "employee_code",
       key: "employee_code",
       width: 120,
@@ -78,7 +81,7 @@ export default function Main() {
       align: "center" as const,
     },
     {
-      title: "Họ tên nhân viên",
+      title: `${t("Name")}`,
       dataIndex: "employee_name",
       key: "employee_name",
       width: 180,
@@ -90,7 +93,7 @@ export default function Main() {
   return (
     <>
       <Title level={3} className="flex justify-center font-semibold my-3">
-        Tổng quan chấm công của nhân viên
+        {t("Employee check overview")}
       </Title>
       <Table
         dataSource={dataSource}

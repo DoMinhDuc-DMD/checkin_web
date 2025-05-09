@@ -6,6 +6,7 @@ import { useState } from "react";
 import { FieldType } from "@/app/main/EmployeeList/page";
 import dayjs from "dayjs";
 import { DATE_FORMAT } from "@/app/constant/DateFormatting";
+import { useTranslation } from "react-i18next";
 
 interface EmployeeListAddModalProps {
   openModal: boolean;
@@ -14,6 +15,7 @@ interface EmployeeListAddModalProps {
 }
 
 export default function EmployeeListAddModal({ openModal, handleCancel, handleOk }: EmployeeListAddModalProps) {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState<FieldType>({
     employee_email: "",
     employee_password: "",
@@ -58,11 +60,9 @@ export default function EmployeeListAddModal({ openModal, handleCancel, handleOk
     }));
   };
 
-  console.log(formData);
-
   return (
     <Modal
-      title="Thông tin nhân viên mới"
+      title={t("New employee information")}
       style={{ textAlign: "center" }}
       width={800}
       open={openModal}
@@ -73,34 +73,34 @@ export default function EmployeeListAddModal({ openModal, handleCancel, handleOk
         <Row>
           <Col span={10} offset={1}>
             <EmployeeListAddInput label="Email" name="employee_email" handleInputChange={handleInputChange} />
-            <EmployeeListAddInput label="Mật khẩu" name="employee_password" handleInputChange={handleInputChange} />
-            <EmployeeListAddInput label="Phòng ban" name="employee_department" handleSelectChange={handleSelectChange} />
-            <EmployeeListAddInput label="Chức vụ" name="employee_position" handleSelectChange={handleSelectChange} />
+            <EmployeeListAddInput label={t("Password")} name="employee_password" handleInputChange={handleInputChange} />
+            <EmployeeListAddInput label={t("Department")} name="employee_department" handleSelectChange={handleSelectChange} />
+            <EmployeeListAddInput label={t("Position")} name="employee_position" handleSelectChange={handleSelectChange} />
           </Col>
           <Col span={10} offset={2}>
             <EmployeeListAddInput
-              label="Số điện thoại"
+              label={t("Phone number")}
               name="employee_phone_number"
               maxLength={10}
               value={formData.employee_phone_number}
               handleNumberOnly={handleNumberOnly}
             />
-            <EmployeeListAddInput label="Ngày sinh" name="employee_birthday" handleDateChange={handleDateChange} />
+            <EmployeeListAddInput label={t("Birthday")} name="employee_birthday" handleDateChange={handleDateChange} />
             <EmployeeListAddInput
-              label="CCCD/CMND"
+              label={t("Citizen id")}
               name="employee_citizen_id"
               maxLength={12}
               value={formData.employee_citizen_id}
               handleNumberOnly={handleNumberOnly}
             />
             <EmployeeListAddInput
-              label="Tài khoản TCB"
+              label={t("Techcombank account")}
               name="employee_bank_account"
               maxLength={14}
               value={formData.employee_bank_account}
               handleNumberOnly={handleNumberOnly}
             />
-            <EmployeeListAddInput label="Biển số xe" name="employee_license_plate" handleInputChange={handleInputChange} />
+            <EmployeeListAddInput label={t("License plate")} name="employee_license_plate" handleInputChange={handleInputChange} />
           </Col>
         </Row>
       </Form>

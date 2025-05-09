@@ -1,12 +1,14 @@
 "use client";
 
 import { dataSource } from "@/app/TestData/data";
-import { Button, Flex, notification, Typography } from "antd";
+import { Button, Flex, Typography } from "antd";
 import Search from "antd/es/input/Search";
 import { useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import EmployeeListTable from "@/app/component/EmployeeList/EmployeeListTable";
 import EmployeeListAddModal from "@/app/component/EmployeeList/EmployeeListAddModal";
+import { useCustomNotification } from "@/app/hooks/UseCustomNotification";
+import { useTranslation } from "react-i18next";
 
 export type FieldType = {
   employee_email?: string;
@@ -21,10 +23,12 @@ export type FieldType = {
 };
 
 export default function EmployeeList() {
+  const { t } = useTranslation();
   const [data, setData] = useState(dataSource);
   const [searchInput, setSearchInput] = useState("");
-  const [api, contextHolder] = notification.useNotification();
   const [openModal, setOpenModal] = useState(false);
+
+  const { openNotification, contextHolder } = useCustomNotification();
 
   const { Title } = Typography;
 
@@ -41,23 +45,10 @@ export default function EmployeeList() {
     const searchTerm = value.toLowerCase();
     const filteredData = dataSource.filter((data) => data.employee_name.toLowerCase().includes(searchTerm));
     if (filteredData.length === 0) {
-      openNotification();
+      openNotification(t("Notice"), t("No suitable employee found"));
       return;
     }
     setData(filteredData);
-  };
-
-  const openNotification = () => {
-    api.info({
-      message: "Thông báo",
-      description: "Không tìm thấy nhân viên phù hợp",
-      placement: "topRight",
-      duration: 2,
-      style: {
-        width: 400,
-        borderRadius: 10,
-      },
-    });
   };
 
   const handleOpenModal = () => {
@@ -74,11 +65,11 @@ export default function EmployeeList() {
     <>
       {contextHolder}
       <Title level={3} className="flex justify-center font-semibold my-3">
-        Danh sách nhân viên
+        {t("Employee list")}
       </Title>
       <Flex justify="space-between">
         <Search
-          placeholder="Tìm kiếm nhân viên"
+          placeholder={t("Search employee")}
           style={{ width: "300px", marginBottom: 12 }}
           value={searchInput}
           onChange={searchChange}
@@ -86,7 +77,7 @@ export default function EmployeeList() {
           enterButton
         />
         <Button type="primary" onClick={handleOpenModal}>
-          Thêm nhân viên
+          {t("New employee")}
         </Button>
       </Flex>
       <EmployeeListAddModal openModal={openModal} handleCancel={handleCancel} handleOk={handleOk} />

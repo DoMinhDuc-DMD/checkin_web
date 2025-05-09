@@ -2,64 +2,66 @@
 
 import { EmployeeTypeData } from "@/app/constant/DataType";
 import { Table } from "antd";
+import { useTranslation } from "react-i18next";
 
 interface SalaryTableProps {
   data: EmployeeTypeData[];
 }
 
 export default function SalaryTable({ data }: SalaryTableProps) {
+  const { t } = useTranslation();
   const columns = [
     {
-      title: "STT",
+      title: t("ID"),
       key: "id",
       align: "center" as const,
       width: 70,
       render: (_, __, index: number) => index + 1,
     },
     {
-      title: "Mã nhân viên",
+      title: t("Code"),
       dataIndex: "employee_code",
       key: "employee_code",
       width: 120,
       align: "center" as const,
     },
     {
-      title: "Họ tên nhân viên",
+      title: t("Name"),
       dataIndex: "employee_name",
       key: "employee_name",
       width: 180,
       align: "center" as const,
     },
     {
-      title: "Phòng ban",
+      title: t("Department"),
       dataIndex: "employee_department",
       key: "employee_department",
       width: 150,
       align: "center" as const,
     },
     {
-      title: "Chức danh",
+      title: t("Position"),
       dataIndex: "employee_position",
       key: "employee_position",
       width: 150,
       align: "center" as const,
     },
     {
-      title: "Kỳ lương",
+      title: t("Pay period"),
       dataIndex: "salary_period",
       key: "salary_period",
       width: 150,
       align: "center" as const,
     },
     {
-      title: "Chế độ lương",
+      title: t("Salary type"),
       dataIndex: "salary_scale",
       key: "salary_scale",
       width: 150,
       align: "center" as const,
     },
     {
-      title: "Trạng thái",
+      title: t("Status"),
       dataIndex: "salary_status",
       key: "salary_status",
       width: 290,
