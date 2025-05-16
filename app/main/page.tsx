@@ -28,25 +28,6 @@ export default function NewDashboard() {
     labels: ["Aime Dept", "Vikoi Dept"],
     datasets: [{ data: [70, 30], backgroundColor: ["rgba(54, 162, 235, 0.6)", "rgba(176, 79, 158, 0.3)"], hworkOffset: 4 }],
   };
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top" as const,
-      },
-      title: {
-        display: false,
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: {
-          stepSize: 0.5,
-        },
-      },
-    },
-  };
 
   return (
     <Flex gap={20} vertical>
