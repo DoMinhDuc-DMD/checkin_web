@@ -24,8 +24,8 @@ export default function SidebarLink({
   return (
     <Link href={link}>
       <span
-        className={`text-black flex gap-x-5 py-3 hover:bg-blue-200 hover:rounded-r-4xl hover:font-semibold transition-all duration-300
-          ${isActive ? "bg-blue-200 rounded-r-4xl font-semibold" : ""} ${collapsed ? "px-2" : "px-8"}`}
+        className={`text-black flex gap-x-5 py-3 hover:bg-blue-200 hover:rounded-r-4xl hover:font-semibold transition-all duration-200
+          ${isActive ? "bg-blue-200 rounded-r-4xl font-semibold" : ""} ${collapsed ? "px-2" : "px-6"}`}
       >
         {collapsed ? (
           <Tooltip title={label} placement="right">

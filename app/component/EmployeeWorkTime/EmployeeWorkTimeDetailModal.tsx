@@ -4,14 +4,14 @@ import { EmployeeTypeData } from "@/app/constant/DataType";
 import { Col, Modal, Row, Space, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 
-interface EmployeeListDetailModalProps {
+interface EmployeeWorkTimeDetailModalProps {
   openModal: boolean;
   record: EmployeeTypeData | null;
   onCancel: () => void;
   onOk: () => void;
 }
 
-export default function EmployeeListDetailModal({ openModal, record, onCancel, onOk }: EmployeeListDetailModalProps) {
+export default function EmployeeWorkTimeDetailModal({ openModal, record, onCancel, onOk }: EmployeeWorkTimeDetailModalProps) {
   const { t } = useTranslation();
   const { Text } = Typography;
 
@@ -24,9 +24,6 @@ export default function EmployeeListDetailModal({ openModal, record, onCancel, o
               {t("Code")}: {record?.employee_code}
             </Text>
             <Text>
-              {t("Name")}: {record?.employee_name}
-            </Text>
-            <Text>
               {t("Department")}: {record?.employee_department}
             </Text>
             <Text>
@@ -37,11 +34,9 @@ export default function EmployeeListDetailModal({ openModal, record, onCancel, o
         </Col>
         <Col span={10} offset={2}>
           <Space direction="vertical">
-            <Text>{t("Phone number")}: </Text>
-            <Text>{t("Birthday")}: </Text>
-            <Text>{t("Citizen id")}: </Text>
-            <Text>{t("Techcombank account")}: </Text>
-            <Text>{t("License plate")}: </Text>
+            <Text>{t("Worked date")}: </Text>
+            <Text>{t("Worked hours")}: </Text>
+            <Text>{t("Overtime hours")}: </Text>
           </Space>
         </Col>
       </Row>

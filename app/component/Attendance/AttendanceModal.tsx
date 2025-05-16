@@ -6,7 +6,7 @@ import { Col, Modal, Row, Space, Typography } from "antd";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 
-interface DashboardModalProps {
+interface AttendanceModalProps {
   openModal: boolean;
   record: EmployeeTypeData;
   currentYear: number;
@@ -15,7 +15,7 @@ interface DashboardModalProps {
   onClose: () => void;
 }
 
-export default function DashboardModal({ openModal, record, currentYear, currentMonth, days, onClose }: DashboardModalProps) {
+export default function AttendanceModal({ openModal, record, currentYear, currentMonth, days, onClose }: AttendanceModalProps) {
   const { t } = useTranslation();
   const { Text } = Typography;
   const { totalHour, totalCheck } = CalculateWorkHour(record.employee_check_in, record.employee_check_out);

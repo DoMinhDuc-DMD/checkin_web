@@ -1,11 +1,11 @@
 "use client";
 
-import { FieldType } from "@/app/main/EmployeeList/page";
+import { FieldType } from "@/app/main/EmployeeWorkTime/page";
 import { DatePicker, Form, Input, Select } from "antd";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 
-interface EmployeeListAddInputProps {
+interface EmployeeWorkTimeAddInputProps {
   label: string;
   name: keyof FieldType;
   value?: string;
@@ -16,7 +16,7 @@ interface EmployeeListAddInputProps {
   handleNumberOnly?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function EmployeeListAddInput({
+export default function EmployeeWorkTimeAddInput({
   label,
   name,
   value,
@@ -25,7 +25,7 @@ export default function EmployeeListAddInput({
   handleSelectChange,
   handleDateChange,
   handleNumberOnly,
-}: EmployeeListAddInputProps) {
+}: EmployeeWorkTimeAddInputProps) {
   const { t } = useTranslation();
 
   const departmentOptions = [

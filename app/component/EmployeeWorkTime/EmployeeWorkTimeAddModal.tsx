@@ -1,20 +1,20 @@
 "use client";
 
 import { Col, Form, Modal, Row } from "antd";
-import EmployeeListAddInput from "./EmployeeListAddInput";
+import EmployeeWorkTimeAddInput from "./EmployeeWorkTimeAddInput";
 import { useState } from "react";
-import { FieldType } from "@/app/main/EmployeeList/page";
+import { FieldType } from "@/app/main/EmployeeWorkTime/page";
 import dayjs from "dayjs";
 import { DATE_FORMAT } from "@/app/constant/DateFormatting";
 import { useTranslation } from "react-i18next";
 
-interface EmployeeListAddModalProps {
+interface EmployeeWorkTimeAddModalProps {
   openModal: boolean;
   handleCancel: () => void;
   handleOk: () => void;
 }
 
-export default function EmployeeListAddModal({ openModal, handleCancel, handleOk }: EmployeeListAddModalProps) {
+export default function EmployeeWorkTimeAddModal({ openModal, handleCancel, handleOk }: EmployeeWorkTimeAddModalProps) {
   const { t } = useTranslation();
   const [formData, setFormData] = useState<FieldType>({
     employee_email: "",
@@ -72,35 +72,35 @@ export default function EmployeeListAddModal({ openModal, handleCancel, handleOk
       <Form layout="vertical">
         <Row>
           <Col span={10} offset={1}>
-            <EmployeeListAddInput label="Email" name="employee_email" handleInputChange={handleInputChange} />
-            <EmployeeListAddInput label={t("Password")} name="employee_password" handleInputChange={handleInputChange} />
-            <EmployeeListAddInput label={t("Department")} name="employee_department" handleSelectChange={handleSelectChange} />
-            <EmployeeListAddInput label={t("Position")} name="employee_position" handleSelectChange={handleSelectChange} />
+            <EmployeeWorkTimeAddInput label="Email" name="employee_email" handleInputChange={handleInputChange} />
+            <EmployeeWorkTimeAddInput label={t("Password")} name="employee_password" handleInputChange={handleInputChange} />
+            <EmployeeWorkTimeAddInput label={t("Department")} name="employee_department" handleSelectChange={handleSelectChange} />
+            <EmployeeWorkTimeAddInput label={t("Position")} name="employee_position" handleSelectChange={handleSelectChange} />
           </Col>
           <Col span={10} offset={2}>
-            <EmployeeListAddInput
+            <EmployeeWorkTimeAddInput
               label={t("Phone number")}
               name="employee_phone_number"
               maxLength={10}
               value={formData.employee_phone_number}
               handleNumberOnly={handleNumberOnly}
             />
-            <EmployeeListAddInput label={t("Birthday")} name="employee_birthday" handleDateChange={handleDateChange} />
-            <EmployeeListAddInput
+            <EmployeeWorkTimeAddInput label={t("Birthday")} name="employee_birthday" handleDateChange={handleDateChange} />
+            <EmployeeWorkTimeAddInput
               label={t("Citizen id")}
               name="employee_citizen_id"
               maxLength={12}
               value={formData.employee_citizen_id}
               handleNumberOnly={handleNumberOnly}
             />
-            <EmployeeListAddInput
+            <EmployeeWorkTimeAddInput
               label={t("Techcombank account")}
               name="employee_bank_account"
               maxLength={14}
               value={formData.employee_bank_account}
               handleNumberOnly={handleNumberOnly}
             />
-            <EmployeeListAddInput label={t("License plate")} name="employee_license_plate" handleInputChange={handleInputChange} />
+            <EmployeeWorkTimeAddInput label={t("License plate")} name="employee_license_plate" handleInputChange={handleInputChange} />
           </Col>
         </Row>
       </Form>

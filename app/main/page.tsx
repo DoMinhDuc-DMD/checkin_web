@@ -1,108 +1,96 @@
 "use client";
 
-import "@ant-design/v5-patch-for-react-19";
-import { Flex, Table, Typography } from "antd";
-import { dataSource } from "../TestData/data";
-import dayjs from "dayjs";
-import { DATE_FORMAT, SHOW_DAY_MONTH_FORMAT } from "../constant/DateFormatting";
-import { useTranslation } from "react-i18next";
+import { Card, DatePicker, Flex } from "antd";
+import { useState } from "react";
+import { Bar, Pie } from "react-chartjs-2";
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, BarElement, ArcElement, Title, Tooltip, Legend } from "chart.js";
+import Link from "next/link";
+ChartJS.register(CategoryScale, LinearScale, PointElement, BarElement, ArcElement, Title, Tooltip, Legend);
 
-export default function Main() {
-  const { Title } = Typography;
+export default function NewDashboard() {
+  const [dateMode, setDateMode] = useState<"date" | "month">("date");
+  const handleDateModeChange = (value: string) => {
+    if (value === "date") {
+      setDateMode("date");
+    } else if (value === "month") {
+      setDateMode("month");
+    }
+  };
 
-  const { t } = useTranslation();
-
-  const today = dayjs();
-  const currentMonth = today.month();
-  const currentYear = today.year();
-  const daysInMonth = today.daysInMonth();
-
-  const days = Array.from({ length: daysInMonth }, (_, index) => index + 1);
-
-  const dayColumns = days.map((day) => {
-    const date = dayjs(new Date(currentYear, currentMonth, day));
-    const dateStr = date.format(DATE_FORMAT);
-    const isWorkingDay = date.day() !== 0 && date.day() !== 6;
-
-    return {
-      title: date.format(SHOW_DAY_MONTH_FORMAT),
-      key: `day_${day}`,
-      width: 70,
-      align: "center" as const,
-      onCell: () => ({ style: { backgroundColor: isWorkingDay ? "" : "oklch(0.96 0 0)" } }),
-      render: (_, record) => {
-        if (!isWorkingDay) {
-          return <span className="font-semibold">OFF</span>;
-        } else {
-          const checkInIndex = record.employee_check_in.findIndex((check: string) => check.startsWith(dateStr));
-          const checkOutIndex = record.employee_check_out.findIndex((check: string) => check.startsWith(dateStr));
-
-          const checkIn = record.employee_check_in[checkInIndex];
-          const checkOut = record.employee_check_out[checkOutIndex];
-
-          const isInLate = checkIn && dayjs(checkIn).isAfter(dayjs(checkIn).hour(8).minute(30));
-          const isOutEarly = checkOut && dayjs(checkOut).isBefore(dayjs(checkOut).hour(18));
-          const checkInClass = isInLate ? "text-red-500" : "text-green-600";
-          const checkOutClass = isOutEarly ? "text-red-500" : "text-green-600";
-
-          if (checkIn && checkOut) {
-            return (
-              <Flex vertical align="center" className="font-semibold">
-                <span className={`${checkInClass}`}>{checkIn.split(", ")[1]}</span>
-                <div className="w-full h-[1px] bg-black my-1" />
-                <span className={`${checkOutClass}`}>{checkOut.split(", ")[1]}</span>
-              </Flex>
-            );
-          } else if (checkIn) {
-            return <span className={`font-semibold ${checkInClass}`}>{checkIn.split(", ")[1]}</span>;
-          } else {
-            return <span className="font-semibold">---</span>;
-          }
-        }
+  const attendanceData = {
+    labels: ["Đúng giờ", "Đến muộn", "Về sớm"],
+    datasets: [
+      { label: "Aime Dept", data: [1, 2, 3], backgroundColor: "rgba(54, 162, 235, 0.6)" },
+      { label: "Vikoi Dept", data: [3, 2, 1], backgroundColor: "rgba(54, 162, 235, 0.6)" },
+    ],
+  };
+  const workTimeData = {
+    labels: ["Aime Dept", "Vikoi Dept"],
+    datasets: [{ data: [70, 30], backgroundColor: ["rgba(54, 162, 235, 0.6)", "rgba(176, 79, 158, 0.3)"], hworkOffset: 4 }],
+  };
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top" as const,
       },
-    };
-  });
+      title: {
+        display: false,
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          stepSize: 0.5,
+        },
+      },
+    },
+  };
 
-  const columns = [
-    {
-      title: `${t("ID")}`,
-      key: "id",
-      align: "center" as const,
-      width: 70,
-      fixed: "left" as const,
-      render: (_, __, index: number) => index + 1,
-    },
-    {
-      title: `${t("Code")}`,
-      dataIndex: "employee_code",
-      key: "employee_code",
-      width: 120,
-      fixed: "left" as const,
-      align: "center" as const,
-    },
-    {
-      title: `${t("Name")}`,
-      dataIndex: "employee_name",
-      key: "employee_name",
-      width: 180,
-      fixed: "left" as const,
-      align: "center" as const,
-    },
-    ...dayColumns,
-  ];
   return (
-    <>
-      <Title level={3} className="flex justify-center font-semibold my-3">
-        {t("Employee check overview")}
-      </Title>
-      <Table
-        dataSource={dataSource}
-        columns={columns}
-        size="small"
-        scroll={{ x: "max-content", y: "calc(100vh - 50px - 48px - 56px - 39px)" }}
-        // full height - header - p/m - title - table header
-        pagination={false}
-      />
-    </>
+    <Flex gap={20} vertical>
+      <Flex justify="space-between" align="center">
+        <Link href="/main/Attendance" className="w-[23%]">
+          <Card hoverable style={{ backgroundColor: "oklch(0.93 0.01 0)", width: "full", height: "100px" }}>
+            <p>Chấm công hôm nay</p>
+            <p>20%</p>
+          </Card>
+        </Link>
+        <Card className="w-[23%] h-[100px]" hoverable style={{ backgroundColor: "oklch(0.93 0.01 0)" }}>
+          <p>Đúng giờ</p>
+          <p>10</p>
+        </Card>
+        <Card className="w-[23%] h-[100px]" hoverable style={{ backgroundColor: "oklch(0.93 0.01 0)" }}>
+          <p>Muộn giờ</p>
+          <p>10</p>
+        </Card>
+        <Card className="w-[23%] h-[100px]" hoverable style={{ backgroundColor: "oklch(0.93 0.01 0)" }}>
+          <p>Về sớm</p>
+          <p>10</p>
+        </Card>
+      </Flex>
+      <div className="flex justify-between">
+        <div className="w-[31%] min-h-[300px] bg-gray-200 p-5">
+          <p>Phân tích chấm công</p>
+          <select onChange={(e) => handleDateModeChange(e.target.value)}>
+            <option value="date">Ngày</option>
+            <option value="month">Tháng</option>
+          </select>
+          <DatePicker picker={dateMode} />
+          <Bar data={attendanceData} />
+        </div>
+        <div className="w-[31%] min-h-[300px] bg-gray-200 p-5">
+          <p>Biểu đồ giờ làm trong tháng của phòng ban</p>
+          <DatePicker picker="month" />
+          <Pie data={workTimeData} />
+        </div>
+        <div className="w-[31%] min-h-[300px] bg-gray-200 p-5">
+          <p>Biểu đồ tăng ca trong tháng của phòng ban</p>
+          <DatePicker picker="month" />
+          <Pie data={workTimeData} />
+        </div>
+      </div>
+    </Flex>
   );
 }

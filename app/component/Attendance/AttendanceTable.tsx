@@ -4,21 +4,21 @@ import { DATE_FORMAT, SHOW_DAY_MONTH_FORMAT } from "@/app/constant/DateFormattin
 import { CalculateWorkHour } from "@/app/utils/CalculateWorkHour";
 import { Button, Checkbox, Flex, Table, Tooltip, Typography } from "antd";
 import { CSVLink } from "react-csv";
-import DashboardModal from "./DashboardModal";
 import { EmployeeTypeData } from "@/app/constant/DataType";
 import { useState } from "react";
 import dayjs from "dayjs";
 import { CalculateWorkMinute } from "@/app/utils/CalculateWorkMinute";
 import { useTranslation } from "react-i18next";
+import AttendanceModal from "./AttendanceModal";
 
-interface DashboardTableProps {
+interface AttendanceTableProps {
   days: number[];
   currentYear: number;
   currentMonth: number;
   dataSource: EmployeeTypeData[];
 }
 
-export default function DashboardTable({ days, currentYear, currentMonth, dataSource }: DashboardTableProps) {
+export default function AttendanceTable({ days, currentYear, currentMonth, dataSource }: AttendanceTableProps) {
   const { t } = useTranslation();
 
   const { Text } = Typography;
@@ -79,7 +79,7 @@ export default function DashboardTable({ days, currentYear, currentMonth, dataSo
     {
       title: <Checkbox checked={isSelectedAll} indeterminate={selectedRow.length > 0 && !isSelectedAll} onChange={handleSelectAll} />,
       align: "center" as const,
-      width: 70,
+      width: 50,
       fixed: "left" as const,
       render: (row: EmployeeTypeData) => {
         const isChecked = selectedRow.some((acc) => acc.key === row.key);
@@ -87,18 +87,10 @@ export default function DashboardTable({ days, currentYear, currentMonth, dataSo
       },
     },
     {
-      title: t("Code"),
-      dataIndex: "employee_code",
-      key: "employee_code",
-      width: 120,
-      fixed: "left" as const,
-      align: "center" as const,
-    },
-    {
       title: t("Name"),
       dataIndex: "employee_name",
       key: "employee_name",
-      width: 180,
+      width: 200,
       fixed: "left" as const,
       align: "center" as const,
     },
@@ -184,7 +176,7 @@ export default function DashboardTable({ days, currentYear, currentMonth, dataSo
         </CSVLink>
       )}
       {selectedRecord && (
-        <DashboardModal
+        <AttendanceModal
           openModal={openModal}
           onClose={() => setOpenModal(false)}
           record={selectedRecord}

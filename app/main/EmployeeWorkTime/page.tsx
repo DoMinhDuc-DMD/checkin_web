@@ -5,8 +5,8 @@ import { Button, Flex, Typography } from "antd";
 import Search from "antd/es/input/Search";
 import { useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
-import EmployeeListTable from "@/app/component/EmployeeList/EmployeeListTable";
-import EmployeeListAddModal from "@/app/component/EmployeeList/EmployeeListAddModal";
+import EmployeeWorkTimeTable from "@/app/component/EmployeeWorkTime/EmployeeWorkTimeTable";
+import EmployeeWorkTimeAddModal from "@/app/component/EmployeeWorkTime/EmployeeWorkTimeAddModal";
 import { useCustomNotification } from "@/app/hooks/UseCustomNotification";
 import { useTranslation } from "react-i18next";
 
@@ -22,7 +22,7 @@ export type FieldType = {
   employee_license_plate?: string;
 };
 
-export default function EmployeeList() {
+export default function EmployeeWorkTime() {
   const { t } = useTranslation();
   const [data, setData] = useState(dataSource);
   const [searchInput, setSearchInput] = useState("");
@@ -65,7 +65,7 @@ export default function EmployeeList() {
     <>
       {contextHolder}
       <Title level={3} className="flex justify-center font-semibold my-3">
-        {t("Employee list")}
+        {t("Employee working time")}
       </Title>
       <Flex justify="space-between">
         <Search
@@ -76,12 +76,12 @@ export default function EmployeeList() {
           onSearch={() => handleSearch(searchInput)}
           enterButton
         />
-        <Button type="primary" onClick={handleOpenModal}>
+        {/* <Button type="primary" onClick={handleOpenModal}>
           {t("New employee")}
-        </Button>
+        </Button> */}
       </Flex>
-      <EmployeeListAddModal openModal={openModal} handleCancel={handleCancel} handleOk={handleOk} />
-      <EmployeeListTable data={data} />
+      <EmployeeWorkTimeAddModal openModal={openModal} handleCancel={handleCancel} handleOk={handleOk} />
+      <EmployeeWorkTimeTable data={data} />
     </>
   );
 }
