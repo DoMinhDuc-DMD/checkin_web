@@ -5,9 +5,11 @@ import { useState } from "react";
 import { Bar, Pie } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, BarElement, ArcElement, Title, Tooltip, Legend } from "chart.js";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 ChartJS.register(CategoryScale, LinearScale, PointElement, BarElement, ArcElement, Title, Tooltip, Legend);
 
 export default function NewDashboard() {
+  const { t } = useTranslation();
   const [dateMode, setDateMode] = useState<"date" | "month">("date");
   const handleDateModeChange = (value: string) => {
     if (value === "date") {
@@ -34,26 +36,26 @@ export default function NewDashboard() {
       <Flex justify="space-between" align="center">
         <Link href="/main/Attendance" className="w-[23%]">
           <Card hoverable style={{ backgroundColor: "oklch(0.93 0.01 0)", width: "full", height: "100px" }}>
-            <p>Chấm công hôm nay</p>
+            <p>{t("Today attendance")}</p>
             <p>20%</p>
           </Card>
         </Link>
         <Card className="w-[23%] h-[100px]" hoverable style={{ backgroundColor: "oklch(0.93 0.01 0)" }}>
-          <p>Đúng giờ</p>
+          <p>{t("In time")}</p>
           <p>10</p>
         </Card>
         <Card className="w-[23%] h-[100px]" hoverable style={{ backgroundColor: "oklch(0.93 0.01 0)" }}>
-          <p>Muộn giờ</p>
+          <p>{t("In late")}</p>
           <p>10</p>
         </Card>
         <Card className="w-[23%] h-[100px]" hoverable style={{ backgroundColor: "oklch(0.93 0.01 0)" }}>
-          <p>Về sớm</p>
+          <p>{t("Out early")}</p>
           <p>10</p>
         </Card>
       </Flex>
       <div className="flex justify-between">
         <div className="w-[31%] min-h-[300px] bg-gray-200 p-5">
-          <p>Phân tích chấm công</p>
+          <p>{t("Attendance analytic")}</p>
           <select onChange={(e) => handleDateModeChange(e.target.value)}>
             <option value="date">Ngày</option>
             <option value="month">Tháng</option>
@@ -62,12 +64,12 @@ export default function NewDashboard() {
           <Bar data={attendanceData} />
         </div>
         <div className="w-[31%] min-h-[300px] bg-gray-200 p-5">
-          <p>Biểu đồ giờ làm trong tháng của phòng ban</p>
+          <p>{t("Department work hours")}</p>
           <DatePicker picker="month" />
           <Pie data={workTimeData} />
         </div>
         <div className="w-[31%] min-h-[300px] bg-gray-200 p-5">
-          <p>Biểu đồ tăng ca trong tháng của phòng ban</p>
+          <p>{t("Department overtime hours")}</p>
           <DatePicker picker="month" />
           <Pie data={workTimeData} />
         </div>
