@@ -56,8 +56,8 @@ export default function NewDashboard() {
     let attendance = 0;
     const attendanceCounts = { onTime: 0, late: 0, early: 0 };
     const analyzeCounts = { onTimeAime: 0, onTimeVikoi: 0, lateAime: 0, lateVikoi: 0, earlyAime: 0, earlyVikoi: 0 };
-    let workingMinutes = { Aime: 0, Vikoi: 0 };
-    let overtimeMinutes = { Aime: 0, Vikoi: 0 };
+    const workingMinutes = { Aime: 0, Vikoi: 0 };
+    const overtimeMinutes = { Aime: 0, Vikoi: 0 };
 
     dataSource.forEach((d) => {
       for (let i = 0; i < d.employee_check_in.length; i++) {
@@ -65,7 +65,7 @@ export default function NewDashboard() {
         const checkOutRaw = d.employee_check_out[i];
 
         const [dateInStr, checkInTime] = checkInRaw.split(", ");
-        const [_, checkOutTime] = checkOutRaw.split(", ");
+        const [checkOutTime] = checkOutRaw.split(", ")[1];
         const deptKey = d.employee_department === "Aimesoft" ? "Aime" : "Vikoi";
         // Card
         if (dateInStr === today.format("YYYY-MM-DD")) {
