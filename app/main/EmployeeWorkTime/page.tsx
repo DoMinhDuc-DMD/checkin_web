@@ -45,7 +45,7 @@ export default function EmployeeWorkTime() {
     const searchTerm = value.toLowerCase();
     const filteredData = dataSource.filter((data) => data.employee_name.toLowerCase().includes(searchTerm));
     if (filteredData.length === 0) {
-      openNotification(t("Notice"), t("No suitable employee found"));
+      openNotification(t("Notice"), t("No suitable employee found!"));
       return;
     }
     setData(filteredData);

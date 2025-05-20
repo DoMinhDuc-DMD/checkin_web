@@ -48,7 +48,13 @@
     "On time": "On time",
     "In late": "In late",
     "Out early": "Out early",
+    "In late and out early": "In late and out early",
     "Attendance analytic": "Attendance analytic",
     "Department work hours": "Department work hours",
-    "Department overtime hours": "Department overtime hours"
+    "Department overtime hours": "Department overtime hours",
+    "Attendance date": "Attendance date",
+    "Check in": "Check in",
+    "Check out": "Check out",
+    "Type mistake": "Type mistake",
+    "Actions": "Actions"
 }

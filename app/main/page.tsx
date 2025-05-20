@@ -65,7 +65,7 @@ export default function NewDashboard() {
         const checkOutRaw = d.employee_check_out[i];
 
         const [dateInStr, checkInTime] = checkInRaw.split(", ");
-        const [checkOutTime] = checkOutRaw.split(", ")[1];
+        const [_unused, checkOutTime] = checkOutRaw.split(", ")[1];
         const deptKey = d.employee_department === "Aimesoft" ? "Aime" : "Vikoi";
         // Card
         if (dateInStr === today.format("YYYY-MM-DD")) {

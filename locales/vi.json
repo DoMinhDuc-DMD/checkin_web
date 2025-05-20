@@ -48,7 +48,13 @@
     "On time": "Đúng giờ",
     "In late": "Vào muộn",
     "Out early": "Về sớm",
+    "In late and out early": "Vào muộn và về sớm",
     "Attendance analytic": "Phân tích chấm công",
     "Department work hours": "Thời gian làm việc các phòng ban",
-    "Department overtime hours": "Thời gian tăng ca các phòng ban"
+    "Department overtime hours": "Thời gian tăng ca các phòng ban",
+    "Attendance date": "Ngày chấm công",
+    "Check in": "Chấm công vào",
+    "Check out": "Chấm công ra",
+    "Type mistake": "Loại lỗi",
+    "Actions": "Hành động"
 }

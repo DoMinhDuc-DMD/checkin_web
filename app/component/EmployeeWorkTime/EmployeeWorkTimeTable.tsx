@@ -81,7 +81,7 @@ export default function EmployeeWorkTimeTable({ data }: EmployeeWorkTimeTablePro
           >
             {t("Detail")}
           </Button>
-          <Button
+          {/* <Button
             type="primary"
             onClick={() => {
               setOpenModal(true);
@@ -89,7 +89,7 @@ export default function EmployeeWorkTimeTable({ data }: EmployeeWorkTimeTablePro
             }}
           >
             {t("Delete")}
-          </Button>
+          </Button> */}
         </div>
       ),
     },

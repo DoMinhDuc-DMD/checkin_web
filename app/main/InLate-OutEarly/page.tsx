@@ -1,97 +1,178 @@
 "use client";
 
 import "@ant-design/v5-patch-for-react-19";
-import { Flex, Table, Typography } from "antd";
-import dayjs from "dayjs";
+import { Checkbox, DatePicker, Flex, Table, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import { dataSource } from "@/app/TestData/data";
-import { DATE_FORMAT, SHOW_DAY_MONTH_FORMAT } from "@/app/constant/DateFormatting";
+import { useEffect, useState } from "react";
+import Search from "antd/es/input/Search";
+import { v4 as uuidv4 } from "uuid";
+import { useCustomNotification } from "@/app/hooks/UseCustomNotification";
+import { DATE_FORMAT, SHOW_DATE_FORMAT } from "@/app/constant/DateFormatting";
+import dayjs from "dayjs";
+
+type MistakeRecord = {
+  key: string;
+  employee_code: string;
+  employee_name: string;
+  date: string;
+  checkIn: string;
+  checkOut: string;
+  typeMistake: string;
+};
 
 export default function InLateOutEarly() {
   const { Title } = Typography;
-
   const { t } = useTranslation();
+  const [mistakeRecord, setMistakeRecord] = useState<MistakeRecord[]>([]);
+  const [mistakeRecordSearched, setMistakeRecordSearched] = useState<MistakeRecord[]>([]);
+  const [searchInput, setSearchInput] = useState("");
 
-  const today = dayjs();
-  const currentMonth = today.month();
-  const currentYear = today.year();
-  const daysInMonth = today.daysInMonth();
+  const [selectedRow, setSelectedRow] = useState<MistakeRecord[]>([]);
+  const { openNotification, contextHolder } = useCustomNotification();
 
-  const days = Array.from({ length: daysInMonth }, (_, index) => index + 1);
+  const searchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(e.target.value);
+  };
 
-  const dayColumns = days.map((day) => {
-    const date = dayjs(new Date(currentYear, currentMonth, day));
-    const dateStr = date.format(DATE_FORMAT);
-    const isWorkingDay = date.day() !== 0 && date.day() !== 6;
+  const handleSearch = (value: string) => {
+    setSearchInput(value);
+    if (!value) {
+      setMistakeRecordSearched(mistakeRecord);
+      return;
+    }
+    const searchTerm = value.toLowerCase();
+    const filteredData = mistakeRecord.filter((data) => data.employee_name.toLowerCase().includes(searchTerm));
+    if (filteredData.length === 0) {
+      openNotification(t("Notice"), t("No suitable employee found!"));
+      return;
+    }
+    setMistakeRecordSearched(filteredData);
+  };
 
-    return {
-      title: date.format(SHOW_DAY_MONTH_FORMAT),
-      key: `day_${day}`,
-      width: 70,
-      align: "center" as const,
-      onCell: () => ({ style: { backgroundColor: isWorkingDay ? "" : "oklch(0.96 0 0)" } }),
-      render: (_, record) => {
-        if (!isWorkingDay) {
-          return <span className="font-semibold">OFF</span>;
-        } else {
-          const checkInIndex = record.employee_check_in.findIndex((check: string) => check.startsWith(dateStr));
-          const checkOutIndex = record.employee_check_out.findIndex((check: string) => check.startsWith(dateStr));
+  const handleDateChange = (value: dayjs.Dayjs) => {
+    if (!value) {
+      setMistakeRecordSearched(mistakeRecord);
+      return;
+    }
+    const filteredData = mistakeRecord.filter((record) => record.date === value.format(SHOW_DATE_FORMAT));
+    setMistakeRecordSearched(filteredData);
+  };
 
-          const checkIn = record.employee_check_in[checkInIndex];
-          const checkOut = record.employee_check_out[checkOutIndex];
+  const isSelectedAll = selectedRow.length === mistakeRecordSearched.length && mistakeRecordSearched.length > 0;
+  const handleSelectAll = () => {
+    setSelectedRow(isSelectedAll ? [] : mistakeRecordSearched);
+  };
+  const handleCheckBoxChange = (row: MistakeRecord) => {
+    setSelectedRow((prev) => (prev.some((r) => row.key === r.key) ? prev.filter((r) => r.key !== row.key) : [...prev, row]));
+  };
 
-          const isInLate = checkIn && dayjs(checkIn).isAfter(dayjs(checkIn).hour(8).minute(30));
-          const isOutEarly = checkOut && dayjs(checkOut).isBefore(dayjs(checkOut).hour(18));
-          const checkInClass = isInLate ? "text-red-500" : "text-green-600";
-          const checkOutClass = isOutEarly ? "text-red-500" : "text-green-600";
-
-          if (checkIn && checkOut) {
-            return (
-              <Flex vertical align="center" className="font-semibold">
-                <span className={`${checkInClass}`}>{checkIn.split(", ")[1]}</span>
-                <div className="w-full h-[1px] bg-black my-1" />
-                <span className={`${checkOutClass}`}>{checkOut.split(", ")[1]}</span>
-              </Flex>
-            );
-          } else if (checkIn) {
-            return <span className={`font-semibold ${checkInClass}`}>{checkIn.split(", ")[1]}</span>;
-          } else {
-            return <span className="font-semibold">---</span>;
-          }
+  useEffect(() => {
+    const record: MistakeRecord[] = [];
+    dataSource.forEach((e) => {
+      for (let i = 0; i < e.employee_check_in.length; i++) {
+        const checkInRaw = e.employee_check_in[i];
+        const checkOutRaw = e.employee_check_out[i];
+        const [dateInStr, checkInTime] = checkInRaw.split(", ");
+        const [_unused, checkOutTime] = checkOutRaw.split(", ");
+        if (checkInTime > "08:30" || checkOutTime < "18:00") {
+          record.push({
+            key: `${uuidv4()}_${e.employee_code}`,
+            employee_code: e.employee_code,
+            employee_name: e.employee_name,
+            date: dayjs(dateInStr).format(SHOW_DATE_FORMAT),
+            checkIn: checkInTime,
+            checkOut: checkOutTime,
+            typeMistake:
+              checkInTime > "08:30" && checkOutTime < "18:00"
+                ? t("In late and out early")
+                : checkInTime > "08:30"
+                ? t("In late")
+                : t("Out early"),
+          });
         }
-      },
-    };
-  });
+      }
+    });
+    const sorted = record.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    setMistakeRecord(sorted);
+    setMistakeRecordSearched(sorted);
+  }, [dataSource, t]);
 
   const columns = [
     {
-      title: `${t("ID")}`,
-      key: "id",
+      title: <Checkbox checked={isSelectedAll} indeterminate={selectedRow.length > 0 && !isSelectedAll} onChange={handleSelectAll} />,
+      key: "key",
       align: "center" as const,
       width: 50,
-      fixed: "left" as const,
-      render: (_, __, index: number) => index + 1,
+      render: (row: MistakeRecord) => {
+        const isChecked = selectedRow.some((acc) => acc.key === row.key);
+        return <Checkbox checked={isChecked} onChange={() => handleCheckBoxChange(row)} />;
+      },
     },
     {
       title: `${t("Name")}`,
       dataIndex: "employee_name",
       key: "employee_name",
       width: 200,
-      fixed: "left" as const,
       align: "center" as const,
     },
-    ...dayColumns,
+    {
+      title: `${t("Attendance date")}`,
+      dataIndex: "date",
+      key: "date",
+      width: 200,
+      align: "center" as const,
+    },
+    {
+      title: `${t("Check in")}`,
+      dataIndex: "checkIn",
+      key: "checkIn",
+      width: 200,
+      align: "center" as const,
+    },
+    {
+      title: `${t("Check out")}`,
+      dataIndex: "checkOut",
+      key: "checkOut",
+      width: 200,
+      align: "center" as const,
+    },
+    {
+      title: `${t("Type mistake")}`,
+      dataIndex: "typeMistake",
+      key: "typeMistake",
+      width: 200,
+      align: "center" as const,
+    },
+    {
+      title: `${t("Actions")}`,
+      width: 200,
+      align: "center" as const,
+    },
   ];
   return (
     <>
+      {contextHolder}
       <Title level={3} className="flex justify-center font-semibold my-3">
         {t("Employee in late, out early")}
       </Title>
+      <Flex justify="space-between" style={{ marginBottom: 12 }}>
+        <Search
+          placeholder={t("Search employee")}
+          style={{ width: "300px" }}
+          value={searchInput}
+          onChange={searchChange}
+          onSearch={() => handleSearch(searchInput)}
+          enterButton
+        />
+        <DatePicker onChange={handleDateChange} />
+      </Flex>
       <Table
-        dataSource={dataSource}
+        dataSource={mistakeRecordSearched}
         columns={columns}
+        rowKey="key"
         size="small"
-        scroll={{ x: "max-content", y: "calc(100vh - 50px - 48px - 56px - 39px)" }}
+        scroll={{ x: "max-content", y: "calc(100vh - 50px - 48px - 56px - 42px - 39px)" }}
         // full height - header - p/m - title - table header
         pagination={false}
       />
