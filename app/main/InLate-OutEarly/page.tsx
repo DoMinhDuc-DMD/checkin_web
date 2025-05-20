@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import Search from "antd/es/input/Search";
 import { v4 as uuidv4 } from "uuid";
 import { useCustomNotification } from "@/app/hooks/UseCustomNotification";
-import { DATE_FORMAT, SHOW_DATE_FORMAT } from "@/app/constant/DateFormatting";
+import { SHOW_DATE_FORMAT, SHOW_MONTH_YEAR_FORMAT } from "@/app/constant/DateFormatting";
 import dayjs from "dayjs";
 
 type MistakeRecord = {
@@ -27,7 +27,6 @@ export default function InLateOutEarly() {
   const [mistakeRecord, setMistakeRecord] = useState<MistakeRecord[]>([]);
   const [mistakeRecordSearched, setMistakeRecordSearched] = useState<MistakeRecord[]>([]);
   const [searchInput, setSearchInput] = useState("");
-
   const [selectedRow, setSelectedRow] = useState<MistakeRecord[]>([]);
   const { openNotification, contextHolder } = useCustomNotification();
 
@@ -55,7 +54,7 @@ export default function InLateOutEarly() {
       setMistakeRecordSearched(mistakeRecord);
       return;
     }
-    const filteredData = mistakeRecord.filter((record) => record.date === value.format(SHOW_DATE_FORMAT));
+    const filteredData = mistakeRecord.filter((record) => record.date.includes(value.format(SHOW_MONTH_YEAR_FORMAT)));
     setMistakeRecordSearched(filteredData);
   };
 
@@ -74,7 +73,7 @@ export default function InLateOutEarly() {
         const checkInRaw = e.employee_check_in[i];
         const checkOutRaw = e.employee_check_out[i];
         const [dateInStr, checkInTime] = checkInRaw.split(", ");
-        const [_unused, checkOutTime] = checkOutRaw.split(", ");
+        const checkOutTime = checkOutRaw.split(", ")[1];
         if (checkInTime > "08:30" || checkOutTime < "18:00") {
           record.push({
             key: `${uuidv4()}_${e.employee_code}`,
@@ -93,7 +92,7 @@ export default function InLateOutEarly() {
         }
       }
     });
-    const sorted = record.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    const sorted = record.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     setMistakeRecord(sorted);
     setMistakeRecordSearched(sorted);
   }, [dataSource, t]);
@@ -165,7 +164,7 @@ export default function InLateOutEarly() {
           onSearch={() => handleSearch(searchInput)}
           enterButton
         />
-        <DatePicker onChange={handleDateChange} />
+        <DatePicker picker="month" onChange={handleDateChange} placeholder={t("Select month")} />
       </Flex>
       <Table
         dataSource={mistakeRecordSearched}

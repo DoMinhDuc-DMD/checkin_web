@@ -65,7 +65,7 @@ export default function NewDashboard() {
         const checkOutRaw = d.employee_check_out[i];
 
         const [dateInStr, checkInTime] = checkInRaw.split(", ");
-        const [_unused, checkOutTime] = checkOutRaw.split(", ")[1];
+        const checkOutTime = checkOutRaw.split(", ")[1];
         const deptKey = d.employee_department === "Aimesoft" ? "Aime" : "Vikoi";
         // Card
         if (dateInStr === today.format("YYYY-MM-DD")) {
@@ -119,9 +119,6 @@ export default function NewDashboard() {
       { label: "Vikoi Dept", data: [analyzeDept.onTimeVikoi, analyzeDept.lateVikoi, analyzeDept.earlyVikoi], backgroundColor: "pink" },
     ],
   };
-  const options = {
-    maintainAspectRatio: false,
-  };
   const workTimeData = {
     labels: ["Aime Dept", "Vikoi Dept"],
     datasets: [{ data: [workingTime.Aime, workingTime.Vikoi], backgroundColor: ["blue", "pink"] }],
@@ -152,7 +149,7 @@ export default function NewDashboard() {
             <DatePicker picker={dateMode} value={analyzeDate} onChange={handleAnalyzeDateChange} />
           </Flex>
           <div className="h-[300px]">
-            <Bar data={analyzeData} options={options} />
+            <Bar data={analyzeData} options={{ maintainAspectRatio: false }} />
           </div>
         </div>
         <PieChart
