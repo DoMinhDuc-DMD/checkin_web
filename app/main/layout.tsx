@@ -34,6 +34,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           <SidebarLink link="/main/EmployeeWorkTime" icon={<AccessTimeOutlinedIcon />} label={t("Working time")} collapsed={collapsed} />
           <SidebarLink link="/main/Attendance" icon={<CheckCircleOutlinedIcon />} label={t("Attendance")} collapsed={collapsed} />
           <SidebarLink link="/main/InLate-OutEarly" icon={<CancelOutlinedIcon />} label={t("In late/Out early")} collapsed={collapsed} />
+          {/* <SidebarLink link="/main/Notification" icon={<CancelOutlinedIcon />} label={t("Noti")} collapsed={collapsed} /> */}
         </Flex>
       </Flex>
       <Layout

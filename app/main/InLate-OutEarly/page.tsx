@@ -74,6 +74,7 @@ export default function InLateOutEarly() {
         const checkOutRaw = e.employee_check_out[i];
         const [dateInStr, checkInTime] = checkInRaw.split(", ");
         const checkOutTime = checkOutRaw.split(", ")[1];
+
         if (checkInTime > "08:30" || checkOutTime < "18:00") {
           record.push({
             key: `${uuidv4()}_${e.employee_code}`,

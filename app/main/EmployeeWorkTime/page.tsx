@@ -6,7 +6,6 @@ import Search from "antd/es/input/Search";
 import { useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import EmployeeWorkTimeTable from "@/app/component/EmployeeWorkTime/EmployeeWorkTimeTable";
-import EmployeeWorkTimeAddModal from "@/app/component/EmployeeWorkTime/EmployeeWorkTimeAddModal";
 import { useCustomNotification } from "@/app/hooks/UseCustomNotification";
 import { useTranslation } from "react-i18next";
 
@@ -26,7 +25,6 @@ export default function EmployeeWorkTime() {
   const { t } = useTranslation();
   const [data, setData] = useState(dataSource);
   const [searchInput, setSearchInput] = useState("");
-  const [openModal, setOpenModal] = useState(false);
 
   const { openNotification, contextHolder } = useCustomNotification();
 
@@ -51,16 +49,6 @@ export default function EmployeeWorkTime() {
     setData(filteredData);
   };
 
-  // const handleOpenModal = () => {
-  //   setOpenModal(true);
-  // };
-  const handleCancel = () => {
-    setOpenModal(false);
-  };
-  const handleOk = () => {
-    setOpenModal(false);
-  };
-
   return (
     <>
       {contextHolder}
@@ -76,11 +64,7 @@ export default function EmployeeWorkTime() {
           onSearch={() => handleSearch(searchInput)}
           enterButton
         />
-        {/* <Button type="primary" onClick={handleOpenModal}>
-          {t("New employee")}
-        </Button> */}
       </Flex>
-      <EmployeeWorkTimeAddModal openModal={openModal} handleCancel={handleCancel} handleOk={handleOk} />
       <EmployeeWorkTimeTable data={data} />
     </>
   );
