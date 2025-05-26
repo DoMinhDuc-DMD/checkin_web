@@ -1,34 +1,37 @@
 "use client";
 
-import { dataSource } from "@/app/TestData/data";
 import { Flex, Typography } from "antd";
 import Search from "antd/es/input/Search";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "@ant-design/v5-patch-for-react-19";
 import EmployeeWorkTimeTable from "@/app/component/EmployeeWorkTime/EmployeeWorkTimeTable";
 import { useCustomNotification } from "@/app/hooks/UseCustomNotification";
 import { useTranslation } from "react-i18next";
-
-export type FieldType = {
-  employee_email?: string;
-  employee_password?: string;
-  employee_department?: string;
-  employee_position?: string;
-  employee_phone_number?: string;
-  employee_birthday?: string;
-  employee_citizen_id?: string;
-  employee_bank_account?: string;
-  employee_license_plate?: string;
-};
+import { User } from "@/app/constant/DataType";
+import axios from "axios";
 
 export default function EmployeeWorkTime() {
   const { t } = useTranslation();
-  const [data, setData] = useState(dataSource);
-  const [searchInput, setSearchInput] = useState("");
+  const [originalUser, setOriginalUser] = useState<User[]>([]);
+  const [user, setUser] = useState<User[]>([]);
 
+  const [searchInput, setSearchInput] = useState("");
   const { openNotification, contextHolder } = useCustomNotification();
 
-  const { Title } = Typography;
+  useEffect(() => {
+    try {
+      const fetchUser = async () => {
+        const res = await axios.get("http://192.168.1.80:4455/api/v1/users/?limit=20");
+        setOriginalUser(res.data.data);
+        setUser(res.data.data);
+      };
+      fetchUser();
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  console.log(user);
 
   const searchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
@@ -37,24 +40,26 @@ export default function EmployeeWorkTime() {
   const handleSearch = (value: string) => {
     setSearchInput(value);
     if (!value) {
-      setData(dataSource);
+      setUser(originalUser);
       return;
     }
     const searchTerm = value.toLowerCase();
-    const filteredData = dataSource.filter((data) => data.employee_name.toLowerCase().includes(searchTerm));
+    const filteredData = originalUser.filter(
+      (data) => data.displayName.toLowerCase().includes(searchTerm) || data.role.toLowerCase().includes(searchTerm)
+    );
     if (filteredData.length === 0) {
       openNotification(t("Notice"), t("No suitable employee found!"));
       return;
     }
-    setData(filteredData);
+    setUser(filteredData);
   };
 
   return (
     <>
       {contextHolder}
-      <Title level={3} className="flex justify-center font-semibold my-3">
+      <Typography.Title level={3} className="flex justify-center font-semibold my-3">
         {t("Employee working time")}
-      </Title>
+      </Typography.Title>
       <Flex justify="space-between">
         <Search
           placeholder={t("Search employee")}
@@ -65,7 +70,7 @@ export default function EmployeeWorkTime() {
           enterButton
         />
       </Flex>
-      <EmployeeWorkTimeTable data={data} />
+      <EmployeeWorkTimeTable user={user} />
     </>
   );
 }

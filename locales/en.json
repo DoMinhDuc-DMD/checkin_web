@@ -23,6 +23,7 @@
     "Citizen id": "Citizen id",
     "Techcombank account": "Techcombank account",
     "License plate":"License plate",
+    "Joined at": "Joined at",
     "Total check": "Total check",
     "Detail": "Detail",
     "Delete": "Delete",
@@ -50,12 +51,13 @@
     "Out early": "Out early",
     "In late and out early": "In late and out early",
     "Attendance analytic": "Attendance analytic",
-    "Department work hours": "Department work hours",
-    "Department overtime hours": "Department overtime hours",
+    "Employees working hours": "Employees working hours",
+    "Employees overtime hours": "Employees overtime hours",
     "Attendance date": "Attendance date",
     "Check in": "Check in",
     "Check out": "Check out",
     "Type mistake": "Type mistake",
     "Actions": "Actions",
-    "Select month": "Select month"
+    "Select month": "Select month",
+    "Employee absence":"Employee absence"
 }

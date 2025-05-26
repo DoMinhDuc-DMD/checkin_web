@@ -1,19 +1,19 @@
 "use client";
 
-import { EmployeeTypeData } from "@/app/constant/DataType";
+import { User } from "@/app/constant/DataType";
 import { Button, Table } from "antd";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import EmployeeWorkTimeDetailModal from "./EmployeeWorkTimeDetailModal";
 
 interface EmployeeWorkTimeTableProps {
-  data: EmployeeTypeData[];
+  user: User[];
 }
 
-export default function EmployeeWorkTimeTable({ data }: EmployeeWorkTimeTableProps) {
+export default function EmployeeWorkTimeTable({ user }: EmployeeWorkTimeTableProps) {
   const { t } = useTranslation();
   const [openModal, setOpenModal] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState<EmployeeTypeData | null>(null);
+  const [selectedRecord, setSelectedRecord] = useState<User | null>(null);
 
   const handleCancel = () => {
     setOpenModal(false);
@@ -25,47 +25,25 @@ export default function EmployeeWorkTimeTable({ data }: EmployeeWorkTimeTablePro
   const columns = [
     {
       title: t("ID"),
-      key: "id",
+      key: "_id",
       align: "center" as const,
       width: 50,
       render: (_, __, index: number) => index + 1,
     },
     {
       title: t("Name"),
-      dataIndex: "employee_name",
-      key: "employee_name",
-      width: 200,
-      align: "center" as const,
-    },
-    {
-      title: t("Department"),
-      dataIndex: "employee_department",
-      key: "employee_department",
+      dataIndex: "displayName",
+      key: "displayName",
       width: 200,
       align: "center" as const,
     },
     {
       title: t("Position"),
-      dataIndex: "employee_position",
-      key: "employee_position",
+      dataIndex: "role",
+      key: "role",
       width: 200,
       align: "center" as const,
     },
-    {
-      title: t("Worked hours"),
-      dataIndex: "",
-      key: "",
-      width: 200,
-      align: "center" as const,
-    },
-    {
-      title: t("Overtime hours"),
-      dataIndex: "",
-      key: "",
-      width: 200,
-      align: "center" as const,
-    },
-
     {
       title: t("Detail"),
       width: 200,
@@ -81,15 +59,6 @@ export default function EmployeeWorkTimeTable({ data }: EmployeeWorkTimeTablePro
           >
             {t("Detail")}
           </Button>
-          {/* <Button
-            type="primary"
-            onClick={() => {
-              setOpenModal(true);
-              setSelectedRecord(record);
-            }}
-          >
-            {t("Delete")}
-          </Button> */}
         </div>
       ),
     },
@@ -99,7 +68,8 @@ export default function EmployeeWorkTimeTable({ data }: EmployeeWorkTimeTablePro
       <EmployeeWorkTimeDetailModal record={selectedRecord} openModal={openModal} onCancel={handleCancel} onOk={handleOk} />
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={user}
+        rowKey={"_id"}
         size="small"
         scroll={{ y: "calc(100vh - 50px - 48px - 56px - 42px - 39px)" }}
         // full height - header - p/m - title - search - table header

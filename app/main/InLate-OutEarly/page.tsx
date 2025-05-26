@@ -22,7 +22,6 @@ type MistakeRecord = {
 };
 
 export default function InLateOutEarly() {
-  const { Title } = Typography;
   const { t } = useTranslation();
   const [mistakeRecord, setMistakeRecord] = useState<MistakeRecord[]>([]);
   const [mistakeRecordSearched, setMistakeRecordSearched] = useState<MistakeRecord[]>([]);
@@ -153,9 +152,9 @@ export default function InLateOutEarly() {
   return (
     <>
       {contextHolder}
-      <Title level={3} className="flex justify-center font-semibold my-3">
+      <Typography.Title level={3} className="flex justify-center font-semibold my-3">
         {t("Employee in late, out early")}
-      </Title>
+      </Typography.Title>
       <Flex justify="space-between" style={{ marginBottom: 12 }}>
         <Search
           placeholder={t("Search employee")}

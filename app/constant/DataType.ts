@@ -11,4 +11,4 @@ export interface EmployeeTypeData {
 
 export type User = { createdAt: string; displayName: string; dob: string; email: string; firstName: string; lastName: string; role: string; updatedAt: string; _id: string; };
 export type Tracker = { _id: string; user: string; type: string; time: string };
-export type Attendance = { day: string; trackers: Tracker[] };
+export type AttendanceType = { day: string; trackers: Tracker[] };

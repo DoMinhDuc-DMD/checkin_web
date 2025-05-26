@@ -1,4 +1,7 @@
 import { CalculateWorkMinute } from "./CalculateWorkMinute";
+import dayjs from "dayjs";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+dayjs.extend(isSameOrAfter);
 
 export function CalculateWorkHour(checkInList: string[], checkOutList: string[]) {
   let totalMinutes = 0;
@@ -9,6 +12,7 @@ export function CalculateWorkHour(checkInList: string[], checkOutList: string[])
     const checkOutStr = checkOutList[i];
 
     const minutes = CalculateWorkMinute(checkInStr, checkOutStr);
+
     if (minutes > 0) {
       totalMinutes += minutes;
       totalDays += 1;

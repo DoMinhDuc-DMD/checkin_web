@@ -3,34 +3,35 @@
 import { DATE_FORMAT, SHOW_DAY_MONTH_FORMAT } from "@/app/constant/DateFormatting";
 import { CalculateWorkHour } from "@/app/utils/CalculateWorkHour";
 import { Button, Checkbox, Flex, Table, Tooltip, Typography } from "antd";
-import { EmployeeTypeData } from "@/app/constant/DataType";
+import { User } from "@/app/constant/DataType";
 import { useState } from "react";
 import dayjs from "dayjs";
 import { CalculateWorkMinute } from "@/app/utils/CalculateWorkMinute";
 import { useTranslation } from "react-i18next";
 import AttendanceModal from "./AttendanceModal";
+import { UserTrackerRecord } from "@/app/main/Attendance/page";
 import AttendanceExport from "./AttendanceExport";
 
 interface AttendanceTableProps {
   days: number[];
   currentYear: number;
   currentMonth: number;
-  dataSource: EmployeeTypeData[];
+  user: User[];
+  userTracker: UserTrackerRecord[];
 }
 
-export default function AttendanceTable({ days, currentYear, currentMonth, dataSource }: AttendanceTableProps) {
+export default function AttendanceTable({ days, currentYear, currentMonth, user, userTracker }: AttendanceTableProps) {
   const { t } = useTranslation();
 
   const { Text } = Typography;
-  const [selectedRow, setSelectedRow] = useState<EmployeeTypeData[]>([]);
+  const [selectedRow, setSelectedRow] = useState<UserTrackerRecord[]>([]);
 
   const [openModal, setOpenModal] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState<EmployeeTypeData | null>(null);
+  const [selectedRecord, setSelectedRecord] = useState<UserTrackerRecord | null>(null);
 
   // Hiển thị các cột ngày
   const dayColumns = days.map((day) => {
     const date = dayjs(new Date(currentYear, currentMonth, day));
-    const dateStr = date.format(DATE_FORMAT);
     const isWorkingDay = date.day() !== 0 && date.day() !== 6;
 
     return {
@@ -39,39 +40,38 @@ export default function AttendanceTable({ days, currentYear, currentMonth, dataS
       width: 70,
       align: "center" as const,
       onCell: () => ({ style: { backgroundColor: isWorkingDay ? "" : "oklch(0.96 0 0)" } }),
-      render: (_, record) => {
+      render: (_, record: UserTrackerRecord) => {
         if (!isWorkingDay) {
           return <span className="font-semibold">OFF</span>;
-        } else {
-          const checkInIndex = record.employee_check_in.findIndex((check: string) => check.startsWith(dateStr));
-          const checkOutIndex = record.employee_check_out.findIndex((check: string) => check.startsWith(dateStr));
-
-          const checkIn = record.employee_check_in[checkInIndex];
-          const checkOut = record.employee_check_out[checkOutIndex];
-
-          if (checkIn && checkOut) {
-            const minutes = CalculateWorkMinute(checkIn, checkOut);
-            const workedHours = (minutes / 60).toFixed(1);
-            return (
-              <Tooltip title={`${checkIn.split(", ")[1]} - ${checkOut.split(", ")[1]}`}>
-                <span className={`font-semibold ${Number(workedHours) >= 8 ? "text-green-600" : "text-red-500"}`}>{workedHours}</span>
-              </Tooltip>
-            );
-          }
         }
-        return <span className="font-semibold">---</span>;
+
+        const dateStr = date.format("YYYY-MM-DD");
+        const foundDate = record.records.find((r) => r.dateStr === dateStr);
+
+        if (!foundDate) {
+          return <span className="font-semibold">---</span>;
+        }
+
+        const minutes = CalculateWorkMinute(foundDate.checkIn, foundDate.checkOut);
+        const workedHours = (minutes / 60).toFixed(2);
+
+        return (
+          <Tooltip title={`${foundDate.checkIn.split(", ")[1]} - ${foundDate.checkOut.split(", ")[1]}`}>
+            <span className={`font-semibold ${Number(workedHours) >= 8 ? "text-green-600" : "text-red-500"}`}>{workedHours}</span>
+          </Tooltip>
+        );
       },
     };
   });
 
-  const isSelectedAll = selectedRow.length === dataSource.length && dataSource.length > 0;
+  const isSelectedAll = selectedRow.length === userTracker.length && userTracker.length > 0;
 
   const handleSelectAll = () => {
-    setSelectedRow(isSelectedAll ? [] : dataSource);
+    setSelectedRow(isSelectedAll ? [] : userTracker);
   };
 
-  const handleCheckBoxChange = (row: EmployeeTypeData) => {
-    setSelectedRow((prev) => (prev.some((r) => row.key === r.key) ? prev.filter((r) => r.key !== row.key) : [...prev, row]));
+  const handleCheckBoxChange = (row: UserTrackerRecord) => {
+    setSelectedRow((prev) => (prev.some((r) => row.userId === r.userId) ? prev.filter((r) => r.userId !== row.userId) : [...prev, row]));
   };
 
   // Các cột trong bảng
@@ -81,30 +81,37 @@ export default function AttendanceTable({ days, currentYear, currentMonth, dataS
       align: "center" as const,
       width: 50,
       fixed: "left" as const,
-      render: (row: EmployeeTypeData) => {
-        const isChecked = selectedRow.some((acc) => acc.key === row.key);
+      render: (row: UserTrackerRecord) => {
+        const isChecked = selectedRow.some((acc) => acc.userId === row.userId);
         return <Checkbox checked={isChecked} onChange={() => handleCheckBoxChange(row)} />;
       },
     },
     {
       title: t("Name"),
-      dataIndex: "employee_name",
-      key: "employee_name",
+      key: "displayName",
       width: 200,
       fixed: "left" as const,
       align: "center" as const,
+      render: (record: UserTrackerRecord) => {
+        const userName = user.find((u) => u._id === record?.userId);
+        return <span>{userName?.displayName || "---"}</span>;
+      },
     },
+
     {
       title: t("Total check"),
       key: "total_check",
-      width: 160,
+      width: 200,
       fixed: "left" as const,
       align: "center" as const,
-      render: (_, record) => {
-        const { totalHour, totalCheck } = CalculateWorkHour(record.employee_check_in, record.employee_check_out);
+      render: (_, record: UserTrackerRecord) => {
+        const { totalHour, totalCheck } = CalculateWorkHour(
+          record.records.flatMap((r) => r.checkIn).filter((v): v is string => v !== null),
+          record.records.flatMap((r) => r.checkOut).filter((v): v is string => v !== null)
+        );
         return (
           <Flex justify="space-between">
-            <Text className="w-[70px]">
+            <Text className="w-[80px]">
               {totalHour.toFixed(1)} {t("hours")}
             </Text>
             <Text className="w-[1px] h-5 bg-black" />
@@ -122,7 +129,7 @@ export default function AttendanceTable({ days, currentYear, currentMonth, dataS
       fixed: "right" as const,
       align: "center" as const,
       width: 100,
-      render: (record: EmployeeTypeData) => (
+      render: (record: UserTrackerRecord) => (
         <Button
           type="primary"
           onClick={() => {
@@ -138,11 +145,12 @@ export default function AttendanceTable({ days, currentYear, currentMonth, dataS
 
   return (
     <>
-      {selectedRow.length > 0 && <AttendanceExport selectedRow={selectedRow} />}
+      {selectedRow.length > 0 && <AttendanceExport user={user} selectedRow={selectedRow} />}
       {selectedRecord && (
         <AttendanceModal
           openModal={openModal}
           onClose={() => setOpenModal(false)}
+          user={user}
           record={selectedRecord}
           currentYear={currentYear}
           currentMonth={currentMonth}
@@ -150,8 +158,9 @@ export default function AttendanceTable({ days, currentYear, currentMonth, dataS
         />
       )}
       <Table
-        dataSource={dataSource}
+        dataSource={userTracker}
         columns={columns}
+        rowKey={"userId"}
         size="small"
         scroll={{ x: "max-content", y: "calc(100vh - 50px - 48px - 56px - 42px - 39px)" }}
         // full height - header - p/m - title - search - table header

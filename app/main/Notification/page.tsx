@@ -1,6 +1,6 @@
 "use client";
 
-import { Tracker, User, Attendance } from "@/app/constant/DataType";
+import { Tracker, User, AttendanceType } from "@/app/constant/DataType";
 import { Flex } from "antd";
 import { useEffect, useState } from "react";
 
@@ -11,17 +11,14 @@ export default function Notification() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res1 = await fetch("http://192.168.1.80:4455/api/v1/users/?limit=5");
-        const res2 = await fetch(
-          "http://192.168.1.80:4455/api/v1/trackers/user/6821d484d7dbf1cbee7c2a39?groupBy=day&gte=Fri%20May%2021%202021%2000:00:00%20GMT+0700%20(Indochina%20Time)&lte=Wed%20May%2021%202025%2023:59:59%20GMT+0700%20(Indochina%20Time)&limit=30"
-        );
+        const res1 = await fetch("http://192.168.1.80:4455/api/v1/users/?limit=100");
+        const res2 = await fetch("http://192.168.1.80:4455/api/v1/trackers/?limit=100");
         if (!res1.ok || !res2.ok) throw new Error("Failed to fetch");
 
         const data1 = await res1.json();
         const data2 = await res2.json();
 
-        console.log(data1.data);
-        console.log(data2.data);
+        // console.log(data1.data);
 
         const filteredUsers = data1.data.map((user: User) => ({
           _id: user._id,
@@ -32,7 +29,9 @@ export default function Notification() {
           updatedAt: user.updatedAt,
           role: user.role,
         }));
-        const filteredTrackers = data2.data.flatMap((tracker: Attendance) => tracker.trackers);
+        const filteredTrackers = data2.data.flatMap((tracker: AttendanceType) => tracker);
+
+        console.log(filteredTrackers);
 
         setUser(filteredUsers);
         setTracker(filteredTrackers);
