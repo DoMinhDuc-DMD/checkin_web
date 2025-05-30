@@ -1,7 +1,6 @@
 "use client";
 
-import { User } from "@/app/constant/DataType";
-import { UserTrackerRecord } from "@/app/main/Attendance/page";
+import { User, UserTrackerRecord } from "@/app/constant/DataType";
 import { CalculateWorkHour } from "@/app/utils/CalculateWorkHour";
 import { Button } from "antd";
 import { CSVLink } from "react-csv";
@@ -15,9 +14,9 @@ interface AttendanceExportProps {
 export default function AttendanceExport({ user, selectedRow }: AttendanceExportProps) {
   const { t } = useTranslation();
 
-  const csvData = selectedRow.flatMap((row) => {
+  const csvData = selectedRow.map((row) => {
     const userInfo = user.find((u) => u._id === row.userId);
-    const { totalHour, totalCheck } = CalculateWorkHour(
+    const { totalWorkingHour, totalCheck } = CalculateWorkHour(
       row.records.flatMap((r) => r.checkIn).filter((v): v is string => v !== null),
       row.records.flatMap((r) => r.checkOut).filter((v): v is string => v !== null)
     );
@@ -25,10 +24,8 @@ export default function AttendanceExport({ user, selectedRow }: AttendanceExport
     return {
       userId: row.userId,
       name: userInfo?.displayName,
-      totalCheck: totalCheck,
-      totalHour: totalHour,
-      role: userInfo?.role,
-      createdAt: userInfo?.createdAt,
+      totalCheck: `${totalCheck} ${t("days")}`,
+      totalHour: `${totalWorkingHour} ${t("hours")}`,
     };
   });
 

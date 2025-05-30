@@ -1,33 +1,32 @@
 "use client";
 
-import { User } from "@/app/constant/DataType";
-import { SHOW_MONTH_YEAR_FORMAT, SHOW_DATE_FORMAT } from "@/app/constant/DateFormatting";
-import { UserTrackerRecord } from "@/app/main/Attendance/page";
+import { User, UserTrackerRecord } from "@/app/constant/DataType";
+import { MY_FORMAT, DMY_FORMAT } from "@/app/constant/ConstantVariables";
 import { CalculateWorkHour } from "@/app/utils/CalculateWorkHour";
-import { Col, Modal, Row, Space, Typography } from "antd";
+import { Col, Modal, Row, Space } from "antd";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
+import AttendanceModalText from "./AttendanceModalText";
 
 interface AttendanceModalProps {
   openModal: boolean;
   user: User[];
   record: UserTrackerRecord;
-  currentYear: number;
-  currentMonth: number;
+  selectedMonth: dayjs.Dayjs;
   days: number[];
   onClose: () => void;
 }
 
-export default function AttendanceModal({ openModal, user, record, currentYear, currentMonth, days, onClose }: AttendanceModalProps) {
+export default function AttendanceModal({ openModal, user, record, selectedMonth, days, onClose }: AttendanceModalProps) {
   const { t } = useTranslation();
-  const { totalHour, totalCheck } = CalculateWorkHour(
+  const { totalWorkingHour, totalCheck, totalOvertimeHour } = CalculateWorkHour(
     record.records.flatMap((r) => r.checkIn).filter((v): v is string => v !== null),
     record.records.flatMap((r) => r.checkOut).filter((v): v is string => v !== null)
   );
 
-  // Tính tổng ngày làm việc
+  // Tính số ngày đi làm trong tháng
   const workingDays = Array.from({ length: days.length }, (_, index) => {
-    const date = dayjs(new Date(currentYear, currentMonth, index + 1));
+    const date = dayjs(new Date(selectedMonth.year(), selectedMonth.month(), index + 1));
     return date;
   }).filter((date) => {
     const dayOfWeek = date.day();
@@ -46,40 +45,28 @@ export default function AttendanceModal({ openModal, user, record, currentYear, 
       open={openModal}
       onCancel={onClose}
       onOk={onClose}
-      title={`${t("Attendance detail")} ${t(dayjs().format(SHOW_MONTH_YEAR_FORMAT))}`}
-      width={800}
+      title={`${t("Attendance detail")} ${t(dayjs(selectedMonth).format(MY_FORMAT))}`}
+      width={750}
     >
-      <Row>
+      <Row className="mt-6">
         <Col span={10} offset={1}>
           <Space direction="vertical">
-            <Typography.Text>
-              {t("Code")}: {record.userId}
-            </Typography.Text>
-            <Typography.Text>
-              {t("Name")}: {user.find((u) => u._id === record?.userId)?.displayName}
-            </Typography.Text>
-            <Typography.Text>
-              {t("Position")}: {user.find((u) => u._id === record?.userId)?.role}
-            </Typography.Text>
-            <Typography.Text>
-              {t("Joined at")}: {dayjs(user.find((u) => u._id === record?.userId)?.createdAt).format(SHOW_DATE_FORMAT)}
-            </Typography.Text>
+            <AttendanceModalText label={t("Code")} value={record.userId} />
+            <AttendanceModalText label={t("Name")} value={user.find((u) => u._id === record?.userId)?.displayName} />
+            <AttendanceModalText label={t("Position")} value={user.find((u) => u._id === record?.userId)?.role} />
+            <AttendanceModalText
+              label={t("Joined at")}
+              value={dayjs(user.find((u) => u._id === record?.userId)?.createdAt).format(DMY_FORMAT)}
+            />
           </Space>
         </Col>
         <Col span={10} offset={2}>
           <Space direction="vertical">
-            <Typography.Text>
-              {t("Working days")}: {totalCheck}/{workingDays.length} {t("days")}
-            </Typography.Text>
-            <Typography.Text>
-              {t("Working hours")}: {totalHour} {t("hours")}
-            </Typography.Text>
-            <Typography.Text>
-              {t("Check in late")}: {lateCheckInCount} {t("times")}
-            </Typography.Text>
-            <Typography.Text>
-              {t("Check out early")}: {earlyCheckOutCount} {t("times")}
-            </Typography.Text>
+            <AttendanceModalText label={t("Working days")} value={`${totalCheck}/${workingDays.length} ${t("days")}`} />
+            <AttendanceModalText label={t("Working hours")} value={`${totalWorkingHour} ${t("hours")}`} />
+            <AttendanceModalText label={t("Overtime hours")} value={`${totalOvertimeHour} ${t("hours")}`} />
+            <AttendanceModalText label={t("Check in late times")} value={`${lateCheckInCount} ${t("times")}`} />
+            <AttendanceModalText label={t("Check out early times")} value={`${earlyCheckOutCount} ${t("times")}`} />
           </Space>
         </Col>
       </Row>

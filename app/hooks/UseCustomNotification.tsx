@@ -8,7 +8,7 @@ export function useCustomNotification() {
       message: msg,
       description: des,
       placement: "topRight",
-      duration: 2,
+      duration: 1,
       style: {
         width: 400,
         borderRadius: 10,

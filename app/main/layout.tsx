@@ -2,13 +2,11 @@
 
 import MenuIcon from "@mui/icons-material/Menu";
 import { Avatar, Button, Flex, Image, Layout } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PersonIcon from "@mui/icons-material/Person";
 import BarChartIcon from "@mui/icons-material/BarChart";
-import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
-import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
-import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
-
+import EventAvailableIcon from "@mui/icons-material/EventAvailable";
+import EventBusyIcon from "@mui/icons-material/EventBusy";
 import SidebarLink from "../component/layout/SidebarLink";
 import "@ant-design/v5-patch-for-react-19";
 import "../../locales/i18n";
@@ -24,6 +22,18 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     i18n.changeLanguage(lang);
   };
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 1024) setCollapsed(true);
+      else setCollapsed(false);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <Layout>
       <Flex vertical align="center" gap={40} style={{ width: 200, height: "100vh", position: "fixed" }}>
@@ -31,14 +41,12 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         <Avatar size={80} icon={<PersonIcon />} />
         <Flex vertical gap={10} style={{ width: 200 }}>
           <SidebarLink link="/main" icon={<BarChartIcon />} label={t("Dashboard")} collapsed={collapsed} />
-          <SidebarLink link="/main/EmployeeWorkTime" icon={<AccessTimeOutlinedIcon />} label={t("Working time")} collapsed={collapsed} />
-          <SidebarLink link="/main/Attendance" icon={<CheckCircleOutlinedIcon />} label={t("Attendance")} collapsed={collapsed} />
-          <SidebarLink link="/main/InLate-OutEarly" icon={<CancelOutlinedIcon />} label={t("In late/Out early")} collapsed={collapsed} />
-          {/* <SidebarLink link="/main/Notification" icon={<CancelOutlinedIcon />} label={t("Noti")} collapsed={collapsed} /> */}
+          <SidebarLink link="/main/Attendance" icon={<EventAvailableIcon />} label={t("Attendance")} collapsed={collapsed} />
+          <SidebarLink link="/main/MistakeRecord" icon={<EventBusyIcon />} label={t("Mistake attendance")} collapsed={collapsed} />
         </Flex>
       </Flex>
       <Layout
-        className={`content fixed h-[100vh] transition-all duration-300 ${
+        className={`content fixed h-[100vh] overflow-y-auto transition-all duration-300 ${
           collapsed ? "w-[calc(100%-42px)] ml-[42px]" : "w-[calc(100%-200px)] ml-[200px]"
         } bg-gray-200`}
       >
@@ -53,7 +61,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             </Button>
           </Flex>
         </Header>
-        <Content className="m-3 p-3 bg-white rounded-xl">{children}</Content>
+        <Content className="m-3">{children}</Content>
       </Layout>
     </Layout>
   );

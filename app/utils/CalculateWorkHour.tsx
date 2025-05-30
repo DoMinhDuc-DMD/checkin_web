@@ -1,26 +1,25 @@
 import { CalculateWorkMinute } from "./CalculateWorkMinute";
-import dayjs from "dayjs";
-import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
-dayjs.extend(isSameOrAfter);
 
 export function CalculateWorkHour(checkInList: string[], checkOutList: string[]) {
-  let totalMinutes = 0;
+  let totalWorkingMinutes = 0;
   let totalDays = 0;
+  let totalOvertimeMinutes = 0;
 
   for (let i = 0; i < checkInList.length; i++) {
     const checkInStr = checkInList[i];
     const checkOutStr = checkOutList[i];
 
-    const minutes = CalculateWorkMinute(checkInStr, checkOutStr);
+    const { workingMinute, overtimeMinute } = CalculateWorkMinute(checkInStr, checkOutStr);
 
-    if (minutes > 0) {
-      totalMinutes += minutes;
+    if (workingMinute > 0) {
+      totalWorkingMinutes += workingMinute;
       totalDays += 1;
+      totalOvertimeMinutes += overtimeMinute;
     }
   }
-
   return {
-    totalHour: Math.round((totalMinutes / 60) * 10) / 10,
+    totalWorkingHour: Math.round((totalWorkingMinutes / 60) * 10) / 10,
     totalCheck: totalDays,
+    totalOvertimeHour: Math.round((totalOvertimeMinutes / 60) * 10) / 10,
   };
 }
