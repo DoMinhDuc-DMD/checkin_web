@@ -1,7 +1,7 @@
 "use client";
 
 import { DATE_FORMAT, DM_FORMAT, today } from "@/app/constant/ConstantVariables";
-import { UserTrackerRecord } from "@/app/constant/DataType";
+import { DataType } from "@/app/constant/DataType";
 import { CalculateWorkMinute } from "@/app/utils/CalculateWorkMinute";
 import { Tooltip } from "antd";
 import dayjs from "dayjs";
@@ -20,9 +20,9 @@ export default function AttendanceDayColumns(days: number[], selectedMonth: dayj
       width: 70,
       align: "center" as const,
       onCell: () => ({ style: { backgroundColor: isWorkingDay ? "" : "oklch(0.90 0 0)" } }),
-      render: (_, record: UserTrackerRecord) => {
+      render: (_, record: DataType) => {
         const dateStr = date.format(DATE_FORMAT);
-        const foundDate = record.records.find((r) => r.dateStr === dateStr);
+        const foundDate = record.trackRecord.find((r) => r.date === dateStr);
 
         if (date > today) {
           return <span className="font-semibold">---</span>;

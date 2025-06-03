@@ -1,31 +1,31 @@
 "use client";
 
-import { User, UserTrackerRecord } from "@/app/constant/DataType";
+import { DataType } from "@/app/constant/DataType";
 import { CalculateWorkHour } from "@/app/utils/CalculateWorkHour";
 import { Button } from "antd";
 import { CSVLink } from "react-csv";
 import { useTranslation } from "react-i18next";
 
 interface AttendanceExportProps {
-  user: User[];
-  selectedRow: UserTrackerRecord[];
+  selectedRow: DataType[];
 }
 
-export default function AttendanceExport({ user, selectedRow }: AttendanceExportProps) {
+export default function AttendanceExport({ selectedRow }: AttendanceExportProps) {
   const { t } = useTranslation();
 
   const csvData = selectedRow.map((row) => {
-    const userInfo = user.find((u) => u._id === row.userId);
     const { totalWorkingHour, totalCheck } = CalculateWorkHour(
-      row.records.flatMap((r) => r.checkIn).filter((v): v is string => v !== null),
-      row.records.flatMap((r) => r.checkOut).filter((v): v is string => v !== null)
+      row.trackRecord.flatMap((r) => r.checkIn).filter((v): v is string => v !== null),
+      row.trackRecord.flatMap((r) => r.checkOut).filter((v): v is string => v !== null)
     );
 
     return {
       userId: row.userId,
-      name: userInfo?.displayName,
-      totalCheck: `${totalCheck} ${t("days")}`,
-      totalHour: `${totalWorkingHour} ${t("hours")}`,
+      name: row.displayName,
+      email: row.email,
+      role: row.role,
+      totalCheck: `${totalCheck} ${totalCheck > 1 ? t("days") : t("day")}`,
+      totalHour: `${totalWorkingHour} ${totalWorkingHour > 1 ? t("hours") : t("hour")}`,
     };
   });
 

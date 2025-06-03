@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 interface AnalyzeDataProps {
   user: User[];
   tracker: Tracker[];
-  analyzeDate: dayjs.Dayjs | null;
+  analyzeDate: dayjs.Dayjs;
 }
 
 export default function AnalyzeData({ user, tracker, analyzeDate }: AnalyzeDataProps) {

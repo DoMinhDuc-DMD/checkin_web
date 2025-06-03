@@ -8,64 +8,58 @@ import { Typography } from "antd";
 import { useCustomNotification } from "@/app/hooks/UseCustomNotification";
 import { useTranslation } from "react-i18next";
 import UseFetchData from "@/app/hooks/UseFetchData";
-import { User, UserTrackerRecord } from "@/app/constant/DataType";
+import { DataType } from "@/app/constant/DataType";
 import { today } from "@/app/constant/ConstantVariables";
-import AttendanceFilters from "@/app/component/Attendance/AttendanceFilters";
+import Filters from "@/app/component/Filters";
 
 export default function Attendance() {
   const { t } = useTranslation();
+  // Lấy data
   const [selectedMonth, setSelectedMonth] = useState<dayjs.Dayjs>(today);
-
-  const [users, setUsers] = useState<User[]>([]);
-  const [userTrackers, setUserTrackers] = useState<UserTrackerRecord[]>([]);
-
+  const { userTracker, loading } = UseFetchData(selectedMonth);
+  const [data, setData] = useState<DataType[]>([]);
+  useEffect(() => {
+    setData(userTracker);
+  }, [userTracker]);
+  // Search
   const [searchInput, setSearchInput] = useState("");
   const { openNotification, contextHolder } = useCustomNotification();
-
+  // Checkbox
+  const [selectedRow, setSelectedRow] = useState<DataType[]>([]);
+  const isSelectedAll = selectedRow.length === data.length && data.length > 0;
+  const handleSelectAll = () => {
+    setSelectedRow(isSelectedAll ? [] : data);
+  };
+  const handleCheckboxChange = (row: DataType) => {
+    setSelectedRow((prev) => (prev.some((r) => row.userId === r.userId) ? prev.filter((r) => r.userId !== row.userId) : [...prev, row]));
+  };
+  // Danh sách ngày trong tháng chọn
   const days = useMemo(() => {
     const daysInMonth = selectedMonth.daysInMonth();
     return Array.from({ length: daysInMonth }).map((_, index) => index + 1);
   }, [selectedMonth]);
-
-  const { user, userTracker } = UseFetchData(selectedMonth);
-  useEffect(() => {
-    setUsers(user);
-    setUserTrackers(userTracker);
-  }, [user, userTracker]);
-
+  // Search
   const searchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
   };
-
   const handleSearch = (value: string) => {
-    setSearchInput(value);
-
-    if (!value) {
-      setUsers(user);
-      setUserTrackers(userTracker);
+    setSelectedRow([]);
+    const searchTerm = value.trim().toLowerCase();
+    if (!searchTerm) {
+      setData(userTracker);
       return;
     }
-    const searchTerm = value.toLowerCase();
-
-    const filteredUser = user.filter((u) => u.displayName.toLowerCase().includes(searchTerm));
+    const filteredUser = userTracker.filter((d) => d.displayName.toLowerCase().includes(searchTerm));
     if (filteredUser.length === 0) {
       openNotification(t("Notice"), t("No suitable employee found!"));
       return;
     }
-
-    const filteredIds = new Set(filteredUser.map((u) => u._id));
-    const filteredUserTracker = userTracker.filter((ut) => filteredIds.has(ut.userId));
-
-    setUsers(filteredUser);
-    setUserTrackers(filteredUserTracker);
+    setData(filteredUser);
   };
-
-  const handleDateChange = (value: dayjs.Dayjs | null) => {
+  // Date picker
+  const handleDateChange = (value: dayjs.Dayjs) => {
     setSearchInput("");
-    if (!value) {
-      setSelectedMonth(today);
-      return;
-    }
+    setSelectedRow([]);
     setSelectedMonth(value);
   };
 
@@ -75,14 +69,24 @@ export default function Attendance() {
       <Typography.Title level={3} className="flex justify-center font-semibold">
         {t("Attendance statistics")}
       </Typography.Title>
-      <AttendanceFilters
+      <Filters
+        loading={loading}
         searchInput={searchInput}
         selectedMonth={selectedMonth}
         searchChange={searchChange}
         handleSearch={handleSearch}
         handleDateChange={handleDateChange}
       />
-      <AttendanceTable days={days} selectedMonth={selectedMonth} user={users} userTracker={userTrackers} />
+      <AttendanceTable
+        loading={loading}
+        days={days}
+        selectedMonth={selectedMonth}
+        data={data}
+        selectedRow={selectedRow}
+        isSelectedAll={isSelectedAll}
+        handleSelectAll={handleSelectAll}
+        handleCheckboxChange={handleCheckboxChange}
+      />
     </>
   );
 }

@@ -21,7 +21,7 @@ export type UserTrackerRecord = {
   }[];
 };
 
-export type MistakeRecordType = {
+export type DataType = {
   userId: string;
   displayName: string;
   email: string;

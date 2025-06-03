@@ -1,6 +1,6 @@
 "use client";
 
-import { User, UserTrackerRecord } from "@/app/constant/DataType";
+import { DataType } from "@/app/constant/DataType";
 import { MY_FORMAT, DMY_FORMAT } from "@/app/constant/ConstantVariables";
 import { CalculateWorkHour } from "@/app/utils/CalculateWorkHour";
 import { Col, Modal, Row, Space } from "antd";
@@ -10,18 +10,17 @@ import AttendanceModalText from "./AttendanceModalText";
 
 interface AttendanceModalProps {
   openModal: boolean;
-  user: User[];
-  record: UserTrackerRecord;
+  record: DataType;
   selectedMonth: dayjs.Dayjs;
   days: number[];
   onClose: () => void;
 }
 
-export default function AttendanceModal({ openModal, user, record, selectedMonth, days, onClose }: AttendanceModalProps) {
+export default function AttendanceModal({ openModal, record, selectedMonth, days, onClose }: AttendanceModalProps) {
   const { t } = useTranslation();
   const { totalWorkingHour, totalCheck, totalOvertimeHour } = CalculateWorkHour(
-    record.records.flatMap((r) => r.checkIn).filter((v): v is string => v !== null),
-    record.records.flatMap((r) => r.checkOut).filter((v): v is string => v !== null)
+    record.trackRecord.flatMap((r) => r.checkIn).filter((v): v is string => v !== null),
+    record.trackRecord.flatMap((r) => r.checkOut).filter((v): v is string => v !== null)
   );
 
   // Tính số ngày đi làm trong tháng
@@ -33,12 +32,12 @@ export default function AttendanceModal({ openModal, user, record, selectedMonth
     return dayOfWeek !== 0 && dayOfWeek !== 6;
   });
 
-  // Tính ngày check in muộn, check out sớm
-  const parseTime = (check: string) => check?.split(", ")[1]?.split(":").map(Number) || [];
-  const lateCheckInCount = record.records
-    .map((r) => r.checkIn)
-    .filter((check: string) => parseTime(check)[0] > 8 || (parseTime(check)[0] === 8 && parseTime(check)[1] > 30)).length;
-  const earlyCheckOutCount = record.records.map((r) => r.checkOut).filter((check: string) => parseTime(check)[0] < 18).length;
+  // Dịch đơn vị
+  const daysUnit = `${totalCheck > 1 ? t("days") : t("day")}`;
+  const hoursUnit = `${totalWorkingHour > 1 ? t("hours") : t("hour")}`;
+  const overtimeUnit = `${totalOvertimeHour > 1 ? t("hours") : t("hour")}`;
+  const lateTimesUnit = `${record.checkInLateCount > 1 ? t("times") : t("time")}`;
+  const earlyTimesUnit = `${record.checkOutEarlyCount > 1 ? t("times") : t("time")}`;
 
   return (
     <Modal
@@ -52,21 +51,18 @@ export default function AttendanceModal({ openModal, user, record, selectedMonth
         <Col span={10} offset={1}>
           <Space direction="vertical">
             <AttendanceModalText label={t("Code")} value={record.userId} />
-            <AttendanceModalText label={t("Name")} value={user.find((u) => u._id === record?.userId)?.displayName} />
-            <AttendanceModalText label={t("Position")} value={user.find((u) => u._id === record?.userId)?.role} />
-            <AttendanceModalText
-              label={t("Joined at")}
-              value={dayjs(user.find((u) => u._id === record?.userId)?.createdAt).format(DMY_FORMAT)}
-            />
+            <AttendanceModalText label={t("Name")} value={record.displayName} />
+            <AttendanceModalText label={t("Position")} value={record.role} />
+            <AttendanceModalText label={t("Joined at")} value={dayjs(record.createdAt).format(DMY_FORMAT)} />
           </Space>
         </Col>
         <Col span={10} offset={2}>
           <Space direction="vertical">
-            <AttendanceModalText label={t("Working days")} value={`${totalCheck}/${workingDays.length} ${t("days")}`} />
-            <AttendanceModalText label={t("Working hours")} value={`${totalWorkingHour} ${t("hours")}`} />
-            <AttendanceModalText label={t("Overtime hours")} value={`${totalOvertimeHour} ${t("hours")}`} />
-            <AttendanceModalText label={t("Check in late times")} value={`${lateCheckInCount} ${t("times")}`} />
-            <AttendanceModalText label={t("Check out early times")} value={`${earlyCheckOutCount} ${t("times")}`} />
+            <AttendanceModalText label={t("Working days")} value={`${totalCheck}/${workingDays.length} ${daysUnit}`} />
+            <AttendanceModalText label={t("Working hours")} value={`${totalWorkingHour} ${hoursUnit}`} />
+            <AttendanceModalText label={t("Overtime hours")} value={`${totalOvertimeHour} ${overtimeUnit}`} />
+            <AttendanceModalText label={t("Check in late times")} value={`${record.checkInLateCount} ${lateTimesUnit}`} />
+            <AttendanceModalText label={t("Check out early times")} value={`${record.checkOutEarlyCount} ${earlyTimesUnit}`} />
           </Space>
         </Col>
       </Row>

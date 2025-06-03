@@ -9,80 +9,81 @@ import { MONTH_FORMAT, today } from "@/app/constant/ConstantVariables";
 import dayjs from "dayjs";
 import UseFetchData from "@/app/hooks/UseFetchData";
 import MistakeRecordTable from "@/app/component/MistakeRecord/MistakeRecordTable";
-import MistakeRecordFilters from "@/app/component/MistakeRecord/MistakeRecordFilters";
-import { MistakeRecordType } from "@/app/constant/DataType";
-import MistakeRecordData from "@/app/component/MistakeRecord/MistakeRecordData";
+import { DataType } from "@/app/constant/DataType";
+import Filters from "@/app/component/Filters";
 
 export default function MistakeRecord() {
   const { t } = useTranslation();
-  const { openNotification, contextHolder } = useCustomNotification();
-
-  const [searchInput, setSearchInput] = useState("");
-  const [selectedMonth, setSelectedMonth] = useState<dayjs.Dayjs | null>(today);
   // Lấy data
-  const { user, userTracker } = UseFetchData(selectedMonth);
-  // Lọc data
-  const { originalMistakeRecord } = MistakeRecordData(user, userTracker);
-  const [mistakeRecord, setMistakeRecord] = useState<MistakeRecordType[]>([]);
-
+  const [selectedMonth, setSelectedMonth] = useState<dayjs.Dayjs>(today);
+  const { userTracker, loading } = UseFetchData(selectedMonth);
+  const [data, setData] = useState<DataType[]>([]);
   useEffect(() => {
-    setMistakeRecord(originalMistakeRecord);
-  }, [originalMistakeRecord]);
+    setData(userTracker);
+  }, [userTracker]);
 
+  const { openNotification, contextHolder } = useCustomNotification();
+  const [searchInput, setSearchInput] = useState("");
+  // Checkbox
+  const [selectedRow, setSelectedRow] = useState<DataType[]>([]);
+  const isSelectedAll = selectedRow.length === data.length && data.length > 0;
+  const handleSelectAll = () => {
+    setSelectedRow(isSelectedAll ? [] : data);
+  };
+  const handleCheckboxChange = (row: DataType) => {
+    setSelectedRow((prev) => (prev.some((r) => row.userId === r.userId) ? prev.filter((r) => r.userId !== row.userId) : [...prev, row]));
+  };
+  // Search
   const searchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
   };
 
   const handleSearch = (value: string) => {
     setSearchInput(value);
-    let filteredData = originalMistakeRecord;
-
+    let filteredData = data;
     if (value.trim() !== "") {
-      const searchTerm = value.toLowerCase();
-      filteredData = filteredData.filter((data) => data.displayName.toLowerCase().includes(searchTerm));
+      filteredData = filteredData.filter((data) => data.displayName.toLowerCase().includes(value.toLowerCase()));
     }
-
     if (filteredData.length === 0) {
       openNotification(t("Notice"), t("No suitable employee found!"));
       return;
     }
-
-    setMistakeRecord(filteredData);
+    setData(filteredData);
   };
 
-  const handleDateChange = (value: dayjs.Dayjs | null) => {
+  // Datepicker
+  const handleDateChange = (value: dayjs.Dayjs) => {
     setSearchInput("");
-    let filteredData = originalMistakeRecord;
+    setSelectedMonth(value);
 
-    if (!value) {
-      setSelectedMonth(today);
-      filteredData = filteredData.filter((data) =>
-        data.trackRecord.some((track) => dayjs(track.date).format(MONTH_FORMAT) === today.format(MONTH_FORMAT))
-      );
-    } else {
-      setSelectedMonth(value);
-      filteredData = filteredData.filter((data) =>
-        data.trackRecord.some((track) => dayjs(track.date).format(MONTH_FORMAT) === dayjs(value).format(MONTH_FORMAT))
-      );
-    }
-
-    setMistakeRecord(filteredData);
+    const filteredData = data.filter((d) =>
+      d.trackRecord.some((track) => dayjs(track.date).format(MONTH_FORMAT) === value.format(MONTH_FORMAT))
+    );
+    setData(filteredData);
   };
 
   return (
     <>
       {contextHolder}
       <Typography.Title level={3} className="flex justify-center font-semibold">
-        {t("Attendance mistake statistic")}
+        {t("Attendance in late, out early statistic")}
       </Typography.Title>
-      <MistakeRecordFilters
+      <Filters
+        loading={loading}
         searchInput={searchInput}
         selectedMonth={selectedMonth}
         searchChange={searchChange}
         handleSearch={handleSearch}
         handleDateChange={handleDateChange}
       />
-      <MistakeRecordTable mistakeRecord={mistakeRecord} />
+      <MistakeRecordTable
+        loading={loading}
+        data={data}
+        selectedRow={selectedRow}
+        isSelectedAll={isSelectedAll}
+        handleSelectAll={handleSelectAll}
+        handleCheckboxChange={handleCheckboxChange}
+      />
     </>
   );
 }

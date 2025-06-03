@@ -1,6 +1,6 @@
 "use client";
 
-import { DatePicker, Flex, Row } from "antd";
+import { ConfigProvider, DatePicker, Flex, Row } from "antd";
 import { useState } from "react";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
@@ -9,23 +9,25 @@ import UseFetchData from "../hooks/UseFetchData";
 import { today } from "../constant/ConstantVariables";
 import AnalyzeData from "../component/Dashboard/AnalyzeData";
 import ChartListAttendance from "../component/Dashboard/ChartListAttendance";
+import { antdLocales } from "@/locales/antdLocales";
+import "dayjs/locale/vi";
+import "dayjs/locale/en";
 
 export default function NewDashboard() {
-  const { t } = useTranslation();
-  const { user, tracker } = UseFetchData();
+  const { t, i18n } = useTranslation();
+  const currentLang = i18n.language;
+  dayjs.locale(currentLang);
 
-  const [analyzeDate, setAnalyzeDate] = useState<dayjs.Dayjs | null>(today);
+  const { user, tracker, loading } = UseFetchData();
+  const [analyzeDate, setAnalyzeDate] = useState<dayjs.Dayjs>(today);
+
   const { todayAttendance, attendanceCount, attendedEmployee, absentEmployee, analyzeTracker } = AnalyzeData({
     user,
     tracker,
     analyzeDate,
   });
 
-  const handleAnalyzeDateChange = (value: dayjs.Dayjs | null) => {
-    if (!value) {
-      setAnalyzeDate(today);
-      return;
-    }
+  const handleAnalyzeDateChange = (value: dayjs.Dayjs) => {
     setAnalyzeDate(value);
   };
 
@@ -37,16 +39,18 @@ export default function NewDashboard() {
   };
 
   return (
-    <Flex gap={40} vertical>
+    <Flex gap={30} vertical>
       <Row gutter={[20, 20]} justify="space-between">
-        <CountCard label="Today attendance" attendancePercentage={todayAttendance} />
-        <CountCard label="On time" attendanceCountType={attendanceCount.onTime} />
-        <CountCard label="In late" attendanceCountType={attendanceCount.inLate} />
-        <CountCard label="Out early" attendanceCountType={attendanceCount.outEarly} />
+        <CountCard label="Today attendance" attendancePercentage={todayAttendance} loading={loading} />
+        <CountCard label="On time" attendanceCountType={attendanceCount.onTime} loading={loading} />
+        <CountCard label="In late" attendanceCountType={attendanceCount.inLate} loading={loading} />
+        <CountCard label="Out early" attendanceCountType={attendanceCount.outEarly} loading={loading} />
       </Row>
-      <Flex justify="end">
-        <DatePicker value={analyzeDate} onChange={handleAnalyzeDateChange} />
-      </Flex>
+      <ConfigProvider locale={antdLocales[currentLang]}>
+        <Flex justify="end">
+          <DatePicker value={analyzeDate} onChange={handleAnalyzeDateChange} allowClear={false} disabled={loading} />
+        </Flex>
+      </ConfigProvider>
       <ChartListAttendance
         user={user}
         analyzeDate={analyzeDate}
@@ -54,6 +58,7 @@ export default function NewDashboard() {
         analyzeTracker={analyzeTracker}
         attendedEmployee={attendedEmployee}
         absentEmployee={absentEmployee}
+        loading={loading}
       />
     </Flex>
   );

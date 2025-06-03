@@ -7,7 +7,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import EventBusyIcon from "@mui/icons-material/EventBusy";
-import SidebarLink from "../component/layout/SidebarLink";
+import SidebarLink from "../component/SidebarLink";
 import "@ant-design/v5-patch-for-react-19";
 import "../../locales/i18n";
 import { useTranslation } from "react-i18next";
@@ -24,7 +24,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 1024) setCollapsed(true);
+      if (window.innerWidth <= 768) setCollapsed(true);
       else setCollapsed(false);
     };
 
@@ -42,7 +42,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         <Flex vertical gap={10} style={{ width: 200 }}>
           <SidebarLink link="/main" icon={<BarChartIcon />} label={t("Dashboard")} collapsed={collapsed} />
           <SidebarLink link="/main/Attendance" icon={<EventAvailableIcon />} label={t("Attendance")} collapsed={collapsed} />
-          <SidebarLink link="/main/MistakeRecord" icon={<EventBusyIcon />} label={t("Mistake attendance")} collapsed={collapsed} />
+          <SidebarLink link="/main/MistakeRecord" icon={<EventBusyIcon />} label={t("In late/ out early")} collapsed={collapsed} />
         </Flex>
       </Flex>
       <Layout
@@ -61,7 +61,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             </Button>
           </Flex>
         </Header>
-        <Content className="m-3">{children}</Content>
+        <Content className="m-3 h-[100%]">{children}</Content>
       </Layout>
     </Layout>
   );

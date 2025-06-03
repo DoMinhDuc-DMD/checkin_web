@@ -1,26 +1,29 @@
 "use client";
 
-import { MistakeRecordType, MistakeTrackRecord } from "@/app/constant/DataType";
+import { DataType, MistakeTrackRecord } from "@/app/constant/DataType";
 import { Button, Checkbox, Table } from "antd";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import MistakeRecordModal from "./MistakeRecordModal";
 
 interface MistakeRecordProps {
-  mistakeRecord: MistakeRecordType[];
+  loading: boolean;
+  data: DataType[];
+  selectedRow: DataType[];
+  isSelectedAll: boolean;
+  handleSelectAll: () => void;
+  handleCheckboxChange: (row: DataType) => void;
 }
 
-export default function MistakeRecordTable({ mistakeRecord }: MistakeRecordProps) {
+export default function MistakeRecordTable({
+  loading,
+  data,
+  selectedRow,
+  isSelectedAll,
+  handleSelectAll,
+  handleCheckboxChange,
+}: MistakeRecordProps) {
   const { t } = useTranslation();
-  // Select row
-  const [selectedRow, setSelectedRow] = useState<MistakeRecordType[]>([]);
-  const isSelectedAll = selectedRow.length === mistakeRecord.length && mistakeRecord.length > 0;
-  const handleSelectAll = () => {
-    setSelectedRow(isSelectedAll ? [] : mistakeRecord);
-  };
-  const handleCheckBoxChange = (row: MistakeRecordType) => {
-    setSelectedRow((prev) => (prev.some((r) => row.userId === r.userId) ? prev.filter((r) => r.userId !== row.userId) : [...prev, row]));
-  };
   // Open modal
   const [openModal, setOpenModal] = useState(false);
   const [selectedName, setSelectedName] = useState("");
@@ -35,9 +38,9 @@ export default function MistakeRecordTable({ mistakeRecord }: MistakeRecordProps
       key: "key",
       align: "center" as const,
       width: 50,
-      render: (row: MistakeRecordType) => {
+      render: (row: DataType) => {
         const isChecked = selectedRow.some((acc) => acc.userId === row.userId);
-        return <Checkbox checked={isChecked} onChange={() => handleCheckBoxChange(row)} />;
+        return <Checkbox checked={isChecked} onChange={() => handleCheckboxChange(row)} />;
       },
     },
     {
@@ -66,9 +69,9 @@ export default function MistakeRecordTable({ mistakeRecord }: MistakeRecordProps
       key: "checkInLateCount",
       align: "center" as const,
       width: 160,
-      render: (record: MistakeRecordType) => (
+      render: (record: DataType) => (
         <span>
-          {record.checkInLateCount} {t("times")}
+          {record.checkInLateCount} {record.checkInLateCount > 1 ? t("times") : t("time")}
         </span>
       ),
     },
@@ -77,9 +80,9 @@ export default function MistakeRecordTable({ mistakeRecord }: MistakeRecordProps
       key: "checkOutEarlyCount",
       align: "center" as const,
       width: 160,
-      render: (record: MistakeRecordType) => (
+      render: (record: DataType) => (
         <span>
-          {record.checkOutEarlyCount} {t("times")}
+          {record.checkOutEarlyCount} {record.checkOutEarlyCount > 1 ? t("times") : t("time")}
         </span>
       ),
     },
@@ -87,7 +90,7 @@ export default function MistakeRecordTable({ mistakeRecord }: MistakeRecordProps
       title: `${t("Detail")}`,
       align: "center" as const,
       width: 200,
-      render: (record: MistakeRecordType) => (
+      render: (record: DataType) => (
         <Button
           style={{ width: 80 }}
           type="primary"
@@ -107,11 +110,12 @@ export default function MistakeRecordTable({ mistakeRecord }: MistakeRecordProps
     <>
       <MistakeRecordModal selectedName={selectedName} selectedRecord={selectedRecord} openModal={openModal} onClose={onClose} />
       <Table
-        dataSource={mistakeRecord}
+        loading={loading}
+        dataSource={data}
         columns={columns}
         rowKey="userId"
         size="small"
-        scroll={{ y: "calc(48.8px * 12)" }}
+        scroll={{ y: "calc(100vh - 200px)" }}
         pagination={false}
       />
     </>
