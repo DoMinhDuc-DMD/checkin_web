@@ -6,9 +6,13 @@ import { antdLocales } from "@/locales/antdLocales";
 import dayjs from "dayjs";
 import "dayjs/locale/vi";
 import "dayjs/locale/en";
+import { DataType } from "../constant/DataType";
+import ExportData from "./ExportData";
 
 interface FiltersProps {
+  type: string;
   loading: boolean;
+  selectedRow: DataType[];
   searchInput: string;
   selectedMonth: dayjs.Dayjs;
   searchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -16,7 +20,16 @@ interface FiltersProps {
   handleDateChange: (value: dayjs.Dayjs) => void;
 }
 
-export default function Filters({ loading, searchInput, selectedMonth, searchChange, handleSearch, handleDateChange }: FiltersProps) {
+export default function Filters({
+  type,
+  loading,
+  selectedRow,
+  searchInput,
+  selectedMonth,
+  searchChange,
+  handleSearch,
+  handleDateChange,
+}: FiltersProps) {
   const { t, i18n } = useTranslation();
   const currentLang = i18n.language;
   dayjs.locale(currentLang);
@@ -35,6 +48,7 @@ export default function Filters({ loading, searchInput, selectedMonth, searchCha
       <ConfigProvider locale={antdLocales[currentLang]}>
         <DatePicker picker="month" value={selectedMonth} onChange={handleDateChange} disabled={loading} allowClear={false} />
       </ConfigProvider>
+      <ExportData selectedRow={selectedRow} type={type} />
     </Flex>
   );
 }

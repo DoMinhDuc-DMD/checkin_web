@@ -69,7 +69,9 @@ export default function MistakeRecord() {
         {t("Attendance in late, out early statistic")}
       </Typography.Title>
       <Filters
+        type="mistake"
         loading={loading}
+        selectedRow={selectedRow}
         searchInput={searchInput}
         selectedMonth={selectedMonth}
         searchChange={searchChange}

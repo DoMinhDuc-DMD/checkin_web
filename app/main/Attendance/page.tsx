@@ -70,7 +70,9 @@ export default function Attendance() {
         {t("Attendance statistics")}
       </Typography.Title>
       <Filters
+        type="attendance"
         loading={loading}
+        selectedRow={selectedRow}
         searchInput={searchInput}
         selectedMonth={selectedMonth}
         searchChange={searchChange}

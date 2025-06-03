@@ -6,7 +6,6 @@ import { DataType } from "@/app/constant/DataType";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import AttendanceModal from "./AttendanceModal";
-import AttendanceExport from "./AttendanceExport";
 import AttendanceDayColumns from "./AttendanceDayColumns";
 import dayjs from "dayjs";
 
@@ -104,7 +103,6 @@ export default function AttendanceTable({
 
   return (
     <>
-      {selectedRow.length > 0 && <AttendanceExport selectedRow={selectedRow} />}
       {selectedRecord && (
         <AttendanceModal
           openModal={openModal}
