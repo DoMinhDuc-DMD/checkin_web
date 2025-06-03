@@ -21,7 +21,7 @@ export default function MistakeRecord() {
   useEffect(() => {
     setData(userTracker);
   }, [userTracker]);
-
+  // Search
   const { openNotification, contextHolder } = useCustomNotification();
   const [searchInput, setSearchInput] = useState("");
   // Checkbox
@@ -37,22 +37,21 @@ export default function MistakeRecord() {
   const searchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
   };
-
   const handleSearch = (value: string) => {
+    setSelectedRow([]);
     const searchTerm = value.trim().toLowerCase();
     setSearchInput(value);
 
     const filteredData = userTracker.filter((data) => data.displayName.toLowerCase().includes(searchTerm));
-
     if (filteredData.length === 0) {
       openNotification(t("Notice"), t("No suitable employee found!"));
       return;
     }
     setData(filteredData);
   };
-
   // Datepicker
   const handleDateChange = (value: dayjs.Dayjs) => {
+    setSelectedRow([]);
     setSearchInput("");
     setSelectedMonth(value);
 

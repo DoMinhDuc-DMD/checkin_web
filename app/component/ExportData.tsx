@@ -14,7 +14,7 @@ interface ExportDataProps {
 export default function ExportData({ selectedRow, type }: ExportDataProps) {
   const { t } = useTranslation();
 
-  if (selectedRow.length === 0) return null;
+  if (selectedRow.length === 0 || !type) return null;
 
   const csvData = selectedRow.map((row) => {
     if (type === "attendance") {

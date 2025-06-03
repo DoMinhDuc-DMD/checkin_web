@@ -95,7 +95,7 @@ export default function AttendanceTable({
             setOpenModal(true);
           }}
         >
-          {t("Detail")}
+          {t("View")}
         </Button>
       ),
     },

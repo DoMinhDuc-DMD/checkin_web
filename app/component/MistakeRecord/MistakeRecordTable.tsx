@@ -100,7 +100,7 @@ export default function MistakeRecordTable({
             setOpenModal(true);
           }}
         >
-          {t("Detail")}
+          {t("View")}
         </Button>
       ),
     },
