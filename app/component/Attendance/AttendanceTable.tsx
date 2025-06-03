@@ -121,7 +121,7 @@ export default function AttendanceTable({
         rowKey={"userId"}
         size="small"
         scroll={{ x: "max-content" }}
-        pagination={{ pageSize: 10, position: [`bottomCenter`], showSizeChanger: false }}
+        pagination={{ pageSize: 10, position: [`bottomCenter`], showSizeChanger: false, size: "default", hideOnSinglePage: true }}
       />
     </>
   );

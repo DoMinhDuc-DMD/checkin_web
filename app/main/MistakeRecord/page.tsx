@@ -39,11 +39,11 @@ export default function MistakeRecord() {
   };
 
   const handleSearch = (value: string) => {
+    const searchTerm = value.trim().toLowerCase();
     setSearchInput(value);
-    let filteredData = data;
-    if (value.trim() !== "") {
-      filteredData = filteredData.filter((data) => data.displayName.toLowerCase().includes(value.toLowerCase()));
-    }
+
+    const filteredData = userTracker.filter((data) => data.displayName.toLowerCase().includes(searchTerm));
+
     if (filteredData.length === 0) {
       openNotification(t("Notice"), t("No suitable employee found!"));
       return;

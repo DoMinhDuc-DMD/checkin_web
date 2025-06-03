@@ -1,7 +1,7 @@
 "use client";
 import dayjs from "dayjs";
 import axios from "axios";
-import { DataType, Tracker, User, UserTrackerRecord } from "../constant/DataType";
+import { DataType, Tracker, User } from "../constant/DataType";
 import { useEffect, useState } from "react";
 import {
   apiLink,

@@ -1,10 +1,9 @@
 "use client";
 
-import { ConfigProvider, DatePicker, Flex } from "antd";
-import Search from "antd/es/input/Search";
+import { ConfigProvider, DatePicker, Flex, Input } from "antd";
 import { useTranslation } from "react-i18next";
-import dayjs from "dayjs";
 import { antdLocales } from "@/locales/antdLocales";
+import dayjs from "dayjs";
 import "dayjs/locale/vi";
 import "dayjs/locale/en";
 
@@ -24,7 +23,7 @@ export default function Filters({ loading, searchInput, selectedMonth, searchCha
 
   return (
     <Flex gap={20} style={{ marginBottom: 12 }}>
-      <Search
+      <Input.Search
         placeholder={t("Search employee")}
         style={{ width: 250 }}
         value={searchInput}

@@ -1,6 +1,6 @@
 "use client";
 
-import { DataType, MistakeTrackRecord } from "@/app/constant/DataType";
+import { DataType, TrackRecord } from "@/app/constant/DataType";
 import { Button, Checkbox, Table } from "antd";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -27,7 +27,7 @@ export default function MistakeRecordTable({
   // Open modal
   const [openModal, setOpenModal] = useState(false);
   const [selectedName, setSelectedName] = useState("");
-  const [selectedRecord, setSelectedRecord] = useState<MistakeTrackRecord>([]);
+  const [selectedRecord, setSelectedRecord] = useState<TrackRecord>([]);
   const onClose = () => {
     setOpenModal(false);
   };
@@ -115,8 +115,7 @@ export default function MistakeRecordTable({
         columns={columns}
         rowKey="userId"
         size="small"
-        scroll={{ y: "calc(100vh - 200px)" }}
-        pagination={false}
+        pagination={{ pageSize: 10, position: [`bottomCenter`], showSizeChanger: false, size: "default", hideOnSinglePage: true }}
       />
     </>
   );

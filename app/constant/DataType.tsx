@@ -12,15 +12,6 @@ export type User = {
 
 export type Tracker = { _id: string; user: string; type: string; time: string };
 
-export type UserTrackerRecord = {
-  userId: string;
-  records: {
-    dateStr: string;
-    checkIn: string;
-    checkOut: string;
-  }[];
-};
-
 export type DataType = {
   userId: string;
   displayName: string;
@@ -29,10 +20,10 @@ export type DataType = {
   createdAt: string;
   checkInLateCount: number;
   checkOutEarlyCount: number;
-  trackRecord: MistakeTrackRecord;
+  trackRecord: TrackRecord;
 };
 
-export type MistakeTrackRecord = {
+export type TrackRecord = {
   date: string;
   checkIn: string;
   checkOut: string;

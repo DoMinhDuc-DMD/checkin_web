@@ -1,14 +1,14 @@
 "use client";
 
 import { DMY_FORMAT } from "@/app/constant/ConstantVariables";
-import { MistakeTrackRecord } from "@/app/constant/DataType";
+import { TrackRecord } from "@/app/constant/DataType";
 import { Modal, Table } from "antd";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 
 interface MistakeRecordModalProps {
   selectedName: string;
-  selectedRecord: MistakeTrackRecord;
+  selectedRecord: TrackRecord;
   openModal: boolean;
   onClose: () => void;
 }

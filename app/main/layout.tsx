@@ -1,16 +1,16 @@
 "use client";
 
-import MenuIcon from "@mui/icons-material/Menu";
 import { Avatar, Button, Flex, Image, Layout } from "antd";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import "../../locales/i18n";
+import "@ant-design/v5-patch-for-react-19";
+import MenuIcon from "@mui/icons-material/Menu";
 import PersonIcon from "@mui/icons-material/Person";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import EventBusyIcon from "@mui/icons-material/EventBusy";
 import SidebarLink from "../component/SidebarLink";
-import "@ant-design/v5-patch-for-react-19";
-import "../../locales/i18n";
-import { useTranslation } from "react-i18next";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
