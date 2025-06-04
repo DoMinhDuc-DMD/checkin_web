@@ -42,7 +42,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         <Flex vertical gap={10} style={{ width: 200 }}>
           <SidebarLink link="/main" icon={<BarChartIcon />} label={t("Dashboard")} collapsed={collapsed} />
           <SidebarLink link="/main/Attendance" icon={<EventAvailableIcon />} label={t("Attendance")} collapsed={collapsed} />
-          <SidebarLink link="/main/MistakeRecord" icon={<EventBusyIcon />} label={t("In late/ out early")} collapsed={collapsed} />
+          <SidebarLink link="/main/Mistake" icon={<EventBusyIcon />} label={t("In late/out early")} collapsed={collapsed} />
         </Flex>
       </Flex>
       <Layout

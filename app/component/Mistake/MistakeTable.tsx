@@ -4,25 +4,28 @@ import { DataType, TrackRecord } from "@/app/constant/DataType";
 import { Button, Checkbox, Table } from "antd";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import MistakeRecordModal from "./MistakeRecordModal";
+import dayjs from "dayjs";
+import MistakeModal from "./MistakeModal";
 
-interface MistakeRecordProps {
+interface MistakeTableProps {
   loading: boolean;
   data: DataType[];
+  selectedMonth: dayjs.Dayjs;
   selectedRow: DataType[];
   isSelectedAll: boolean;
   handleSelectAll: () => void;
   handleCheckboxChange: (row: DataType) => void;
 }
 
-export default function MistakeRecordTable({
+export default function MistakeTable({
   loading,
   data,
+  selectedMonth,
   selectedRow,
   isSelectedAll,
   handleSelectAll,
   handleCheckboxChange,
-}: MistakeRecordProps) {
+}: MistakeTableProps) {
   const { t } = useTranslation();
   // Open modal
   const [openModal, setOpenModal] = useState(false);
@@ -108,7 +111,13 @@ export default function MistakeRecordTable({
 
   return (
     <>
-      <MistakeRecordModal selectedName={selectedName} selectedRecord={selectedRecord} openModal={openModal} onClose={onClose} />
+      <MistakeModal
+        selectedName={selectedName}
+        selectedMonth={selectedMonth}
+        selectedRecord={selectedRecord}
+        openModal={openModal}
+        onClose={onClose}
+      />
       <Table
         loading={loading}
         dataSource={data}

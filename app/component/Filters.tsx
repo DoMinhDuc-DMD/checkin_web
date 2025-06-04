@@ -37,7 +37,7 @@ export default function Filters({
   return (
     <Flex gap={20} style={{ marginBottom: 12 }}>
       <Input.Search
-        placeholder={t("Search employee")}
+        placeholder={t("Search staff")}
         style={{ width: 250 }}
         value={searchInput}
         onChange={searchChange}

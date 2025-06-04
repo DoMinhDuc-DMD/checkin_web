@@ -1,6 +1,6 @@
 "use client";
 
-import { DATE_FORMAT, DM_FORMAT, today } from "@/app/constant/ConstantVariables";
+import { DM_FORMAT, today } from "@/app/constant/ConstantVariables";
 import { DataType } from "@/app/constant/DataType";
 import { CalculateWorkMinute } from "@/app/utils/CalculateWorkMinute";
 import { Tooltip } from "antd";
@@ -21,27 +21,27 @@ export default function AttendanceDayColumns(days: number[], selectedMonth: dayj
       align: "center" as const,
       onCell: () => ({ style: { backgroundColor: isWorkingDay ? "" : "oklch(0.90 0 0)" } }),
       render: (_, record: DataType) => {
-        const dateStr = date.format(DATE_FORMAT);
-        const foundDate = record.trackRecord.find((r) => r.date === dateStr);
+        const foundDate = record.trackRecord.find((r) => dayjs(r.date).isSame(date, "day"));
 
         if (date > today) {
           return <span className="font-semibold">---</span>;
         }
+
         if (!foundDate) {
           if (!isWorkingDay) return <span className="font-semibold text-blue-500">{t("Off")}</span>;
           return <span className="font-semibold text-gray-600">{t("Leave")}</span>;
         }
+
         const { checkIn, checkOut } = foundDate;
-
-        const { workingMinute } = CalculateWorkMinute(checkIn, checkOut);
-        const workedHours = (workingMinute / 60).toFixed(2);
-
         if (checkIn && !checkOut)
           return (
             <Tooltip title={`${checkIn.split(", ")[1]}`}>
               <span className={`font-semibold text-green-600`}>{t("Checked")}</span>
             </Tooltip>
           );
+
+        const { workingMinute } = CalculateWorkMinute(checkIn, checkOut);
+        const workedHours = (workingMinute / 60).toFixed(2);
 
         return (
           <Tooltip title={`${checkIn.split(", ")[1]} - ${checkOut.split(", ")[1]}`}>

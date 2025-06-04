@@ -1,19 +1,20 @@
 "use client";
 
-import { DMY_FORMAT } from "@/app/constant/ConstantVariables";
+import { DMY_FORMAT, MY_FORMAT } from "@/app/constant/ConstantVariables";
 import { TrackRecord } from "@/app/constant/DataType";
 import { Modal, Table } from "antd";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 
-interface MistakeRecordModalProps {
+interface MistakeModalProps {
   selectedName: string;
+  selectedMonth: dayjs.Dayjs;
   selectedRecord: TrackRecord;
   openModal: boolean;
   onClose: () => void;
 }
 
-export default function MistakeRecordModal({ selectedName, selectedRecord, openModal, onClose }: MistakeRecordModalProps) {
+export default function MistakeModal({ selectedName, selectedMonth, selectedRecord, openModal, onClose }: MistakeModalProps) {
   const { t } = useTranslation();
   const columns = [
     {
@@ -42,12 +43,21 @@ export default function MistakeRecordModal({ selectedName, selectedRecord, openM
       dataIndex: "typeMistake",
       key: "typeMistake",
       align: "center" as const,
+      render: (record: string) => {
+        return <span className={`font-semibold ${record !== t("None") ? "text-red-500" : "text-green-600"}`}>{record}</span>;
+      },
     },
   ];
 
   return (
-    <Modal open={openModal} onCancel={onClose} onOk={onClose} title={`${t("Attendance mistake detail of")} ${selectedName}`} width={700}>
-      <Table rowKey="date" dataSource={selectedRecord} columns={columns} scroll={{ y: "calc(48.8px * 8)" }} pagination={false} />
+    <Modal
+      open={openModal}
+      onCancel={onClose}
+      onOk={onClose}
+      title={`${t("Attendance mistake detail of")} ${selectedName} ${t("in")} ${t(dayjs(selectedMonth).format(MY_FORMAT))}`}
+      width={700}
+    >
+      <Table rowKey="date" dataSource={selectedRecord} columns={columns} scroll={{ y: "calc(54.8px * 8)" }} pagination={false} />
     </Modal>
   );
 }

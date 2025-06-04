@@ -32,7 +32,8 @@ export default function AttendanceTable({
 }: AttendanceTableProps) {
   const { t } = useTranslation();
   const [openModal, setOpenModal] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState<DataType | null>(null);
+  const [selectedName, setSelectedName] = useState("");
+  const [selectedRecord, setSelectedRecord] = useState<DataType>();
 
   const columns = [
     {
@@ -51,14 +52,11 @@ export default function AttendanceTable({
       width: 150,
       fixed: "left" as const,
       align: "center" as const,
-      render: (record: DataType) => {
-        return <span>{record.displayName || "---"}</span>;
-      },
+      render: (record: DataType) => <span>{record.displayName || "---"}</span>,
     },
     {
       title: t("Total check"),
       key: "total_check",
-      width: 150,
       fixed: "left" as const,
       align: "center" as const,
       render: (_, record: DataType) => {
@@ -68,10 +66,10 @@ export default function AttendanceTable({
         );
         return (
           <Flex justify="space-between">
-            <Typography.Text className="w-[80px]">
-              {totalWorkingHour.toFixed(1)} {totalWorkingHour > 1 ? t("hours") : t("hour")}
+            <Typography.Text className="w-[90px]">
+              {totalWorkingHour.toFixed(2)} {totalWorkingHour > 1 ? t("hours") : t("hour")}
             </Typography.Text>
-            <Typography.Text className="w-[1px] h-5 bg-black" />
+            <Typography.Text className="w-[1px] text-center h-5 bg-black" />
             <Typography.Text className="w-[60px]">
               {totalCheck} {totalCheck > 1 ? t("days") : t("day")}
             </Typography.Text>
@@ -91,6 +89,7 @@ export default function AttendanceTable({
           style={{ width: 80 }}
           type="primary"
           onClick={() => {
+            setSelectedName(record.displayName);
             setSelectedRecord(record);
             setOpenModal(true);
           }}
@@ -107,6 +106,7 @@ export default function AttendanceTable({
         <AttendanceModal
           openModal={openModal}
           onClose={() => setOpenModal(false)}
+          selectedName={selectedName}
           record={selectedRecord}
           selectedMonth={selectedMonth}
           days={days}
@@ -119,7 +119,14 @@ export default function AttendanceTable({
         rowKey={"userId"}
         size="small"
         scroll={{ x: "max-content" }}
-        pagination={{ pageSize: 10, position: [`bottomCenter`], showSizeChanger: false, size: "default", hideOnSinglePage: true }}
+        pagination={{
+          pageSize: 10,
+          position: [`bottomCenter`],
+          showSizeChanger: false,
+          size: "default",
+          hideOnSinglePage: true,
+          defaultCurrent: 1,
+        }}
       />
     </>
   );

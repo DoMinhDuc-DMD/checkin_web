@@ -48,7 +48,7 @@ export default function Attendance() {
 
     const filteredUser = userTracker.filter((d) => d.displayName.toLowerCase().includes(searchTerm));
     if (filteredUser.length === 0) {
-      openNotification(t("Notice"), t("No suitable employee found!"));
+      openNotification();
       return;
     }
     setData(filteredUser);

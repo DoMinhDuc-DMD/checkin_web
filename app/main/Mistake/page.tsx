@@ -8,11 +8,11 @@ import { useCustomNotification } from "@/app/hooks/UseCustomNotification";
 import { MONTH_FORMAT, today } from "@/app/constant/ConstantVariables";
 import dayjs from "dayjs";
 import UseFetchData from "@/app/hooks/UseFetchData";
-import MistakeRecordTable from "@/app/component/MistakeRecord/MistakeRecordTable";
+import MistakeTable from "@/app/component/Mistake/MistakeTable";
 import { DataType } from "@/app/constant/DataType";
 import Filters from "@/app/component/Filters";
 
-export default function MistakeRecord() {
+export default function Mistake() {
   const { t } = useTranslation();
   // Lấy data
   const [selectedMonth, setSelectedMonth] = useState<dayjs.Dayjs>(today);
@@ -44,7 +44,7 @@ export default function MistakeRecord() {
 
     const filteredData = userTracker.filter((data) => data.displayName.toLowerCase().includes(searchTerm));
     if (filteredData.length === 0) {
-      openNotification(t("Notice"), t("No suitable employee found!"));
+      openNotification();
       return;
     }
     setData(filteredData);
@@ -77,9 +77,10 @@ export default function MistakeRecord() {
         handleSearch={handleSearch}
         handleDateChange={handleDateChange}
       />
-      <MistakeRecordTable
+      <MistakeTable
         loading={loading}
         data={data}
+        selectedMonth={selectedMonth}
         selectedRow={selectedRow}
         isSelectedAll={isSelectedAll}
         handleSelectAll={handleSelectAll}

@@ -15,8 +15,8 @@ export default function AnalyzeData({ user, tracker, analyzeDate }: AnalyzeDataP
   const [attendanceCount, setAttendanceCount] = useState({ onTime: 0, inLate: 0, outEarly: 0 });
   const [analyzeTracker, setAnalyzeTracker] = useState({ onTime: 0, inLate: 0, outEarly: 0 });
 
-  const [attendedEmployee, setAttendedEmployee] = useState<{ user: User; firstCheckIn: dayjs.Dayjs }[]>([]);
-  const [absentEmployee, setAbsentEmployee] = useState<User[]>([]);
+  const [attendedStaff, setAttendedStaff] = useState<{ user: User; firstCheckIn: dayjs.Dayjs }[]>([]);
+  const [absentStaff, setAbsentStaff] = useState<User[]>([]);
 
   useEffect(() => {
     if (!analyzeDate) return;
@@ -66,10 +66,10 @@ export default function AnalyzeData({ user, tracker, analyzeDate }: AnalyzeDataP
       setAttendanceCount(checkAttendance);
     }
 
-    setAttendedEmployee(attended);
-    setAbsentEmployee(absent);
+    setAttendedStaff(attended);
+    setAbsentStaff(absent);
     setAnalyzeTracker(checkAttendance);
   }, [user, tracker, analyzeDate]);
 
-  return { todayAttendance, attendanceCount, attendedEmployee, absentEmployee, analyzeTracker };
+  return { todayAttendance, attendanceCount, attendedStaff, absentStaff, analyzeTracker };
 }

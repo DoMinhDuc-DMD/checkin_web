@@ -21,7 +21,7 @@ export default function NewDashboard() {
   const { user, tracker, loading } = UseFetchData();
   const [analyzeDate, setAnalyzeDate] = useState<dayjs.Dayjs>(today);
 
-  const { todayAttendance, attendanceCount, attendedEmployee, absentEmployee, analyzeTracker } = AnalyzeData({
+  const { todayAttendance, attendanceCount, attendedStaff, absentStaff, analyzeTracker } = AnalyzeData({
     user,
     tracker,
     analyzeDate,
@@ -34,12 +34,12 @@ export default function NewDashboard() {
   const analyzeData = {
     labels: [t("On time"), t("In late"), t("Out early")],
     datasets: [
-      { label: t("Employee"), data: [analyzeTracker.onTime, analyzeTracker.inLate, analyzeTracker.outEarly], backgroundColor: "blue" },
+      { label: t("Staff"), data: [analyzeTracker.onTime, analyzeTracker.inLate, analyzeTracker.outEarly], backgroundColor: "blue" },
     ],
   };
 
   return (
-    <Flex gap={30} vertical>
+    <Flex gap={40} vertical>
       <Row gutter={[20, 20]} justify="space-between">
         <CountCard label="Today attendance" attendancePercentage={todayAttendance} loading={loading} />
         <CountCard label="On time" attendanceCountType={attendanceCount.onTime} loading={loading} />
@@ -56,8 +56,8 @@ export default function NewDashboard() {
         analyzeDate={analyzeDate}
         analyzeData={analyzeData}
         analyzeTracker={analyzeTracker}
-        attendedEmployee={attendedEmployee}
-        absentEmployee={absentEmployee}
+        attendedStaff={attendedStaff}
+        absentStaff={absentStaff}
         loading={loading}
       />
     </Flex>

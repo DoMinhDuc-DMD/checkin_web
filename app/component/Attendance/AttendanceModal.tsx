@@ -11,12 +11,13 @@ import AttendanceModalText from "./AttendanceModalText";
 interface AttendanceModalProps {
   openModal: boolean;
   record: DataType;
+  selectedName: string;
   selectedMonth: dayjs.Dayjs;
   days: number[];
   onClose: () => void;
 }
 
-export default function AttendanceModal({ openModal, record, selectedMonth, days, onClose }: AttendanceModalProps) {
+export default function AttendanceModal({ openModal, record, selectedName, selectedMonth, days, onClose }: AttendanceModalProps) {
   const { t } = useTranslation();
   const { totalWorkingHour, totalCheck, totalOvertimeHour } = CalculateWorkHour(
     record.trackRecord.flatMap((r) => r.checkIn).filter((v): v is string => v !== null),
@@ -44,7 +45,7 @@ export default function AttendanceModal({ openModal, record, selectedMonth, days
       open={openModal}
       onCancel={onClose}
       onOk={onClose}
-      title={`${t("Attendance detail")} ${t(dayjs(selectedMonth).format(MY_FORMAT))}`}
+      title={`${t("Attendance detail of")} ${selectedName} ${t("in")} ${t(dayjs(selectedMonth).format(MY_FORMAT))}`}
       width={750}
     >
       <Row className="mt-6">

@@ -14,8 +14,8 @@ interface ChartListAttendanceProps {
   analyzeDate: dayjs.Dayjs;
   analyzeData: { labels: string[]; datasets: { label: string; data: number[]; backgroundColor: string }[] };
   analyzeTracker: { onTime: number; inLate: number; outEarly: number };
-  attendedEmployee: { user: User; firstCheckIn: dayjs.Dayjs }[];
-  absentEmployee: User[];
+  attendedStaff: { user: User; firstCheckIn: dayjs.Dayjs }[];
+  absentStaff: User[];
   loading: boolean;
 }
 
@@ -24,8 +24,8 @@ export default function ChartListAttendance({
   analyzeDate,
   analyzeData,
   analyzeTracker,
-  attendedEmployee,
-  absentEmployee,
+  attendedStaff,
+  absentStaff,
   loading,
 }: ChartListAttendanceProps) {
   const { t } = useTranslation();
@@ -46,14 +46,14 @@ export default function ChartListAttendance({
         <Spin spinning={loading}>
           <Flex vertical justify="space-around" className="h-[50vh] bg-white rounded shadow" style={{ padding: "1rem" }}>
             <strong className="text-md">
-              {t("Employee attended")}: {analyzeTracker.onTime + analyzeTracker.inLate}/{user.length}
+              {t("Staff attended")}: {analyzeTracker.onTime + analyzeTracker.inLate}/{user.length}
             </strong>
             <Divider style={{ borderColor: "black", marginTop: 0, marginBottom: 0 }} />
             <List
               className="overflow-y-scroll"
-              style={{ height: "85%" }}
+              style={{ height: "80%" }}
               bordered
-              dataSource={attendedEmployee}
+              dataSource={attendedStaff}
               renderItem={(item) => (
                 <List.Item
                   style={{ backgroundColor: `${item.firstCheckIn.isBefore(dayjs(analyzeDate).hour(8).minute(31)) ? "#79FD9D" : ""}` }}
@@ -70,13 +70,13 @@ export default function ChartListAttendance({
       <Col xs={24} md={12} xl={8}>
         <Spin spinning={loading}>
           <Flex vertical justify="space-around" className="h-[50vh] bg-white rounded shadow" style={{ padding: "1rem" }}>
-            <strong className="text-md">{t("Employee absented")}</strong>
+            <strong className="text-md">{t("Staff absented")}</strong>
             <Divider style={{ borderColor: "black", marginTop: 0, marginBottom: 0 }} />
             <List
               className="overflow-y-scroll"
-              style={{ height: "85%" }}
+              style={{ height: "80%" }}
               bordered
-              dataSource={absentEmployee}
+              dataSource={absentStaff}
               renderItem={(item) => (
                 <List.Item>
                   <strong>{item.displayName}</strong>

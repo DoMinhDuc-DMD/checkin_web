@@ -15,7 +15,7 @@ import {
 } from "../constant/ConstantVariables";
 import { useTranslation } from "react-i18next";
 
-export default function UseFetchData(selectedMonth?: dayjs.Dayjs | null) {
+export default function UseFetchData(selectedMonth?: dayjs.Dayjs) {
   const { t } = useTranslation();
   const [user, setUser] = useState<User[]>([]);
   const [tracker, setTracker] = useState<Tracker[]>([]);
@@ -28,7 +28,7 @@ export default function UseFetchData(selectedMonth?: dayjs.Dayjs | null) {
       try {
         const userData = await axios.get(`${apiLink}/users/?limit=120`);
         const trackerData = await axios.get(
-          `${apiLink}/trackers/?gte=Fri%20May%2021%202021%2000:00:00%20GMT+0700%20(Indochina%20Time)&lte=${todayDayName}%20${todayMonthName}%20${todayDate}%20${todayYear}%2023:59:59%20GMT+0700%20(Indochina%20Time)&limit=10000`
+          `${apiLink}/trackers/?gte=Fri%20May%2021%202021%2000:00:00%20GMT+0700%20(Indochina%20Time)&lte=${todayDayName}%20${todayMonthName}%20${todayDate}%20${todayYear}%2023:59:59%20GMT+0700%20(Indochina%20Time)&limit=50000`
         );
 
         const users: User[] = userData.data.data
@@ -60,6 +60,7 @@ export default function UseFetchData(selectedMonth?: dayjs.Dayjs | null) {
             }
           }
         });
+
         // Lọc qua từng bản ghi chấm công và đặt giá trị cho check out nếu chưa có
         Object.entries(userTrackerObject).forEach(([_, dates]) => {
           Object.entries(dates).forEach(([dateStr, record]) => {
@@ -101,22 +102,22 @@ export default function UseFetchData(selectedMonth?: dayjs.Dayjs | null) {
             Object.entries(records).forEach(([dateStr, { checkIn, checkOut }]) => {
               const isInLate = dayjs(checkIn).isAfter(dayjs(dateStr).hour(8).minute(30));
               const isOutEarly = dayjs(checkOut).isBefore(dayjs(dateStr).hour(18));
+              const type =
+                isInLate && isOutEarly ? t("In late, out early") : isInLate ? t("In late") : isOutEarly ? t("Out early") : t("None");
 
-              if (isInLate || isOutEarly) {
-                const type = isInLate && isOutEarly ? t("In late, out early") : isInLate ? t("In late") : t("Out early");
-                if (isInLate) dataResult.checkInLateCount++;
-                if (isOutEarly) dataResult.checkOutEarlyCount++;
+              if (isInLate) dataResult.checkInLateCount++;
+              if (isOutEarly) dataResult.checkOutEarlyCount++;
 
-                dataResult.trackRecord.push({
-                  date: dateStr,
-                  checkIn: checkIn,
-                  checkOut: checkOut,
-                  typeMistake: type,
-                });
-              }
+              dataResult.trackRecord.push({
+                date: dateStr,
+                checkIn: checkIn,
+                checkOut: checkOut,
+                typeMistake: type,
+              });
             });
             result.push(dataResult);
           });
+
         setUser(users);
         setTracker(trackers);
         setUserTracker(result);
