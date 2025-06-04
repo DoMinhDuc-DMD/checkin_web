@@ -16,6 +16,8 @@ interface AttendanceTableProps {
   data: DataType[];
   selectedRow: DataType[];
   isSelectedAll: boolean;
+  currentPage: number;
+  setCurrentPage: (page: number) => void;
   handleSelectAll: () => void;
   handleCheckboxChange: (row: DataType) => void;
 }
@@ -27,6 +29,8 @@ export default function AttendanceTable({
   data,
   selectedRow,
   isSelectedAll,
+  currentPage,
+  setCurrentPage,
   handleSelectAll,
   handleCheckboxChange,
 }: AttendanceTableProps) {
@@ -120,12 +124,13 @@ export default function AttendanceTable({
         size="small"
         scroll={{ x: "max-content" }}
         pagination={{
+          current: currentPage,
+          onChange: (page) => setCurrentPage(page),
           pageSize: 10,
           position: [`bottomCenter`],
           showSizeChanger: false,
           size: "default",
           hideOnSinglePage: true,
-          defaultCurrent: 1,
         }}
       />
     </>

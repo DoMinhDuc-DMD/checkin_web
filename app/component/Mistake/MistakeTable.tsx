@@ -13,6 +13,8 @@ interface MistakeTableProps {
   selectedMonth: dayjs.Dayjs;
   selectedRow: DataType[];
   isSelectedAll: boolean;
+  currentPage: number;
+  setCurrentPage: (page: number) => void;
   handleSelectAll: () => void;
   handleCheckboxChange: (row: DataType) => void;
 }
@@ -23,6 +25,8 @@ export default function MistakeTable({
   selectedMonth,
   selectedRow,
   isSelectedAll,
+  currentPage,
+  setCurrentPage,
   handleSelectAll,
   handleCheckboxChange,
 }: MistakeTableProps) {
@@ -124,7 +128,15 @@ export default function MistakeTable({
         columns={columns}
         rowKey="userId"
         size="small"
-        pagination={{ pageSize: 10, position: [`bottomCenter`], showSizeChanger: false, size: "default", hideOnSinglePage: true }}
+        pagination={{
+          current: currentPage,
+          onChange: (page) => setCurrentPage(page),
+          pageSize: 10,
+          position: [`bottomCenter`],
+          showSizeChanger: false,
+          size: "default",
+          hideOnSinglePage: true,
+        }}
       />
     </>
   );

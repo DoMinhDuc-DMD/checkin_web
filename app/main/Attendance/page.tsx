@@ -24,6 +24,8 @@ export default function Attendance() {
   // Search
   const [searchInput, setSearchInput] = useState("");
   const { openNotification, contextHolder } = useCustomNotification();
+  // Table pagination
+  const [currentPage, setCurrentPage] = useState<number>(1);
   // Checkbox
   const [selectedRow, setSelectedRow] = useState<DataType[]>([]);
   const isSelectedAll = selectedRow.length === data.length && data.length > 0;
@@ -43,6 +45,7 @@ export default function Attendance() {
     setSearchInput(e.target.value);
   };
   const handleSearch = (value: string) => {
+    setCurrentPage(1);
     setSelectedRow([]);
     const searchTerm = value.trim().toLowerCase();
 
@@ -55,6 +58,7 @@ export default function Attendance() {
   };
   // Date picker
   const handleDateChange = (value: dayjs.Dayjs) => {
+    setCurrentPage(1);
     setSearchInput("");
     setSelectedRow([]);
     setSelectedMonth(value);
@@ -83,6 +87,8 @@ export default function Attendance() {
         data={data}
         selectedRow={selectedRow}
         isSelectedAll={isSelectedAll}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
         handleSelectAll={handleSelectAll}
         handleCheckboxChange={handleCheckboxChange}
       />

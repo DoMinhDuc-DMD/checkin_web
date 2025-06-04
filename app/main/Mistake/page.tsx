@@ -24,6 +24,8 @@ export default function Mistake() {
   // Search
   const { openNotification, contextHolder } = useCustomNotification();
   const [searchInput, setSearchInput] = useState("");
+  // Table pagination
+  const [currentPage, setCurrentPage] = useState<number>(1);
   // Checkbox
   const [selectedRow, setSelectedRow] = useState<DataType[]>([]);
   const isSelectedAll = selectedRow.length === data.length && data.length > 0;
@@ -38,6 +40,7 @@ export default function Mistake() {
     setSearchInput(e.target.value);
   };
   const handleSearch = (value: string) => {
+    setCurrentPage(1);
     setSelectedRow([]);
     const searchTerm = value.trim().toLowerCase();
     setSearchInput(value);
@@ -51,6 +54,7 @@ export default function Mistake() {
   };
   // Datepicker
   const handleDateChange = (value: dayjs.Dayjs) => {
+    setCurrentPage(1);
     setSelectedRow([]);
     setSearchInput("");
     setSelectedMonth(value);
@@ -83,6 +87,8 @@ export default function Mistake() {
         selectedMonth={selectedMonth}
         selectedRow={selectedRow}
         isSelectedAll={isSelectedAll}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
         handleSelectAll={handleSelectAll}
         handleCheckboxChange={handleCheckboxChange}
       />
