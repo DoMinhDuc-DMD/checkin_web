@@ -20,11 +20,17 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const { t, i18n } = useTranslation();
   const handleChangeLanguage = (lang: string) => {
     i18n.changeLanguage(lang);
+    localStorage.setItem("currentLang", lang);
   };
 
   useEffect(() => {
+    const savedLang = localStorage.getItem("currentLang");
+    if (savedLang && savedLang !== i18n.language) {
+      i18n.changeLanguage(savedLang);
+    }
+
     const handleResize = () => {
-      if (window.innerWidth <= 768) setCollapsed(true);
+      if (window.innerWidth <= 1024) setCollapsed(true);
       else setCollapsed(false);
     };
 

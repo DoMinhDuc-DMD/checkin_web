@@ -14,8 +14,8 @@ export default function CountCard({ label, attendancePercentage, attendanceCount
   return (
     <Col xs={24} sm={12} lg={6}>
       <Card
-        hoverable
-        style={{ backgroundColor: "oklch(0.93 0.01 0)", height: "120px", display: "flex", alignItems: "center" }}
+        hoverable={loading ? false : true}
+        style={{ backgroundColor: "oklch(0.93 0.01 0)", height: "15vh", display: "flex", alignItems: "center" }}
         loading={loading}
       >
         <Flex vertical gap={2}>

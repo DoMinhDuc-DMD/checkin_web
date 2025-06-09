@@ -8,7 +8,7 @@
     "Attendance in late, out early statistic": "Attendance in late, out early statistic",
     "Attendance statistics": "Attendance statistics",
     "Code": "Code",
-    "Name": "Name",
+    "Staff name": "Staff name",
     "Overtime hours":"Overtime hours",
     "Position": "Position",
     "Birthday": "Birthday",
@@ -58,5 +58,9 @@
     "Check in time": "Check in time",
     "Check out time": "Check out time",
     "in": "in",
-    "None": "None"
+    "None": "None",
+    "Close": "Close",
+    "Cancel sorting":"Cancel sorting",
+    "Sort ascending": "Sort ascending",
+    "Sort descending": "Sort descending"
 }

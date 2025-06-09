@@ -7,7 +7,7 @@ import { Tooltip } from "antd";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 
-export default function AttendanceDayColumns(days: number[], selectedMonth: dayjs.Dayjs) {
+export default function AttendanceDayColumns(days: number[], selectedMonth: dayjs.Dayjs, loading: boolean) {
   const { t } = useTranslation();
 
   const dayColumns = days.map((day) => {
@@ -22,27 +22,27 @@ export default function AttendanceDayColumns(days: number[], selectedMonth: dayj
       onCell: () => ({ style: { backgroundColor: isWorkingDay ? "" : "oklch(0.90 0 0)" } }),
       render: (_, record: DataType) => {
         const foundDate = record.trackRecord.find((r) => dayjs(r.date).isSame(date, "day"));
-
+        if (loading) {
+          return <span className="font-semibold">---</span>;
+        }
         if (date > today) {
           return <span className="font-semibold">---</span>;
         }
-
         if (!foundDate) {
           if (!isWorkingDay) return <span className="font-semibold text-blue-500">{t("Off")}</span>;
           return <span className="font-semibold text-gray-600">{t("Leave")}</span>;
         }
 
         const { checkIn, checkOut } = foundDate;
-        if (checkIn && !checkOut)
+        if (checkIn && !checkOut) {
           return (
             <Tooltip title={`${checkIn.split(", ")[1]}`}>
               <span className={`font-semibold text-green-600`}>{t("Checked")}</span>
             </Tooltip>
           );
-
+        }
         const { workingMinute } = CalculateWorkMinute(checkIn, checkOut);
         const workedHours = (workingMinute / 60).toFixed(2);
-
         return (
           <Tooltip title={`${checkIn.split(", ")[1]} - ${checkOut.split(", ")[1]}`}>
             <span className={`font-semibold ${Number(workedHours) >= 8 ? "text-green-600" : "text-red-400"}`}>{workedHours}</span>

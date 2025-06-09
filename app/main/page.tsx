@@ -40,7 +40,7 @@ export default function NewDashboard() {
 
   return (
     <Flex gap={40} vertical>
-      <Row gutter={[20, 20]} justify="space-between">
+      <Row gutter={[10, 10]} justify="space-between">
         <CountCard label="Today attendance" attendancePercentage={todayAttendance} loading={loading} />
         <CountCard label="On time" attendanceCountType={attendanceCount.onTime} loading={loading} />
         <CountCard label="In late" attendanceCountType={attendanceCount.inLate} loading={loading} />
@@ -48,7 +48,7 @@ export default function NewDashboard() {
       </Row>
       <ConfigProvider locale={antdLocales[currentLang]}>
         <Flex justify="end">
-          <DatePicker value={analyzeDate} onChange={handleAnalyzeDateChange} allowClear={false} disabled={loading} />
+          <DatePicker value={loading ? null : analyzeDate} onChange={handleAnalyzeDateChange} allowClear={false} disabled={loading} />
         </Flex>
       </ConfigProvider>
       <ChartListAttendance

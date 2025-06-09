@@ -16,8 +16,6 @@ interface AttendanceTableProps {
   data: DataType[];
   selectedRow: DataType[];
   isSelectedAll: boolean;
-  currentPage: number;
-  setCurrentPage: (page: number) => void;
   handleSelectAll: () => void;
   handleCheckboxChange: (row: DataType) => void;
 }
@@ -29,8 +27,6 @@ export default function AttendanceTable({
   data,
   selectedRow,
   isSelectedAll,
-  currentPage,
-  setCurrentPage,
   handleSelectAll,
   handleCheckboxChange,
 }: AttendanceTableProps) {
@@ -51,37 +47,58 @@ export default function AttendanceTable({
       },
     },
     {
-      title: t("Name"),
+      title: t("Staff name"),
       key: "displayName",
-      width: 150,
+      width: 200,
       fixed: "left" as const,
       align: "center" as const,
-      render: (record: DataType) => <span>{record.displayName || "---"}</span>,
+      render: (record: DataType) => <span>{loading ? "--- --- ---" : record.displayName}</span>,
     },
     {
       title: t("Total check"),
       key: "total_check",
       fixed: "left" as const,
       align: "center" as const,
-      render: (_, record: DataType) => {
+      // sorter: (a: DataType, b: DataType) => {
+      //   const aTimes = CalculateWorkHour(
+      //     a.trackRecord.flatMap((r) => r.checkIn).filter((v): v is string => v !== null),
+      //     a.trackRecord.flatMap((r) => r.checkOut).filter((v): v is string => v !== null)
+      //   );
+      //   const bTimes = CalculateWorkHour(
+      //     b.trackRecord.flatMap((r) => r.checkIn).filter((v): v is string => v !== null),
+      //     b.trackRecord.flatMap((r) => r.checkOut).filter((v): v is string => v !== null)
+      //   );
+      //   return aTimes.totalWorkingHour - bTimes.totalWorkingHour;
+      // },
+      render: (record: DataType) => {
+        if (loading) {
+          return (
+            <Flex justify="space-between">
+              <Typography.Text className="w-[100px]">0.0 {t("hour")}</Typography.Text>
+              <Typography.Text className="w-[1px] text-center h-5 bg-black" />
+              <Typography.Text className="w-[100px]">0 {t("day")}</Typography.Text>
+            </Flex>
+          );
+        }
         const { totalWorkingHour, totalCheck } = CalculateWorkHour(
           record.trackRecord.flatMap((r) => r.checkIn).filter((v): v is string => v !== null),
           record.trackRecord.flatMap((r) => r.checkOut).filter((v): v is string => v !== null)
         );
+
         return (
           <Flex justify="space-between">
-            <Typography.Text className="w-[90px]">
-              {totalWorkingHour.toFixed(2)} {totalWorkingHour > 1 ? t("hours") : t("hour")}
+            <Typography.Text className="w-[100px]">
+              {totalWorkingHour.toFixed(1)} {totalWorkingHour > 1 ? t("hours") : t("hour")}
             </Typography.Text>
             <Typography.Text className="w-[1px] text-center h-5 bg-black" />
-            <Typography.Text className="w-[60px]">
+            <Typography.Text className="w-[100px]">
               {totalCheck} {totalCheck > 1 ? t("days") : t("day")}
             </Typography.Text>
           </Flex>
         );
       },
     },
-    ...AttendanceDayColumns(days, selectedMonth),
+    ...AttendanceDayColumns(days, selectedMonth, loading),
     {
       title: t("Detail"),
       key: "detail",
@@ -122,15 +139,12 @@ export default function AttendanceTable({
         columns={columns}
         rowKey={"userId"}
         size="small"
-        scroll={{ x: "max-content" }}
-        pagination={{
-          current: currentPage,
-          onChange: (page) => setCurrentPage(page),
-          pageSize: 10,
-          position: [`bottomCenter`],
-          showSizeChanger: false,
-          size: "default",
-          hideOnSinglePage: true,
+        scroll={{ x: "max-content", y: "calc(100vh - 200px)" }}
+        pagination={false}
+        locale={{
+          triggerAsc: t("Sort ascending"),
+          triggerDesc: t("Sort descending"),
+          cancelSort: t("Cancel sorting"),
         }}
       />
     </>

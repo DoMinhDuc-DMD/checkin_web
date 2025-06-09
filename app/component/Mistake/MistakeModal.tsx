@@ -2,7 +2,7 @@
 
 import { DMY_FORMAT, MY_FORMAT } from "@/app/constant/ConstantVariables";
 import { TrackRecord } from "@/app/constant/DataType";
-import { Modal, Table } from "antd";
+import { Button, Modal, Table } from "antd";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 
@@ -52,10 +52,15 @@ export default function MistakeModal({ selectedName, selectedMonth, selectedReco
   return (
     <Modal
       open={openModal}
-      onCancel={onClose}
-      onOk={onClose}
-      title={`${t("Attendance mistake detail of")} ${selectedName} ${t("in")} ${t(dayjs(selectedMonth).format(MY_FORMAT))}`}
+      title={`${t("Attendance mistake detail of")} "${selectedName}" ${t("in")} ${t(dayjs(selectedMonth).format(MY_FORMAT))}`}
       width={700}
+      onCancel={onClose}
+      closeIcon={false}
+      footer={
+        <Button color="danger" variant="solid" onClick={onClose}>
+          {t("Close")}
+        </Button>
+      }
     >
       <Table rowKey="date" dataSource={selectedRecord} columns={columns} scroll={{ y: "calc(54.8px * 8)" }} pagination={false} />
     </Modal>

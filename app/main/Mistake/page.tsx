@@ -3,7 +3,7 @@
 import "@ant-design/v5-patch-for-react-19";
 import { Typography } from "antd";
 import { useTranslation } from "react-i18next";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useCustomNotification } from "@/app/hooks/UseCustomNotification";
 import { MONTH_FORMAT, today } from "@/app/constant/ConstantVariables";
 import dayjs from "dayjs";
@@ -11,6 +11,7 @@ import UseFetchData from "@/app/hooks/UseFetchData";
 import MistakeTable from "@/app/component/Mistake/MistakeTable";
 import { DataType } from "@/app/constant/DataType";
 import Filters from "@/app/component/Filters";
+import debounce from "lodash.debounce";
 
 export default function Mistake() {
   const { t } = useTranslation();
@@ -24,8 +25,6 @@ export default function Mistake() {
   // Search
   const { openNotification, contextHolder } = useCustomNotification();
   const [searchInput, setSearchInput] = useState("");
-  // Table pagination
-  const [currentPage, setCurrentPage] = useState<number>(1);
   // Checkbox
   const [selectedRow, setSelectedRow] = useState<DataType[]>([]);
   const isSelectedAll = selectedRow.length === data.length && data.length > 0;
@@ -35,26 +34,35 @@ export default function Mistake() {
   const handleCheckboxChange = (row: DataType) => {
     setSelectedRow((prev) => (prev.some((r) => row.userId === r.userId) ? prev.filter((r) => r.userId !== row.userId) : [...prev, row]));
   };
-  // Search
-  const searchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchInput(e.target.value);
-  };
-  const handleSearch = (value: string) => {
-    setCurrentPage(1);
-    setSelectedRow([]);
-    const searchTerm = value.trim().toLowerCase();
-    setSearchInput(value);
+  // Tìm kiếm
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((value: string) => {
+        setSelectedRow([]);
+        const filteredUser = userTracker.filter((d) => d.displayName.toLowerCase().includes(value.trim().toLowerCase()));
+        if (filteredUser.length === 0) {
+          openNotification();
+          return;
+        }
+        setData(filteredUser);
+      }, 300),
+    [userTracker]
+  );
 
-    const filteredData = userTracker.filter((data) => data.displayName.toLowerCase().includes(searchTerm));
-    if (filteredData.length === 0) {
-      openNotification();
-      return;
-    }
-    setData(filteredData);
+  useEffect(() => {
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
+
+  const searchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchInput(value);
+    debouncedSearch(value);
   };
-  // Datepicker
+
+  // Chọn ngày
   const handleDateChange = (value: dayjs.Dayjs) => {
-    setCurrentPage(1);
     setSelectedRow([]);
     setSearchInput("");
     setSelectedMonth(value);
@@ -78,7 +86,6 @@ export default function Mistake() {
         searchInput={searchInput}
         selectedMonth={selectedMonth}
         searchChange={searchChange}
-        handleSearch={handleSearch}
         handleDateChange={handleDateChange}
       />
       <MistakeTable
@@ -87,8 +94,6 @@ export default function Mistake() {
         selectedMonth={selectedMonth}
         selectedRow={selectedRow}
         isSelectedAll={isSelectedAll}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
         handleSelectAll={handleSelectAll}
         handleCheckboxChange={handleCheckboxChange}
       />

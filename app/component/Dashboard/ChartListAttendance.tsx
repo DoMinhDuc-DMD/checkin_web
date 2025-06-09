@@ -35,7 +35,7 @@ export default function ChartListAttendance({
       {/* Phân tích chấm công */}
       <Col xs={24} md={24} xl={8}>
         <Spin spinning={loading}>
-          <div className="h-[50vh] bg-white p-5 rounded shadow">
+          <div className="h-[60vh] bg-white p-5 rounded shadow">
             <strong className="text-md">{t("Attendance analytic")}</strong>
             <Bar data={analyzeData} options={{ maintainAspectRatio: false }} />
           </div>
@@ -44,14 +44,14 @@ export default function ChartListAttendance({
       {/* Nhân viên có mặt */}
       <Col xs={24} md={12} xl={8}>
         <Spin spinning={loading}>
-          <Flex vertical justify="space-around" className="h-[50vh] bg-white rounded shadow" style={{ padding: "1rem" }}>
+          <Flex vertical justify="space-around" className="h-[60vh] bg-white rounded shadow" style={{ padding: "1rem" }}>
             <strong className="text-md">
               {t("Staff attended")}: {analyzeTracker.onTime + analyzeTracker.inLate}/{user.length}
             </strong>
             <Divider style={{ borderColor: "black", marginTop: 0, marginBottom: 0 }} />
             <List
               className="overflow-y-scroll"
-              style={{ height: "80%" }}
+              style={{ height: "90%" }}
               bordered
               dataSource={attendedStaff}
               renderItem={(item) => (
@@ -69,12 +69,12 @@ export default function ChartListAttendance({
       {/* Nhân viên vắng mặt */}
       <Col xs={24} md={12} xl={8}>
         <Spin spinning={loading}>
-          <Flex vertical justify="space-around" className="h-[50vh] bg-white rounded shadow" style={{ padding: "1rem" }}>
+          <Flex vertical justify="space-around" className="h-[60vh] bg-white rounded shadow" style={{ padding: "1rem" }}>
             <strong className="text-md">{t("Staff absented")}</strong>
             <Divider style={{ borderColor: "black", marginTop: 0, marginBottom: 0 }} />
             <List
               className="overflow-y-scroll"
-              style={{ height: "80%" }}
+              style={{ height: "90%" }}
               bordered
               dataSource={absentStaff}
               renderItem={(item) => (

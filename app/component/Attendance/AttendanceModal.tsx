@@ -3,7 +3,7 @@
 import { DataType } from "@/app/constant/DataType";
 import { MY_FORMAT, DMY_FORMAT } from "@/app/constant/ConstantVariables";
 import { CalculateWorkHour } from "@/app/utils/CalculateWorkHour";
-import { Col, Modal, Row, Space } from "antd";
+import { Button, Col, Modal, Row, Space } from "antd";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 import AttendanceModalText from "./AttendanceModalText";
@@ -43,10 +43,15 @@ export default function AttendanceModal({ openModal, record, selectedName, selec
   return (
     <Modal
       open={openModal}
-      onCancel={onClose}
-      onOk={onClose}
       title={`${t("Attendance detail of")} ${selectedName} ${t("in")} ${t(dayjs(selectedMonth).format(MY_FORMAT))}`}
       width={750}
+      onCancel={onClose}
+      closeIcon={false}
+      footer={
+        <Button color="danger" variant="solid" onClick={onClose}>
+          {t("Close")}
+        </Button>
+      }
     >
       <Row className="mt-6">
         <Col span={10} offset={1}>

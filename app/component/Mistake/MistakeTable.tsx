@@ -13,8 +13,6 @@ interface MistakeTableProps {
   selectedMonth: dayjs.Dayjs;
   selectedRow: DataType[];
   isSelectedAll: boolean;
-  currentPage: number;
-  setCurrentPage: (page: number) => void;
   handleSelectAll: () => void;
   handleCheckboxChange: (row: DataType) => void;
 }
@@ -25,8 +23,6 @@ export default function MistakeTable({
   selectedMonth,
   selectedRow,
   isSelectedAll,
-  currentPage,
-  setCurrentPage,
   handleSelectAll,
   handleCheckboxChange,
 }: MistakeTableProps) {
@@ -51,7 +47,7 @@ export default function MistakeTable({
       },
     },
     {
-      title: `${t("Name")}`,
+      title: `${t("Staff name")}`,
       dataIndex: "displayName",
       key: "displayName",
       align: "center" as const,
@@ -76,6 +72,12 @@ export default function MistakeTable({
       key: "checkInLateCount",
       align: "center" as const,
       width: 160,
+      // sorter: {
+      //   compare: (a: DataType, b: DataType) => {
+      //     return a.checkInLateCount - b.checkInLateCount;
+      //   },
+      //   multiple: 1,
+      // },
       render: (record: DataType) => (
         <span>
           {record.checkInLateCount} {record.checkInLateCount > 1 ? t("times") : t("time")}
@@ -87,6 +89,12 @@ export default function MistakeTable({
       key: "checkOutEarlyCount",
       align: "center" as const,
       width: 160,
+      // sorter: {
+      //   compare: (a: DataType, b: DataType) => {
+      //     return a.checkOutEarlyCount - b.checkOutEarlyCount;
+      //   },
+      //   multiple: 2,
+      // },
       render: (record: DataType) => (
         <span>
           {record.checkOutEarlyCount} {record.checkOutEarlyCount > 1 ? t("times") : t("time")}
@@ -128,14 +136,12 @@ export default function MistakeTable({
         columns={columns}
         rowKey="userId"
         size="small"
-        pagination={{
-          current: currentPage,
-          onChange: (page) => setCurrentPage(page),
-          pageSize: 10,
-          position: [`bottomCenter`],
-          showSizeChanger: false,
-          size: "default",
-          hideOnSinglePage: true,
+        scroll={{ y: "calc(100vh - 200px)" }}
+        pagination={false}
+        locale={{
+          triggerAsc: t("Sort ascending"),
+          triggerDesc: t("Sort descending"),
+          cancelSort: t("Cancel sorting"),
         }}
       />
     </>

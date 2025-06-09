@@ -11,6 +11,7 @@ import UseFetchData from "@/app/hooks/UseFetchData";
 import { DataType } from "@/app/constant/DataType";
 import { today } from "@/app/constant/ConstantVariables";
 import Filters from "@/app/component/Filters";
+import debounce from "lodash.debounce";
 
 export default function Attendance() {
   const { t } = useTranslation();
@@ -18,14 +19,12 @@ export default function Attendance() {
   const [selectedMonth, setSelectedMonth] = useState<dayjs.Dayjs>(today);
   const { userTracker, loading } = UseFetchData(selectedMonth);
   const [data, setData] = useState<DataType[]>([]);
+  const [searchInput, setSearchInput] = useState("");
+  const { openNotification, contextHolder } = useCustomNotification();
   useEffect(() => {
     setData(userTracker);
   }, [userTracker]);
-  // Search
-  const [searchInput, setSearchInput] = useState("");
-  const { openNotification, contextHolder } = useCustomNotification();
-  // Table pagination
-  const [currentPage, setCurrentPage] = useState<number>(1);
+
   // Checkbox
   const [selectedRow, setSelectedRow] = useState<DataType[]>([]);
   const isSelectedAll = selectedRow.length === data.length && data.length > 0;
@@ -35,30 +34,42 @@ export default function Attendance() {
   const handleCheckboxChange = (row: DataType) => {
     setSelectedRow((prev) => (prev.some((r) => row.userId === r.userId) ? prev.filter((r) => r.userId !== row.userId) : [...prev, row]));
   };
+
   // Danh sách ngày trong tháng chọn
   const days = useMemo(() => {
     const daysInMonth = selectedMonth.daysInMonth();
     return Array.from({ length: daysInMonth }).map((_, index) => index + 1);
   }, [selectedMonth]);
-  // Search
-  const searchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchInput(e.target.value);
-  };
-  const handleSearch = (value: string) => {
-    setCurrentPage(1);
-    setSelectedRow([]);
-    const searchTerm = value.trim().toLowerCase();
 
-    const filteredUser = userTracker.filter((d) => d.displayName.toLowerCase().includes(searchTerm));
-    if (filteredUser.length === 0) {
-      openNotification();
-      return;
-    }
-    setData(filteredUser);
+  // Tìm kiếm
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((value: string) => {
+        setSelectedRow([]);
+        const filteredUser = userTracker.filter((d) => d.displayName.toLowerCase().includes(value.trim().toLowerCase()));
+        if (filteredUser.length === 0) {
+          openNotification();
+          return;
+        }
+        setData(filteredUser);
+      }, 300),
+    [userTracker]
+  );
+
+  useEffect(() => {
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
+
+  const searchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchInput(value);
+    debouncedSearch(value);
   };
-  // Date picker
+
+  // Chọn ngày
   const handleDateChange = (value: dayjs.Dayjs) => {
-    setCurrentPage(1);
     setSearchInput("");
     setSelectedRow([]);
     setSelectedMonth(value);
@@ -77,7 +88,6 @@ export default function Attendance() {
         searchInput={searchInput}
         selectedMonth={selectedMonth}
         searchChange={searchChange}
-        handleSearch={handleSearch}
         handleDateChange={handleDateChange}
       />
       <AttendanceTable
@@ -87,8 +97,6 @@ export default function Attendance() {
         data={data}
         selectedRow={selectedRow}
         isSelectedAll={isSelectedAll}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
         handleSelectAll={handleSelectAll}
         handleCheckboxChange={handleCheckboxChange}
       />
