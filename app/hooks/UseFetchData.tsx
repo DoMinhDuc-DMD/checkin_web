@@ -1,4 +1,5 @@
 "use client";
+
 import dayjs from "dayjs";
 import axios from "axios";
 import { DataType, Tracker, User } from "../constant/DataType";
@@ -129,5 +130,5 @@ export default function UseFetchData(selectedMonth?: dayjs.Dayjs) {
     };
     fetchData();
   }, [selectedMonth]);
-  return { user, tracker, userTracker, loading };
+  return { user, tracker, userTracker, loading, t };
 }

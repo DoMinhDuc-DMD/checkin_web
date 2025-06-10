@@ -4,33 +4,31 @@ import { CalculateWorkHour } from "@/app/utils/CalculateWorkHour";
 import { Button, Checkbox, Flex, Table, Typography } from "antd";
 import { DataType } from "@/app/constant/DataType";
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
 import AttendanceModal from "./AttendanceModal";
 import AttendanceDayColumns from "./AttendanceDayColumns";
 import dayjs from "dayjs";
 
 interface AttendanceTableProps {
-  loading: boolean;
   days: number[];
   selectedMonth: dayjs.Dayjs;
   data: DataType[];
   selectedRow: DataType[];
   isSelectedAll: boolean;
+  t: (key: string) => string;
   handleSelectAll: () => void;
   handleCheckboxChange: (row: DataType) => void;
 }
 
 export default function AttendanceTable({
-  loading,
   days,
   selectedMonth,
   data,
   selectedRow,
   isSelectedAll,
+  t,
   handleSelectAll,
   handleCheckboxChange,
 }: AttendanceTableProps) {
-  const { t } = useTranslation();
   const [openModal, setOpenModal] = useState(false);
   const [selectedName, setSelectedName] = useState("");
   const [selectedRecord, setSelectedRecord] = useState<DataType>();
@@ -49,10 +47,10 @@ export default function AttendanceTable({
     {
       title: t("Staff name"),
       key: "displayName",
-      width: 200,
+      width: 150,
       fixed: "left" as const,
       align: "center" as const,
-      render: (record: DataType) => <span>{loading ? "--- --- ---" : record.displayName}</span>,
+      render: (record: DataType) => <span>{record.displayName}</span>,
     },
     {
       title: t("Total check"),
@@ -71,15 +69,6 @@ export default function AttendanceTable({
       //   return aTimes.totalWorkingHour - bTimes.totalWorkingHour;
       // },
       render: (record: DataType) => {
-        if (loading) {
-          return (
-            <Flex justify="space-between">
-              <Typography.Text className="w-[100px]">0.0 {t("hour")}</Typography.Text>
-              <Typography.Text className="w-[1px] text-center h-5 bg-black" />
-              <Typography.Text className="w-[100px]">0 {t("day")}</Typography.Text>
-            </Flex>
-          );
-        }
         const { totalWorkingHour, totalCheck } = CalculateWorkHour(
           record.trackRecord.flatMap((r) => r.checkIn).filter((v): v is string => v !== null),
           record.trackRecord.flatMap((r) => r.checkOut).filter((v): v is string => v !== null)
@@ -98,7 +87,7 @@ export default function AttendanceTable({
         );
       },
     },
-    ...AttendanceDayColumns(days, selectedMonth, loading),
+    ...AttendanceDayColumns(days, selectedMonth, t),
     {
       title: t("Detail"),
       key: "detail",
@@ -125,6 +114,7 @@ export default function AttendanceTable({
     <>
       {selectedRecord && (
         <AttendanceModal
+          t={t}
           openModal={openModal}
           onClose={() => setOpenModal(false)}
           selectedName={selectedName}
@@ -134,13 +124,12 @@ export default function AttendanceTable({
         />
       )}
       <Table
-        loading={loading}
         dataSource={data}
         columns={columns}
         rowKey={"userId"}
         size="small"
-        scroll={{ x: "max-content", y: "calc(100vh - 200px)" }}
-        pagination={false}
+        scroll={{ x: "max-content" }}
+        pagination={{ pageSize: 10, showSizeChanger: false, position: ["bottomCenter"], size: "default" }}
         locale={{
           triggerAsc: t("Sort ascending"),
           triggerDesc: t("Sort descending"),

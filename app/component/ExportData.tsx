@@ -4,16 +4,14 @@ import { DataType } from "@/app/constant/DataType";
 import { CalculateWorkHour } from "@/app/utils/CalculateWorkHour";
 import { Button } from "antd";
 import { CSVLink } from "react-csv";
-import { useTranslation } from "react-i18next";
 
 interface ExportDataProps {
   selectedRow: DataType[];
   type: string;
+  t: (key: string) => string;
 }
 
-export default function ExportData({ selectedRow, type }: ExportDataProps) {
-  const { t } = useTranslation();
-
+export default function ExportData({ selectedRow, type, t }: ExportDataProps) {
   if (selectedRow.length === 0 || !type) return null;
 
   const csvData = selectedRow.map((row) => {

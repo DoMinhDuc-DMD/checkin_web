@@ -5,12 +5,10 @@ import { DataType } from "@/app/constant/DataType";
 import { CalculateWorkMinute } from "@/app/utils/CalculateWorkMinute";
 import { Tooltip } from "antd";
 import dayjs from "dayjs";
-import { useTranslation } from "react-i18next";
+import React from "react";
 
-export default function AttendanceDayColumns(days: number[], selectedMonth: dayjs.Dayjs, loading: boolean) {
-  const { t } = useTranslation();
-
-  const dayColumns = days.map((day) => {
+export default function AttendanceDayColumns(days: number[], selectedMonth: dayjs.Dayjs, t: (key: string) => string) {
+  return days.map((day) => {
     const date = dayjs(new Date(selectedMonth.year(), selectedMonth.month(), day));
     const isWorkingDay = date.day() !== 0 && date.day() !== 6;
 
@@ -22,9 +20,7 @@ export default function AttendanceDayColumns(days: number[], selectedMonth: dayj
       onCell: () => ({ style: { backgroundColor: isWorkingDay ? "" : "oklch(0.90 0 0)" } }),
       render: (_, record: DataType) => {
         const foundDate = record.trackRecord.find((r) => dayjs(r.date).isSame(date, "day"));
-        if (loading) {
-          return <span className="font-semibold">---</span>;
-        }
+
         if (date > today) {
           return <span className="font-semibold">---</span>;
         }
@@ -51,5 +47,4 @@ export default function AttendanceDayColumns(days: number[], selectedMonth: dayj
       },
     };
   });
-  return dayColumns;
 }

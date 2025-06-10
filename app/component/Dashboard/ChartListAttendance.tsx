@@ -1,10 +1,9 @@
 "use client";
 
-import { Col, Divider, Flex, List, Row, Spin } from "antd";
+import { Col, Divider, Flex, List, Row } from "antd";
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-import { useTranslation } from "react-i18next";
 import { HOUR_FORMAT } from "@/app/constant/ConstantVariables";
 import { User } from "@/app/constant/DataType";
 import dayjs from "dayjs";
@@ -16,7 +15,7 @@ interface ChartListAttendanceProps {
   analyzeTracker: { onTime: number; inLate: number; outEarly: number };
   attendedStaff: { user: User; firstCheckIn: dayjs.Dayjs }[];
   absentStaff: User[];
-  loading: boolean;
+  t: (key: string) => string;
 }
 
 export default function ChartListAttendance({
@@ -26,65 +25,57 @@ export default function ChartListAttendance({
   analyzeTracker,
   attendedStaff,
   absentStaff,
-  loading,
+  t,
 }: ChartListAttendanceProps) {
-  const { t } = useTranslation();
-
   return (
     <Row gutter={[20, 20]} className="mb-3">
       {/* Phân tích chấm công */}
       <Col xs={24} md={24} xl={8}>
-        <Spin spinning={loading}>
-          <div className="h-[60vh] bg-white p-5 rounded shadow">
-            <strong className="text-md">{t("Attendance analytic")}</strong>
-            <Bar data={analyzeData} options={{ maintainAspectRatio: false }} />
-          </div>
-        </Spin>
+        <div className="h-[60vh] bg-white p-5 rounded shadow">
+          <strong className="text-md">{t("Attendance analytic")}</strong>
+          <Bar data={analyzeData} options={{ maintainAspectRatio: false }} />
+        </div>
       </Col>
       {/* Nhân viên có mặt */}
       <Col xs={24} md={12} xl={8}>
-        <Spin spinning={loading}>
-          <Flex vertical justify="space-around" className="h-[60vh] bg-white rounded shadow" style={{ padding: "1rem" }}>
-            <strong className="text-md">
-              {t("Staff attended")}: {analyzeTracker.onTime + analyzeTracker.inLate}/{user.length}
-            </strong>
-            <Divider style={{ borderColor: "black", marginTop: 0, marginBottom: 0 }} />
-            <List
-              className="overflow-y-scroll"
-              style={{ height: "90%" }}
-              bordered
-              dataSource={attendedStaff}
-              renderItem={(item) => (
-                <List.Item
-                  style={{ backgroundColor: `${item.firstCheckIn.isBefore(dayjs(analyzeDate).hour(8).minute(31)) ? "#79FD9D" : ""}` }}
-                >
-                  <strong>{item.user.displayName}</strong>
-                  <strong>{item.firstCheckIn.format(HOUR_FORMAT)}</strong>
-                </List.Item>
-              )}
-            />
-          </Flex>
-        </Spin>
+        <Flex vertical justify="space-around" className="h-[60vh] bg-white rounded shadow" style={{ padding: "1rem" }}>
+          <strong className="text-md">
+            {t("Staff attended")}: {analyzeTracker.onTime + analyzeTracker.inLate}/{user.length}
+          </strong>
+          <Divider style={{ borderColor: "black", marginTop: 0, marginBottom: 0 }} />
+          <List
+            className="overflow-y-scroll"
+            style={{ height: "90%" }}
+            bordered
+            dataSource={attendedStaff}
+            renderItem={(item) => (
+              <List.Item
+                style={{ backgroundColor: `${item.firstCheckIn.isBefore(dayjs(analyzeDate).hour(8).minute(31)) ? "#79FD9D" : ""}` }}
+              >
+                <strong>{item.user.displayName}</strong>
+                <strong>{item.firstCheckIn.format(HOUR_FORMAT)}</strong>
+              </List.Item>
+            )}
+          />
+        </Flex>
       </Col>
       {/* Nhân viên vắng mặt */}
       <Col xs={24} md={12} xl={8}>
-        <Spin spinning={loading}>
-          <Flex vertical justify="space-around" className="h-[60vh] bg-white rounded shadow" style={{ padding: "1rem" }}>
-            <strong className="text-md">{t("Staff absented")}</strong>
-            <Divider style={{ borderColor: "black", marginTop: 0, marginBottom: 0 }} />
-            <List
-              className="overflow-y-scroll"
-              style={{ height: "90%" }}
-              bordered
-              dataSource={absentStaff}
-              renderItem={(item) => (
-                <List.Item>
-                  <strong>{item.displayName}</strong>
-                </List.Item>
-              )}
-            />
-          </Flex>
-        </Spin>
+        <Flex vertical justify="space-around" className="h-[60vh] bg-white rounded shadow" style={{ padding: "1rem" }}>
+          <strong className="text-md">{t("Staff absented")}</strong>
+          <Divider style={{ borderColor: "black", marginTop: 0, marginBottom: 0 }} />
+          <List
+            className="overflow-y-scroll"
+            style={{ height: "90%" }}
+            bordered
+            dataSource={absentStaff}
+            renderItem={(item) => (
+              <List.Item>
+                <strong>{item.displayName}</strong>
+              </List.Item>
+            )}
+          />
+        </Flex>
       </Col>
     </Row>
   );

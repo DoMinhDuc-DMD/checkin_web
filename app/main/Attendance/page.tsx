@@ -4,9 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import dayjs from "dayjs";
 import "@ant-design/v5-patch-for-react-19";
 import AttendanceTable from "@/app/component/Attendance/AttendanceTable";
-import { Typography } from "antd";
+import { Spin, Typography } from "antd";
 import { useCustomNotification } from "@/app/hooks/UseCustomNotification";
-import { useTranslation } from "react-i18next";
 import UseFetchData from "@/app/hooks/UseFetchData";
 import { DataType } from "@/app/constant/DataType";
 import { today } from "@/app/constant/ConstantVariables";
@@ -14,10 +13,9 @@ import Filters from "@/app/component/Filters";
 import debounce from "lodash.debounce";
 
 export default function Attendance() {
-  const { t } = useTranslation();
   // Lấy data
   const [selectedMonth, setSelectedMonth] = useState<dayjs.Dayjs>(today);
-  const { userTracker, loading } = UseFetchData(selectedMonth);
+  const { userTracker, loading, t } = UseFetchData(selectedMonth);
   const [data, setData] = useState<DataType[]>([]);
   const [searchInput, setSearchInput] = useState("");
   const { openNotification, contextHolder } = useCustomNotification();
@@ -75,6 +73,14 @@ export default function Attendance() {
     setSelectedMonth(value);
   };
 
+  if (loading) {
+    return (
+      <div className="w-[100%] h-[100%] flex items-center justify-center">
+        <Spin size="large" />
+      </div>
+    );
+  }
+
   return (
     <>
       {contextHolder}
@@ -83,7 +89,6 @@ export default function Attendance() {
       </Typography.Title>
       <Filters
         type="attendance"
-        loading={loading}
         selectedRow={selectedRow}
         searchInput={searchInput}
         selectedMonth={selectedMonth}
@@ -91,12 +96,12 @@ export default function Attendance() {
         handleDateChange={handleDateChange}
       />
       <AttendanceTable
-        loading={loading}
         days={days}
         selectedMonth={selectedMonth}
         data={data}
         selectedRow={selectedRow}
         isSelectedAll={isSelectedAll}
+        t={t}
         handleSelectAll={handleSelectAll}
         handleCheckboxChange={handleCheckboxChange}
       />

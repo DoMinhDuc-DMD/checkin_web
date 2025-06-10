@@ -5,7 +5,6 @@ import { MY_FORMAT, DMY_FORMAT } from "@/app/constant/ConstantVariables";
 import { CalculateWorkHour } from "@/app/utils/CalculateWorkHour";
 import { Button, Col, Modal, Row, Space } from "antd";
 import dayjs from "dayjs";
-import { useTranslation } from "react-i18next";
 import AttendanceModalText from "./AttendanceModalText";
 
 interface AttendanceModalProps {
@@ -14,11 +13,11 @@ interface AttendanceModalProps {
   selectedName: string;
   selectedMonth: dayjs.Dayjs;
   days: number[];
+  t: (key: string) => string;
   onClose: () => void;
 }
 
-export default function AttendanceModal({ openModal, record, selectedName, selectedMonth, days, onClose }: AttendanceModalProps) {
-  const { t } = useTranslation();
+export default function AttendanceModal({ openModal, record, selectedName, selectedMonth, days, t, onClose }: AttendanceModalProps) {
   const { totalWorkingHour, totalCheck, totalOvertimeHour } = CalculateWorkHour(
     record.trackRecord.flatMap((r) => r.checkIn).filter((v): v is string => v !== null),
     record.trackRecord.flatMap((r) => r.checkOut).filter((v): v is string => v !== null)
@@ -57,7 +56,7 @@ export default function AttendanceModal({ openModal, record, selectedName, selec
         <Col span={10} offset={1}>
           <Space direction="vertical">
             <AttendanceModalText label={t("Code")} value={record.userId} />
-            <AttendanceModalText label={t("Name")} value={record.displayName} />
+            <AttendanceModalText label={t("Staff name")} value={record.displayName} />
             <AttendanceModalText label={t("Position")} value={record.role} />
             <AttendanceModalText label={t("Joined at")} value={dayjs(record.createdAt).format(DMY_FORMAT)} />
           </Space>

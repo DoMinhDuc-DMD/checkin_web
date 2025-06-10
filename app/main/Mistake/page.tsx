@@ -1,8 +1,7 @@
 "use client";
 
 import "@ant-design/v5-patch-for-react-19";
-import { Typography } from "antd";
-import { useTranslation } from "react-i18next";
+import { Spin, Typography } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { useCustomNotification } from "@/app/hooks/UseCustomNotification";
 import { MONTH_FORMAT, today } from "@/app/constant/ConstantVariables";
@@ -14,17 +13,16 @@ import Filters from "@/app/component/Filters";
 import debounce from "lodash.debounce";
 
 export default function Mistake() {
-  const { t } = useTranslation();
   // Lấy data
   const [selectedMonth, setSelectedMonth] = useState<dayjs.Dayjs>(today);
-  const { userTracker, loading } = UseFetchData(selectedMonth);
+  const { userTracker, loading, t } = UseFetchData(selectedMonth);
   const [data, setData] = useState<DataType[]>([]);
+  const { openNotification, contextHolder } = useCustomNotification();
+  const [searchInput, setSearchInput] = useState("");
   useEffect(() => {
     setData(userTracker);
   }, [userTracker]);
-  // Search
-  const { openNotification, contextHolder } = useCustomNotification();
-  const [searchInput, setSearchInput] = useState("");
+
   // Checkbox
   const [selectedRow, setSelectedRow] = useState<DataType[]>([]);
   const isSelectedAll = selectedRow.length === data.length && data.length > 0;
@@ -72,6 +70,13 @@ export default function Mistake() {
     );
     setData(filteredData);
   };
+  if (loading) {
+    return (
+      <div className="w-[100%] h-[100%] flex items-center justify-center">
+        <Spin size="large" />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -81,7 +86,6 @@ export default function Mistake() {
       </Typography.Title>
       <Filters
         type="mistake"
-        loading={loading}
         selectedRow={selectedRow}
         searchInput={searchInput}
         selectedMonth={selectedMonth}
@@ -89,11 +93,11 @@ export default function Mistake() {
         handleDateChange={handleDateChange}
       />
       <MistakeTable
-        loading={loading}
         data={data}
         selectedMonth={selectedMonth}
         selectedRow={selectedRow}
         isSelectedAll={isSelectedAll}
+        t={t}
         handleSelectAll={handleSelectAll}
         handleCheckboxChange={handleCheckboxChange}
       />

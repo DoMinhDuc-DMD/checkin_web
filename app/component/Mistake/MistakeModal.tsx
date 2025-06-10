@@ -4,18 +4,17 @@ import { DMY_FORMAT, MY_FORMAT } from "@/app/constant/ConstantVariables";
 import { TrackRecord } from "@/app/constant/DataType";
 import { Button, Modal, Table } from "antd";
 import dayjs from "dayjs";
-import { useTranslation } from "react-i18next";
 
 interface MistakeModalProps {
   selectedName: string;
   selectedMonth: dayjs.Dayjs;
   selectedRecord: TrackRecord;
   openModal: boolean;
+  t: (key: string) => string;
   onClose: () => void;
 }
 
-export default function MistakeModal({ selectedName, selectedMonth, selectedRecord, openModal, onClose }: MistakeModalProps) {
-  const { t } = useTranslation();
+export default function MistakeModal({ selectedName, selectedMonth, selectedRecord, openModal, t, onClose }: MistakeModalProps) {
   const columns = [
     {
       title: `${t("Date")}`,
@@ -62,7 +61,7 @@ export default function MistakeModal({ selectedName, selectedMonth, selectedReco
         </Button>
       }
     >
-      <Table rowKey="date" dataSource={selectedRecord} columns={columns} scroll={{ y: "calc(54.8px * 8)" }} pagination={false} />
+      <Table rowKey="date" dataSource={selectedRecord} columns={columns} scroll={{ y: "calc(54.8px * 6)" }} pagination={false} />
     </Modal>
   );
 }
