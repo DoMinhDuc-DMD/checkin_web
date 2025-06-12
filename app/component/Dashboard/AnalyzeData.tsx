@@ -4,13 +4,13 @@ import { Tracker, User } from "@/app/constant/DataType";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
-interface AnalyzeDataProps {
+interface Props {
   user: User[];
   tracker: Tracker[];
   analyzeDate: dayjs.Dayjs;
 }
 
-export default function AnalyzeData({ user, tracker, analyzeDate }: AnalyzeDataProps) {
+export default function AnalyzeData({ user, tracker, analyzeDate }: Props) {
   const [todayAttendance, setTodayAttendance] = useState<number>(0);
   const [attendanceCount, setAttendanceCount] = useState({ onTime: 0, inLate: 0, outEarly: 0 });
   const [analyzeTracker, setAnalyzeTracker] = useState({ onTime: 0, inLate: 0, outEarly: 0 });

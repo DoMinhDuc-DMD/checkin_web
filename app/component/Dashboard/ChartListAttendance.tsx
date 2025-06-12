@@ -8,7 +8,7 @@ import { HOUR_FORMAT } from "@/app/constant/ConstantVariables";
 import { User } from "@/app/constant/DataType";
 import dayjs from "dayjs";
 
-interface ChartListAttendanceProps {
+interface Props {
   user: User[];
   analyzeDate: dayjs.Dayjs;
   analyzeData: { labels: string[]; datasets: { label: string; data: number[]; backgroundColor: string }[] };
@@ -18,15 +18,7 @@ interface ChartListAttendanceProps {
   t: (key: string) => string;
 }
 
-export default function ChartListAttendance({
-  user,
-  analyzeDate,
-  analyzeData,
-  analyzeTracker,
-  attendedStaff,
-  absentStaff,
-  t,
-}: ChartListAttendanceProps) {
+export default function ChartListAttendance({ user, analyzeDate, analyzeData, analyzeTracker, attendedStaff, absentStaff, t }: Props) {
   return (
     <Row gutter={[20, 20]} className="mb-3">
       {/* Phân tích chấm công */}

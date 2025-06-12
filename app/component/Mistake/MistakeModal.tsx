@@ -5,7 +5,7 @@ import { TrackRecord } from "@/app/constant/DataType";
 import { Button, Modal, Table } from "antd";
 import dayjs from "dayjs";
 
-interface MistakeModalProps {
+interface Props {
   selectedName: string;
   selectedMonth: dayjs.Dayjs;
   selectedRecord: TrackRecord;
@@ -14,7 +14,7 @@ interface MistakeModalProps {
   onClose: () => void;
 }
 
-export default function MistakeModal({ selectedName, selectedMonth, selectedRecord, openModal, t, onClose }: MistakeModalProps) {
+export default function MistakeModal({ selectedName, selectedMonth, selectedRecord, openModal, t, onClose }: Props) {
   const columns = [
     {
       title: `${t("Date")}`,
@@ -53,6 +53,7 @@ export default function MistakeModal({ selectedName, selectedMonth, selectedReco
       open={openModal}
       title={`${t("Attendance mistake detail of")} "${selectedName}" ${t("in")} ${t(dayjs(selectedMonth).format(MY_FORMAT))}`}
       width={700}
+      destroyOnHidden
       onCancel={onClose}
       closeIcon={false}
       footer={

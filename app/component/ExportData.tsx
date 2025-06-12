@@ -5,13 +5,13 @@ import { CalculateWorkHour } from "@/app/utils/CalculateWorkHour";
 import { Button } from "antd";
 import { CSVLink } from "react-csv";
 
-interface ExportDataProps {
+interface Props {
   selectedRow: DataType[];
   type: string;
   t: (key: string) => string;
 }
 
-export default function ExportData({ selectedRow, type, t }: ExportDataProps) {
+export default function ExportData({ selectedRow, type, t }: Props) {
   if (selectedRow.length === 0 || !type) return null;
 
   const csvData = selectedRow.map((row) => {

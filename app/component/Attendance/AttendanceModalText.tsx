@@ -2,12 +2,12 @@
 
 import { Typography } from "antd";
 
-interface AttendanceModalTextProps {
+interface Props {
   label: string;
   value?: string;
 }
 
-export default function AttendanceModalText({ label, value }: AttendanceModalTextProps) {
+export default function AttendanceModalText({ label, value }: Props) {
   return (
     <Typography.Text>
       <strong> {label}</strong>: {value}

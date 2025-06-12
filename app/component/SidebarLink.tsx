@@ -5,19 +5,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactElement } from "react";
 
-export default function SidebarLink({
-  link,
-  icon,
-  label,
-  exact = true,
-  collapsed,
-}: {
+interface Props {
   link: string;
   icon: ReactElement;
   label: string;
   exact?: boolean;
   collapsed: boolean;
-}) {
+}
+
+export default function SidebarLink({ link, icon, label, exact = true, collapsed }: Props) {
   const pathName = usePathname();
   const isActive = exact ? pathName === link : pathName.startsWith(link);
 

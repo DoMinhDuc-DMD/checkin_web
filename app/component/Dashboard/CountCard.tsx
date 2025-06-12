@@ -2,13 +2,13 @@
 
 import { Card, Col, Flex } from "antd";
 
-interface CountCardProps {
+interface Props {
   label: string;
   attendancePercentage?: number;
   attendanceCountType?: number;
   t: (key: string) => string;
 }
-export default function CountCard({ label, attendancePercentage, attendanceCountType, t }: CountCardProps) {
+export default function CountCard({ label, attendancePercentage, attendanceCountType, t }: Props) {
   const isAttendance = (attendancePercentage ?? null) !== null;
   return (
     <Col xs={24} sm={12} lg={6}>

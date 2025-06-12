@@ -6,7 +6,7 @@ import { useState } from "react";
 import dayjs from "dayjs";
 import MistakeModal from "./MistakeModal";
 
-interface MistakeTableProps {
+interface Props {
   data: DataType[];
   selectedMonth: dayjs.Dayjs;
   selectedRow: DataType[];
@@ -16,15 +16,7 @@ interface MistakeTableProps {
   handleCheckboxChange: (row: DataType) => void;
 }
 
-export default function MistakeTable({
-  data,
-  selectedMonth,
-  selectedRow,
-  isSelectedAll,
-  t,
-  handleSelectAll,
-  handleCheckboxChange,
-}: MistakeTableProps) {
+export default function MistakeTable({ data, selectedMonth, selectedRow, isSelectedAll, t, handleSelectAll, handleCheckboxChange }: Props) {
   // Open modal
   const [openModal, setOpenModal] = useState(false);
   const [selectedName, setSelectedName] = useState("");
@@ -36,7 +28,6 @@ export default function MistakeTable({
   const columns = [
     {
       title: <Checkbox checked={isSelectedAll} indeterminate={selectedRow.length > 0 && !isSelectedAll} onChange={handleSelectAll} />,
-      key: "key",
       align: "center" as const,
       width: 50,
       render: (row: DataType) => {
@@ -70,12 +61,6 @@ export default function MistakeTable({
       key: "checkInLateCount",
       align: "center" as const,
       width: 160,
-      // sorter: {
-      //   compare: (a: DataType, b: DataType) => {
-      //     return a.checkInLateCount - b.checkInLateCount;
-      //   },
-      //   multiple: 1,
-      // },
       render: (record: DataType) => (
         <span>
           {record.checkInLateCount} {record.checkInLateCount > 1 ? t("times") : t("time")}
@@ -87,12 +72,6 @@ export default function MistakeTable({
       key: "checkOutEarlyCount",
       align: "center" as const,
       width: 160,
-      // sorter: {
-      //   compare: (a: DataType, b: DataType) => {
-      //     return a.checkOutEarlyCount - b.checkOutEarlyCount;
-      //   },
-      //   multiple: 2,
-      // },
       render: (record: DataType) => (
         <span>
           {record.checkOutEarlyCount} {record.checkOutEarlyCount > 1 ? t("times") : t("time")}
@@ -118,7 +97,6 @@ export default function MistakeTable({
       ),
     },
   ];
-
   return (
     <>
       <MistakeModal

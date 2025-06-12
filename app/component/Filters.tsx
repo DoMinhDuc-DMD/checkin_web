@@ -9,7 +9,7 @@ import "dayjs/locale/en";
 import { DataType } from "../constant/DataType";
 import ExportData from "./ExportData";
 
-interface FiltersProps {
+interface Props {
   type: string;
   selectedRow: DataType[];
   searchInput: string;
@@ -18,7 +18,7 @@ interface FiltersProps {
   handleDateChange: (value: dayjs.Dayjs) => void;
 }
 
-export default function Filters({ type, selectedRow, searchInput, selectedMonth, searchChange, handleDateChange }: FiltersProps) {
+export default function Filters({ type, selectedRow, searchInput, selectedMonth, searchChange, handleDateChange }: Props) {
   const { t, i18n } = useTranslation();
   const currentLang = i18n.language;
   dayjs.locale(currentLang);

@@ -8,7 +8,7 @@ import AttendanceModal from "./AttendanceModal";
 import AttendanceDayColumns from "./AttendanceDayColumns";
 import dayjs from "dayjs";
 
-interface AttendanceTableProps {
+interface Props {
   days: number[];
   selectedMonth: dayjs.Dayjs;
   data: DataType[];
@@ -28,7 +28,7 @@ export default function AttendanceTable({
   t,
   handleSelectAll,
   handleCheckboxChange,
-}: AttendanceTableProps) {
+}: Props) {
   const [openModal, setOpenModal] = useState(false);
   const [selectedName, setSelectedName] = useState("");
   const [selectedRecord, setSelectedRecord] = useState<DataType>();
@@ -54,26 +54,24 @@ export default function AttendanceTable({
     },
     {
       title: t("Total check"),
-      key: "total_check",
       fixed: "left" as const,
       align: "center" as const,
-      // sorter: (a: DataType, b: DataType) => {
-      //   const aTimes = CalculateWorkHour(
-      //     a.trackRecord.flatMap((r) => r.checkIn).filter((v): v is string => v !== null),
-      //     a.trackRecord.flatMap((r) => r.checkOut).filter((v): v is string => v !== null)
-      //   );
-      //   const bTimes = CalculateWorkHour(
-      //     b.trackRecord.flatMap((r) => r.checkIn).filter((v): v is string => v !== null),
-      //     b.trackRecord.flatMap((r) => r.checkOut).filter((v): v is string => v !== null)
-      //   );
-      //   return aTimes.totalWorkingHour - bTimes.totalWorkingHour;
-      // },
+      sorter: (a: DataType, b: DataType) => {
+        const aTimes = CalculateWorkHour(
+          a.trackRecord.flatMap((r) => r.checkIn).filter((v): v is string => v !== null),
+          a.trackRecord.flatMap((r) => r.checkOut).filter((v): v is string => v !== null)
+        );
+        const bTimes = CalculateWorkHour(
+          b.trackRecord.flatMap((r) => r.checkIn).filter((v): v is string => v !== null),
+          b.trackRecord.flatMap((r) => r.checkOut).filter((v): v is string => v !== null)
+        );
+        return aTimes.totalWorkingHour - bTimes.totalWorkingHour;
+      },
       render: (record: DataType) => {
         const { totalWorkingHour, totalCheck } = CalculateWorkHour(
           record.trackRecord.flatMap((r) => r.checkIn).filter((v): v is string => v !== null),
           record.trackRecord.flatMap((r) => r.checkOut).filter((v): v is string => v !== null)
         );
-
         return (
           <Flex justify="space-between">
             <Typography.Text className="w-[100px]">
@@ -90,7 +88,6 @@ export default function AttendanceTable({
     ...AttendanceDayColumns(days, selectedMonth, t),
     {
       title: t("Detail"),
-      key: "detail",
       fixed: "right" as const,
       align: "center" as const,
       width: 100,
@@ -109,7 +106,6 @@ export default function AttendanceTable({
       ),
     },
   ];
-
   return (
     <>
       {selectedRecord && (

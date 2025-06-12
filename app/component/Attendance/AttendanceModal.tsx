@@ -7,7 +7,7 @@ import { Button, Col, Modal, Row, Space } from "antd";
 import dayjs from "dayjs";
 import AttendanceModalText from "./AttendanceModalText";
 
-interface AttendanceModalProps {
+interface Props {
   openModal: boolean;
   record: DataType;
   selectedName: string;
@@ -17,7 +17,7 @@ interface AttendanceModalProps {
   onClose: () => void;
 }
 
-export default function AttendanceModal({ openModal, record, selectedName, selectedMonth, days, t, onClose }: AttendanceModalProps) {
+export default function AttendanceModal({ openModal, record, selectedName, selectedMonth, days, t, onClose }: Props) {
   const { totalWorkingHour, totalCheck, totalOvertimeHour } = CalculateWorkHour(
     record.trackRecord.flatMap((r) => r.checkIn).filter((v): v is string => v !== null),
     record.trackRecord.flatMap((r) => r.checkOut).filter((v): v is string => v !== null)
@@ -44,6 +44,7 @@ export default function AttendanceModal({ openModal, record, selectedName, selec
       open={openModal}
       title={`${t("Attendance detail of")} ${selectedName} ${t("in")} ${t(dayjs(selectedMonth).format(MY_FORMAT))}`}
       width={750}
+      destroyOnHidden
       onCancel={onClose}
       closeIcon={false}
       footer={
