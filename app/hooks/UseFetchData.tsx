@@ -130,6 +130,5 @@ export default function UseFetchData(selectedMonth?: dayjs.Dayjs) {
     };
     fetchData();
   }, [selectedMonth]);
-  console.log(user);
   return { user, tracker, userTracker, loading, t };
 }
